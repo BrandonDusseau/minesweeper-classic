@@ -1,0 +1,329 @@
+@import "compass/reset";
+@import "compass/css3/images";
+@import "compass/css3/user-interface";
+$win-bg: #D4D0C8;
+$border-med: #808080;
+
+body {
+	background-color: #3A6EA5;
+	font-size: 11px;
+	font-family: "Tahoma", Arial, sans-serif;
+}
+
+.window * {
+	cursor: default;
+	@include user-select(none);
+}
+
+.window {
+	background-color: $win-bg;
+	border: 1px solid $win-bg;
+	border-right-color: #000;
+	border-bottom-color: #000;
+	margin: 50px;
+	width: 167px;
+	overflow: none;
+
+	.inner-window {
+		padding: 1px;
+		border: 1px solid #FFF;
+		border-right-color: $border-med;
+		border-bottom-color: $border-med;
+
+
+		.title-bar {
+			@include background-image(linear-gradient(to right, #000080, #A6CAF0));
+			height: 14px;
+			padding: 2px;
+			overflow: hidden;
+			margin-bottom: 1px;
+
+			.icon {
+				display: inline-block;
+				width: 16px;
+				height: 16px;
+				margin-right: 2px;
+				margin-top: -1px;
+				float: left;
+				background: image-url("ms-icon.png") 0 0 no-repeat;
+			}
+
+			.title {
+				display: inline-block;
+				color: #FFF;
+				font-weight: bold;
+				height: 16px;
+				float: left;
+				margin-top: 1px;
+			}
+
+			.btn-container {
+				float: right;
+
+				$wact-width: 13px;
+				$wact-height: 11px;
+
+				.btn {
+					display: inline-block;
+					border: 1px solid #FFF;
+					border-bottom-color: #000;
+					border-right-color: #000;
+					background-color: $win-bg;
+					height: 12px;
+					width: 14px;
+
+					.inner-btn {
+						border: 1px solid $border-med;
+						border-top: none;
+						border-left: none;
+						height: $wact-height;
+						width: $wact-width;
+
+						.btn-icon {
+							height: $wact-height;
+							width: $wact-width;
+							background: image-url("window_actions.gif") no-repeat 0 0;
+						}
+					}
+
+					.inner-btn.close .btn-icon {
+						background-position: ($wact-width * -2) 0;
+					}
+
+					.inner-btn.maximize .btn-icon {
+						background-position: ($wact-width * -1) 0;
+					}
+				}
+
+				.btn:not(.disabled):active {
+					border: 1px solid #000;
+					border-bottom-color: #FFF;
+					border-right-color: #FFF;
+					.inner-btn {
+						border-top: 1px solid $border-med;
+						border-left: 1px solid $border-med;
+						border-bottom: none;
+						border-right: none;
+					}
+				}
+
+				.btn.disabled {
+					.inner-btn.close .btn-icon {
+						background-position: ($wact-width * -2) ($wact-height * -1);
+					}
+
+					.inner-btn.maximize .btn-icon {
+						background-position: ($wact-width * -1) ($wact-height * -1);
+					}
+
+					.inner-btn.minimize .btn-icon {
+						background-position: 0 ($wact-height * -1);
+					}
+				}
+
+				.btn.x-btn {
+					margin-left: 2px;
+				}
+			}
+		}
+
+		.menu-bar {
+			overflow: hidden;
+
+			.menu-btn {
+				display: inline-block;
+				text-align: center;
+				height: 14px;
+				padding: 2px 5px 0 5px;
+				overflow: hidden;
+				border: 1px solid transparent;
+			}
+
+			.menu-btn:hover {
+				border: 1px solid #FFF;
+				border-right-color: $border-med;
+				border-bottom-color: $border-med;
+			}
+
+			.menu-btn.active, .menu-btn:active {
+				border: 1px solid $border-med;
+				border-right-color: #FFF;
+				border-bottom-color: #FFF;
+
+				.text {
+					display: inline-block;
+					margin: 1px -1px -1px 1px;
+				}
+			}
+		}
+
+		.minesweeper {
+			padding: 5px;
+			background-color: #c0c0c0;
+			border: 3px solid #FFF;
+			border-bottom: none;
+			border-right: none;
+
+			.ms-status {
+				height: 29px;
+				margin-bottom: 5px;
+				border: 2px solid $border-med;
+				border-right-color: #FFF;
+				border-bottom-color: #FFF;
+				padding: 4px 7px 0 5px;
+				overflow: hidden;
+				text-align: center;
+
+				.num-box {
+					height: 23px;
+					width: 39px;
+					background-color: #000;
+					border: 1px solid $border-med;
+					border-right-color: #FFF;
+					border-bottom-color: #FFF;
+					border-radius: 0 2px 0 2px;
+
+					.digit {
+						margin: 1px 1px 0;
+						background: image-url("digits.gif") #000 no-repeat;
+						width: 11px;
+						height: 21px;
+						float: left;
+					}
+
+					$digit-width: -11px;
+
+					.digit.d0 {
+						background-position: ($digit-width * 1) 0;
+					}
+
+					.digit.d1 {
+						background-position: ($digit-width * 2) 0;
+					}
+
+					.digit.d2 {
+						background-position: ($digit-width * 3) 0;
+					}
+
+					.digit.d3 {
+						background-position: ($digit-width * 4) 0;
+					}
+
+					.digit.d4 {
+						background-position: ($digit-width * 5) 0;
+					}
+
+					.digit.d5 {
+						background-position: ($digit-width * 6) 0;
+					}
+
+					.digit.d6 {
+						background-position: ($digit-width * 7) 0;
+					}
+
+					.digit.d7 {
+						background-position: ($digit-width * 8) 0;
+					}
+
+					.digit.d8 {
+						background-position: ($digit-width * 9) 0;
+					}
+
+					.digit.d9 {
+						background-position: ($digit-width * 10) 0;
+					}
+				}
+
+				.num-box.mines {
+					float: left;
+				}
+
+				.num-box.time {
+					float: right;
+				}
+
+				.smiley-btn {
+					display: inline-block;
+					width: 24px;
+					height: 24px;
+					border: 1px solid $border-med;
+					border-radius: 0 2px 0 2px;
+
+					.smiley-inner {
+						padding: 2px 1px 1px 2px;
+						border: 2px solid #FFF;
+						border-right-color: $border-med;
+						border-bottom-color: $border-med;
+
+						.smiley-icon {
+							height: 17px;
+							width: 17px;
+							background: transparent image-url("smileys.gif") no-repeat;
+						}
+
+						.smiley-icon.active {
+							background-position: (-17px * 1) 0;
+						}
+
+						.smiley-icon.dead {
+							background-position: (-17px * 2) 0;
+						}
+
+						.smiley-icon.cool {
+							background-position: (-17px * 3) 0;
+						}
+					}
+				}
+
+				.smiley-btn:active {
+
+					.smiley-inner {
+						height: 17px;
+						width: 17px;
+						padding: 4px 2px 2px 4px;
+						border: 1px solid $border-med;
+						border-right: none;
+						border-bottom: none;
+					}
+
+					.smiley-icon {
+						background-position: 0 0 !important;
+					}
+				}
+			}
+
+			.ms-grid {
+				border: 3px solid $border-med;
+				border-right-color: #FFF;
+				border-bottom-color: #FFF;
+				position: relative;
+
+				.ms-row {
+					margin-bottom: -1px;
+				}
+
+				.ms-panel {
+					display: inline-block;
+					background-color: #c0c0c0;
+					height: 12px;
+					width: 12px;
+					border: 2px solid #FFF;
+					border-right-color: $border-med;
+					border-bottom-color: $border-med;
+				}
+
+				.ms-panel:active, .ms-panel.triggered {
+					height: 15px;
+					width: 15px;
+					border: 1px solid $border-med;
+					border-right: none;
+					border-bottom: none;
+				}
+
+				.ms-panel.triggered {
+					background-color: transparent;
+				}
+			}
+		}
+	}
+}
