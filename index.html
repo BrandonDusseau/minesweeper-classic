@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<meta charset="utf-8" />
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/minesweeper.js"></script>
 	<title>Minesweeper</title>
 </head>
 <body>
-	<div class="window">
+	<div class="window" id="ms-main">
 		<div class="inner-window">
 			<div class="title-bar">
 				<span class="icon"></span>
-				<span class="title">Minesweeper</span>
 				<div class="btn-container">
 					<div class="btn">
 						<div class="inner-btn minimize">
@@ -29,130 +30,31 @@
 						</div>
 					</div>
 				</div>
+				<div class="title">Minesweeper</div>
 			</div>
 			<div class="menu-bar">
-				<div class="menu-btn"><span class="text">Game</span></div
-				><div class="menu-btn"><span class="text">Help</span></div>
+				<div class="menu-btn" id="menu-game"><span class="text">Game</span></div
+				><div class="menu-btn" id="menu-help"><span class="text">Help</span></div>
 			</div>
 			<div class="minesweeper">
 				<div class="ms-status">
-					<div class="num-box mines">
-						<div class="digit d0"></div>
-						<div class="digit d1"></div>
-						<div class="digit d0"></div>
+					<div class="num-box" id="mines">
+						<div class="digit iii"></div>
+						<div class="digit ii"></div>
+						<div class="digit i"></div>
 					</div>
 					<div class="smiley-btn">
 						<div class="smiley-inner">
 							<div class="smiley-icon"></div>
 						</div>
 					</div>
-					<div class="num-box time">
-						<div class="digit d0"></div>
-						<div class="digit d0"></div>
-						<div class="digit d0"></div>
+					<div class="num-box" id="time">
+						<div class="digit iii"></div>
+						<div class="digit ii"></div>
+						<div class="digit i"></div>
 					</div>
 				</div>
-				<div class="ms-grid">
-					<div class="ms-row">
-						<span class="ms-panel"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span>
-					</div>
-					<div class="ms-row">
-						<span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel"></span>
-					</div>
-					<div class="ms-row">
-						<span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel"></span>
-					</div>
-					<div class="ms-row">
-						<span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel triggered"></span
-						><span class="ms-panel"></span>
-					</div>
-					<div class="ms-row">
-						<span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span>
-					</div>
-					<div class="ms-row">
-						<span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span>
-					</div>
-					<div class="ms-row">
-						<span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span>
-					</div>
-					<div class="ms-row">
-						<span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span>
-					</div>
-					<div class="ms-row">
-						<span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span
-						><span class="ms-panel"></span>
-					</div>
-				</div>
+				<div class="ms-grid"></div>
 			</div>
 		</div>
 	</div>

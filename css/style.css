@@ -58,6 +58,7 @@ body {
   background-color: #3A6EA5;
   font-size: 11px;
   font-family: "Tahoma", Arial, sans-serif;
+  overflow: hidden;
 }
 
 .window * {
@@ -69,12 +70,12 @@ body {
 }
 
 .window {
+  display: none;
   background-color: #D4D0C8;
   border: 1px solid #D4D0C8;
   border-right-color: #000;
   border-bottom-color: #000;
   margin: 50px;
-  width: 167px;
   overflow: none;
 }
 .window .inner-window {
@@ -105,12 +106,13 @@ body {
   background: url('../img/ms-icon.png?1445995018') 0 0 no-repeat;
 }
 .window .inner-window .title-bar .title {
-  display: inline-block;
   color: #FFF;
   font-weight: bold;
   height: 16px;
-  float: left;
   margin-top: 1px;
+  white-space: no-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .window .inner-window .title-bar .btn-container {
   float: right;
@@ -253,10 +255,10 @@ body {
 .window .inner-window .minesweeper .ms-status .num-box .digit.d9 {
   background-position: -110px 0;
 }
-.window .inner-window .minesweeper .ms-status .num-box.mines {
+.window .inner-window .minesweeper .ms-status .num-box#mines {
   float: left;
 }
-.window .inner-window .minesweeper .ms-status .num-box.time {
+.window .inner-window .minesweeper .ms-status .num-box#time {
   float: right;
 }
 .window .inner-window .minesweeper .ms-status .smiley-btn {

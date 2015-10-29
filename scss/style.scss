@@ -8,6 +8,7 @@ body {
 	background-color: #3A6EA5;
 	font-size: 11px;
 	font-family: "Tahoma", Arial, sans-serif;
+	overflow: hidden;
 }
 
 .window * {
@@ -16,12 +17,12 @@ body {
 }
 
 .window {
+	display: none;
 	background-color: $win-bg;
 	border: 1px solid $win-bg;
 	border-right-color: #000;
 	border-bottom-color: #000;
 	margin: 50px;
-	width: 167px;
 	overflow: none;
 
 	.inner-window {
@@ -49,12 +50,13 @@ body {
 			}
 
 			.title {
-				display: inline-block;
 				color: #FFF;
 				font-weight: bold;
 				height: 16px;
-				float: left;
 				margin-top: 1px;
+				white-space: no-wrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
 			}
 
 			.btn-container {
@@ -234,11 +236,11 @@ body {
 					}
 				}
 
-				.num-box.mines {
+				.num-box#mines {
 					float: left;
 				}
 
-				.num-box.time {
+				.num-box#time {
 					float: right;
 				}
 
