@@ -306,7 +306,7 @@ body {
 					}
 
 					.smiley-icon {
-						background-position: 0 0 !important;
+						background-position: $smi-offset-x $smi-offset-y !important;
 					}
 				}
 			}
