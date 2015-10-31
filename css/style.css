@@ -220,7 +220,7 @@ body {
 }
 .window .inner-window .minesweeper .ms-status .num-box .digit {
   margin: 1px 1px 0;
-  background: url('../img/digits.gif?1446002438') #000 no-repeat;
+  background: url('../img/digits.gif?1446172111') #000 no-repeat;
   width: 11px;
   height: 21px;
   float: left;
@@ -254,6 +254,9 @@ body {
 }
 .window .inner-window .minesweeper .ms-status .num-box .digit.d9 {
   background-position: -110px 0;
+}
+.window .inner-window .minesweeper .ms-status .num-box .digit.dn {
+  background-position: -121px 0;
 }
 .window .inner-window .minesweeper .ms-status .num-box#mines {
   float: left;
@@ -317,7 +320,7 @@ body {
   border-right-color: #808080;
   border-bottom-color: #808080;
 }
-.window .inner-window .minesweeper .ms-grid .ms-panel:active, .window .inner-window .minesweeper .ms-grid .ms-panel.triggered {
+.window .inner-window .minesweeper .ms-grid .ms-panel.down, .window .inner-window .minesweeper .ms-grid .ms-panel.triggered {
   height: 15px;
   width: 15px;
   border: 1px solid #808080;
@@ -326,4 +329,61 @@ body {
 }
 .window .inner-window .minesweeper .ms-grid .ms-panel.triggered {
   background-color: transparent;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.flagged, .window .inner-window .minesweeper .ms-grid .ms-panel.marked, .window .inner-window .minesweeper .ms-grid .ms-panel.m1, .window .inner-window .minesweeper .ms-grid .ms-panel.m2,
+.window .inner-window .minesweeper .ms-grid .ms-panel.m3, .window .inner-window .minesweeper .ms-grid .ms-panel.m4, .window .inner-window .minesweeper .ms-grid .ms-panel.m5, .window .inner-window .minesweeper .ms-grid .ms-panel.m6, .window .inner-window .minesweeper .ms-grid .ms-panel.m7,
+.window .inner-window .minesweeper .ms-grid .ms-panel.m8, .window .inner-window .minesweeper .ms-grid .ms-panel.mine, .window .inner-window .minesweeper .ms-grid .ms-panel.bogus {
+  background-image: url('../img/tiles.gif?1446171812');
+  background-repeat: no-repeat;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.m1 {
+  background-position: 0 0;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.m2 {
+  background-position: -16px 0;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.m3 {
+  background-position: -32px 0;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.m4 {
+  background-position: -48px 0;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.m5 {
+  background-position: 0 -16px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.m6 {
+  background-position: -16px -16px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.m7 {
+  background-position: -32px -16px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.m8 {
+  background-position: -48px -16px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.marked {
+  background-position: 0 -48px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.flagged {
+  background-position: -16px -48px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.mine {
+  background-position: -32px -48px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.bogus {
+  background-position: -48px -48px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.marked.triggered {
+  background-position: 0 -32px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.flagged.triggered {
+  background-position: -16px -32px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.mine.triggered {
+  background-position: -32px -32px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.bogus.triggered {
+  background-position: -48px -32px;
+}
+.window .inner-window .minesweeper .ms-grid .ms-panel.exploded {
+  background-color: #F00;
 }
