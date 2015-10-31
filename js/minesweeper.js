@@ -305,8 +305,8 @@
 		{
 			for (var j = colMinBound; j <= colMaxBound; j++)
 			{
-				var tile = tiles[row][col];
 				// Trigger tile if it is a number or is not a mine or flagged
+				var tile = tiles[i][j];
 				if (tile.number > 0 || (!tile.isMine && !tile.flagged))
 				{
 					trigger(i, j);
@@ -725,7 +725,7 @@
 	 * @param boolean reduce Optional - reduces numbers instead
 	 * @return undefined
 	 */
-	function setNumbers(row, col, reduce)
+	function setNumbers(row, col, recalc)
 	{
 		// Do not allow checks outside the board
 		var rowMinBound = (row == 0) ? 0 : row - 1;
@@ -734,18 +734,26 @@
 		var colMaxBound = (col == boardWidth - 1) ? boardWidth - 1 : col + 1;
 
 		// Loop through up to nine tiles
+		var adjMines = 0;
 		for (var i = rowMinBound; i <= rowMaxBound; i++)
 		{
 			for (var j = colMinBound; j <= colMaxBound; j++)
 			{
-				// Ignore the central tile and any mines
-				if ((row == i && col == j) || isMine(i,j))
+				// If mine, add to the count of adjacent mines and then ignore the tile
+				if (isMine(i,j))
+				{
+					adjMines++;
+					continue;
+				}
+
+				// Ignore the central tile
+				if ((row == i && col == j))
 				{
 					continue;
 				}
 
 				// Increase or decrease the number on the adjacent tile
-				if (!reduce)
+				if (!recalc)
 				{
 					tiles[i][j].number++;
 				}
@@ -754,6 +762,13 @@
 					tiles[i][j].number--;
 				}
 			}
+		}
+
+		// If there is a mine within range, we need to add a number
+		// where the mine was removed
+		if (recalc)
+		{
+			tiles[row][col].number = adjMines;
 		}
 	}
 
