@@ -1,3 +1,13 @@
+/*
+ * Minesweeper Classic, a Microsoft Minesweeper clone for the browser
+ * Copyright (c) 2015 Brandon Dusseau
+ * Licensed with the MIT license; see LICENSE file for details
+ *
+ * Some graphical assets copyright (c) 1981-2007 Microsoft Corporation
+ *
+ * http://www.github.com/BrandonDusseau/minesweeper-classic
+ */
+
 (function () {
 	var timer       = null;  // Interval timer to handle clock
 	var time        = 0;     // Time elapsed in game
@@ -505,8 +515,8 @@
 	 */
 	function timeStart()
 	{
-		time = 0;
-		digitRender('time', 0);
+		time = 1;
+		digitRender('time', time);
 		timer = setInterval(function() {timeTick()}, 1000);
 	};
 

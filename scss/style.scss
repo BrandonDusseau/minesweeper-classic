@@ -4,11 +4,30 @@
 $win-bg: #D4D0C8;
 $border-med: #808080;
 
+/* Sprite map offsets */
+$digit-offset-x: 0;
+$digit-offset-y: 0;
+$digit-suboffset-x: -11px;
+$tile-offset-x: 0;
+$tile-offset-y: -21px;
+$wa-offset-x: -64px;
+$wa-offset-y: -21px;
+$wa-suboffset-x: -13px;
+$wa-suboffset-y: -11px;
+$icnsm-offset-x: -103px;
+$icnsm-offset-y: -21px;
+$icnlg-offset-x: -64px;
+$icnlg-offset-y: -60px;
+$smi-offset-x: -64px;
+$smi-offset-y: -43px;
+$smi-suboffset: -17px;
+
 body {
 	background-color: #3A6EA5;
 	font-size: 11px;
 	font-family: "Tahoma", Arial, sans-serif;
 	overflow: hidden;
+	position: relative;
 }
 
 .window * {
@@ -22,15 +41,14 @@ body {
 	border: 1px solid $win-bg;
 	border-right-color: #000;
 	border-bottom-color: #000;
-	margin: 50px;
 	overflow: none;
+	position: relative;
 
 	.inner-window {
 		padding: 1px;
 		border: 1px solid #FFF;
 		border-right-color: $border-med;
 		border-bottom-color: $border-med;
-
 
 		.title-bar {
 			@include background-image(linear-gradient(to right, #000080, #A6CAF0));
@@ -46,7 +64,7 @@ body {
 				margin-right: 2px;
 				margin-top: -1px;
 				float: left;
-				background: image-url("ms-icon.png") 0 0 no-repeat;
+				background: image-url("sprite.gif", false, false) $icnsm-offset-x $icnsm-offset-y no-repeat;
 			}
 
 			.title {
@@ -62,9 +80,6 @@ body {
 			.btn-container {
 				float: right;
 
-				$wact-width: 13px;
-				$wact-height: 11px;
-
 				.btn {
 					display: inline-block;
 					border: 1px solid #FFF;
@@ -78,22 +93,22 @@ body {
 						border: 1px solid $border-med;
 						border-top: none;
 						border-left: none;
-						height: $wact-height;
-						width: $wact-width;
+						height: $wa-suboffset-y * -1;
+						width: $wa-suboffset-x * -1;
 
 						.btn-icon {
-							height: $wact-height;
-							width: $wact-width;
-							background: image-url("window_actions.gif") no-repeat 0 0;
+							height: $wa-suboffset-y * -1;
+							width: $wa-suboffset-x * -1;
+							background: image-url("sprite.gif", false, false) no-repeat $wa-offset-x $wa-offset-y;
 						}
 					}
 
 					.inner-btn.close .btn-icon {
-						background-position: ($wact-width * -2) 0;
+						background-position: ($wa-offset-x + ($wa-suboffset-x * 2)) $wa-offset-y;
 					}
 
 					.inner-btn.maximize .btn-icon {
-						background-position: ($wact-width * -1) 0;
+						background-position: ($wa-offset-x + ($wa-suboffset-x * 1)) $wa-offset-y;
 					}
 				}
 
@@ -111,15 +126,15 @@ body {
 
 				.btn.disabled {
 					.inner-btn.close .btn-icon {
-						background-position: ($wact-width * -2) ($wact-height * -1);
+						background-position: ($wa-offset-x + ($wa-suboffset-x * 2)) ($wa-offset-y + $wa-suboffset-y);
 					}
 
 					.inner-btn.maximize .btn-icon {
-						background-position: ($wact-width * -1) ($wact-height * -1);
+						background-position: ($wa-offset-x + ($wa-suboffset-x * 1)) ($wa-offset-y + $wa-suboffset-y);
 					}
 
 					.inner-btn.minimize .btn-icon {
-						background-position: 0 ($wact-height * -1);
+						background-position: $wa-offset-x ($wa-offset-y + $wa-suboffset-y);
 					}
 				}
 
@@ -187,56 +202,54 @@ body {
 
 					.digit {
 						margin: 1px 1px 0;
-						background: image-url("digits.gif") #000 no-repeat;
+						background: image-url("sprite.gif", false, false) $digit-offset-x $digit-offset-y #000 no-repeat;
 						width: 11px;
 						height: 21px;
 						float: left;
 					}
 
-					$digit-width: -11px;
-
 					.digit.d0 {
-						background-position: ($digit-width * 1) 0;
+						background-position: ($digit-offset-x + $digit-suboffset-x) $digit-offset-y;
 					}
 
 					.digit.d1 {
-						background-position: ($digit-width * 2) 0;
+						background-position: ($digit-offset-x + ($digit-suboffset-x * 2)) $digit-offset-y;
 					}
 
 					.digit.d2 {
-						background-position: ($digit-width * 3) 0;
+						background-position: ($digit-offset-x + ($digit-suboffset-x * 3)) $digit-offset-y;
 					}
 
 					.digit.d3 {
-						background-position: ($digit-width * 4) 0;
+						background-position: ($digit-offset-x + ($digit-suboffset-x * 4)) $digit-offset-y;
 					}
 
 					.digit.d4 {
-						background-position: ($digit-width * 5) 0;
+						background-position: ($digit-offset-x + ($digit-suboffset-x * 5)) $digit-offset-y;
 					}
 
 					.digit.d5 {
-						background-position: ($digit-width * 6) 0;
+						background-position: ($digit-offset-x + ($digit-suboffset-x * 6)) $digit-offset-y;
 					}
 
 					.digit.d6 {
-						background-position: ($digit-width * 7) 0;
+						background-position: ($digit-offset-x + ($digit-suboffset-x * 7)) $digit-offset-y;
 					}
 
 					.digit.d7 {
-						background-position: ($digit-width * 8) 0;
+						background-position: ($digit-offset-x + ($digit-suboffset-x * 8)) $digit-offset-y;
 					}
 
 					.digit.d8 {
-						background-position: ($digit-width * 9) 0;
+						background-position: ($digit-offset-x + ($digit-suboffset-x * 9)) $digit-offset-y;
 					}
 
 					.digit.d9 {
-						background-position: ($digit-width * 10) 0;
+						background-position: ($digit-offset-x + ($digit-suboffset-x * 10)) $digit-offset-y;
 					}
 
 					.digit.dn {
-						background-position: ($digit-width * 11) 0;
+						background-position: ($digit-offset-x + ($digit-suboffset-x * 11)) $digit-offset-y;
 					}
 				}
 
@@ -264,19 +277,19 @@ body {
 						.smiley-icon {
 							height: 17px;
 							width: 17px;
-							background: transparent image-url("smileys.gif") no-repeat;
+							background: transparent image-url("sprite.gif", false, false) $smi-offset-x $smi-offset-y no-repeat;
 						}
 
 						.smiley-icon.active {
-							background-position: (-17px * 1) 0;
+							background-position: ($smi-offset-x + $smi-suboffset) $smi-offset-y;
 						}
 
 						.smiley-icon.dead {
-							background-position: (-17px * 2) 0;
+							background-position: ($smi-offset-x + ($smi-suboffset * 2)) $smi-offset-y;
 						}
 
 						.smiley-icon.cool {
-							background-position: (-17px * 3) 0;
+							background-position: ($smi-offset-x + ($smi-suboffset * 3)) $smi-offset-y;
 						}
 					}
 				}
@@ -333,7 +346,7 @@ body {
 				.ms-panel.flagged, .ms-panel.marked, .ms-panel.m1, .ms-panel.m2,
 				.ms-panel.m3, .ms-panel.m4, .ms-panel.m5, .ms-panel.m6, .ms-panel.m7,
 				.ms-panel.m8, .ms-panel.mine, .ms-panel.bogus {
-					background-image: image-url("tiles.gif");
+					background-image: image-url("tiles.gif", false, false);
 					background-repeat: no-repeat;
 				}
 
@@ -407,4 +420,9 @@ body {
 			}
 		}
 	}
+}
+
+.window#ms-main {
+	top: 30px;
+	left: 30px;
 }
