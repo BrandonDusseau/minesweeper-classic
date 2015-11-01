@@ -10,6 +10,7 @@ $digit-offset-y: 0;
 $digit-suboffset-x: -11px;
 $tile-offset-x: 0;
 $tile-offset-y: -21px;
+$tile-suboffset: -16px;
 $wa-offset-x: -64px;
 $wa-offset-y: -21px;
 $wa-suboffset-x: -13px;
@@ -21,6 +22,10 @@ $icnlg-offset-y: -60px;
 $smi-offset-x: -64px;
 $smi-offset-y: -43px;
 $smi-suboffset: -17px;
+
+* html body, html, body {
+	height: 100%;
+}
 
 body {
 	background-color: #3A6EA5;
@@ -346,72 +351,72 @@ body {
 				.ms-panel.flagged, .ms-panel.marked, .ms-panel.m1, .ms-panel.m2,
 				.ms-panel.m3, .ms-panel.m4, .ms-panel.m5, .ms-panel.m6, .ms-panel.m7,
 				.ms-panel.m8, .ms-panel.mine, .ms-panel.bogus {
-					background-image: image-url("tiles.gif", false, false);
+					background-image: image-url("sprite.gif", false, false);
 					background-repeat: no-repeat;
 				}
 
 				.ms-panel.m1 {
-					background-position: 0 0;
+					background-position: $tile-offset-x $tile-offset-y;
 				}
 
 				.ms-panel.m2 {
-					background-position: -16px 0;
+					background-position: ($tile-offset-x + $tile-suboffset) $tile-offset-y;
 				}
 
 				.ms-panel.m3 {
-					background-position: -32px 0;
+					background-position: ($tile-offset-x + ($tile-suboffset * 2)) $tile-offset-y;
 				}
 
 				.ms-panel.m4 {
-					background-position: -48px 0;
+					background-position: ($tile-offset-x + ($tile-suboffset * 3)) $tile-offset-y;
 				}
 
 				.ms-panel.m5 {
-					background-position: 0 -16px;
+					background-position: $tile-offset-x ($tile-offset-y + $tile-suboffset);
 				}
 
 				.ms-panel.m6 {
-					background-position: -16px -16px;
+					background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + $tile-suboffset);
 				}
 
 				.ms-panel.m7 {
-					background-position: -32px -16px;
+					background-position: ($tile-offset-x + ($tile-suboffset * 2)) ($tile-offset-y + $tile-suboffset);
 				}
 
 				.ms-panel.m8 {
-					background-position: -48px -16px;
+					background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + $tile-suboffset);
 				}
 
 				.ms-panel.marked {
-					background-position: 0 -48px;
+					background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 3));
 				}
 
 				.ms-panel.flagged {
-					background-position: -16px -48px;
+					background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + ($tile-suboffset * 3));
 				}
 
 				.ms-panel.mine {
-					background-position: -32px -48px;
+					background-position: ($tile-offset-x + ($tile-suboffset * 2)) ($tile-offset-y + ($tile-suboffset * 3));
 				}
 
 				.ms-panel.bogus {
-					background-position: -48px -48px;
+					background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + ($tile-suboffset * 3));
 				}
 
 				.ms-panel.marked.triggered {
-					background-position: 0 -32px;
+					background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 2));
 				}
 
 				.ms-panel.flagged.triggered {
-					background-position: -16px -32px;
+					background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + ($tile-suboffset * 2));
 				}
 
 				.ms-panel.mine.triggered {
-					background-position: -32px -32px;
+					background-position: ($tile-offset-x + ($tile-suboffset * 2)) ($tile-offset-y + ($tile-suboffset * 2));
 				}
 
 				.ms-panel.bogus.triggered {
-					background-position: -48px -32px;
+					background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + ($tile-suboffset * 2));
 				}
 
 				.ms-panel.exploded {

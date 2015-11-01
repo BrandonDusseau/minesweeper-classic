@@ -21,6 +21,7 @@
 	var boardHeight = 0;     // Number of tiles down the board
 	var tiles       = null;  // Array of game tiles ([row][column])
 	var tilesLeft   = 0;     // Number of uncovered tiles left, excluding mines
+	var tileActive  = false; // Whether the mouse button was pressed down on a tile
 
 	var debugdiff = 0;
 
@@ -38,58 +39,22 @@
 
 	// When the page has loaded, initialize the game
 	$(document).ready(function () {
-		initGame(0);
-	});
-
-	/**
-	 * Binds events to elements on the page
-	 * This must happen every time the game is initialized to ensure bindings don't get lost
-	 * @return undefined
-	 */
-	function rebindEvents()
-	{
-		// Block context menu on windows
-		$(".window *").off('contextmenu').on('contextmenu', function(e) {
-			e.preventDefault();
-
-			// Forward the event to the click handler
-			var target = $(this);
-			handlePanelClick(target, e);
+		// Handle global mouseup
+		$("body").on('mouseup', function (e) {
+			if (!gameOver)
+			{
+				// Set smiley back to :)
+				$(".smiley-icon").removeClass('active');
+				tileActive = false;
+			}
 		});
 
-		// Handle mousedown on a mine panel
-		$(".ms-panel").off('mousedown').on('mousedown', function (e) {
-			// Left mouse button when game has not ended and panel is not triggered
-			if (e.which == 1 && !gameOver && !$(this).hasClass("triggered") && !$(this).hasClass("flagged"))
+		$(".minesweeper").off('mousedown').on('mousedown', function (e) {
+			if (!gameOver && e.which == 1)
 			{
-				// Apply the down action
-				$(this).addClass("down");
-
 				// Set smiley icon to 8O face
 				$(".smiley-icon").addClass('active');
 			}
-		});
-
-		// Handle mouseup on a mine panel
-		$(".ms-panel").off('mouseup').on('mouseup', function (e) {
-			// Left mouse button when game has not ended and panel is not triggered
-			if (e.which == 1 && !$(this).hasClass("triggered"))
-			{
-				// Remove the down class
-				$(this).removeClass("down");
-
-				if (!gameOver)
-				{
-					// Set smiley back to :)
-					$(".smiley-icon").removeClass('active');
-				}
-			}
-		});
-
-		// Handle click on mine panel
-		$(".ms-panel").off('click').on('click', function(e) {
-			var target = $(this);
-			handlePanelClick(target, e);
 		});
 
 		// Game menu click
@@ -101,6 +66,70 @@
 		$(".smiley-btn").off('click').on('click', function(e) {
 			// Reset the game at the current difficulty
 			initGame(difficulty);
+		});
+
+		initGame(0);
+	});
+
+	/**
+	 * Binds events to elements which might be regenerated
+	 * This must happen every time the game is initialized to ensure bindings don't get lost
+	 * @return undefined
+	 */
+	function rebindEvents()
+	{
+		// Block context menu on windows
+		$(".window *").off('contextmenu').on('contextmenu', function(e) {
+			e.preventDefault();
+		});
+
+		// Handle mousedown on a mine panel
+		$(".ms-panel").off('mousedown').on('mousedown', function (e) {
+			// Left mouse button when game has not ended and panel is not triggered
+			if (e.which == 1 && !gameOver)
+			{
+				tileActive = true;
+			}
+			else if (e.which == 3 && !gameOver)
+			{
+				// Forward the event to the click handler
+				var target = $(this);
+				handlePanelClick(target, e);
+			}
+		});
+
+		// Handle mouseenter on a mine panel (if the mouse button was clicked)
+		$(".ms-panel").off('mousenter').on('mouseenter', function (e) {
+			if (tileActive && !$(this).hasClass("flagged"))
+			{
+				// Apply the down action
+				$(this).addClass("down");
+			}
+		});
+
+		// Handle mouseup on a mine panel
+		$(".ms-panel").off('mouseleave').on('mouseleave', function (e) {
+			// Left mouse button when game has not ended and panel is not triggered
+			if (e.which == 1 && !$(this).hasClass("triggered"))
+			{
+				// Remove the down class
+				$(this).removeClass("down");
+			}
+		});
+
+		// Handle mouseup on mine panel
+		$(".ms-panel").off('mouseup').on('mouseup', function(e) {
+			if (tileActive && !gameOver)
+			{
+				// If game hasn't started yet, start it!
+				if (gameWaiting)
+				{
+					startGame();
+				}
+
+				var target = $(this);
+				handlePanelClick(target, e);
+			}
 		});
 	}
 
@@ -128,10 +157,17 @@
 		// Left click
 		if (ev.which == 1)
 		{
-			// If the game hasn't ended, trigger the tile
-			if (!gameOver && !isTriggered(row, col))
+			// Set smiley back to :)
+			$(".smiley-icon").removeClass('active');
+			tileActive = false;
+
+			// Only handle left clicks if the game hasn't ended
+			if (!gameOver)
 			{
-				trigger(row, col);
+				if (!isTriggered(row, col))
+				{
+					trigger(row, col);
+				}
 			}
 		}
 		// Right click
@@ -249,12 +285,6 @@
 		// Mark the tile as triggered
 		tile.triggered = true;
 
-		// If game hasn't started yet, start it!
-		if (gameWaiting)
-		{
-			startGame();
-		}
-
 		// Save the tile
 		tiles[row][col] = tile;
 
@@ -279,9 +309,6 @@
 
 		// Rerender the tile
 		rerender(row, col);
-
-		// Mark the game as active
-		gameWaiting = false;
 
 		// If tile is clear, cascade to nearby tiles
 		if (tile.number == 0 && !tile.isMine && !tile.flagged)
@@ -810,6 +837,7 @@
 	{
 		if (gameWaiting)
 		{
+			gameWaiting = false;
 			gameOver = false;
 			timeStart();
 		}
@@ -822,11 +850,8 @@
 	function endGame()
 	{
 		// If the game is active, stop the running timer
-		if (isGameRunning())
-		{
 			gameOver = true;
 			timeStop();
-		}
 	}
 
 	/**

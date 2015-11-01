@@ -45,7 +45,7 @@
 		});
 
 		// Disable dragging no matter where the cursor is
-		$('body').off('mouseup').on('mouseup', function(e) {
+		$('body').on('mouseup', function(e) {
 			// Only try to disable dragging if a window is being dragged
 			if (winMove)
 			{
