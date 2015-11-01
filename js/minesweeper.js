@@ -11,7 +11,8 @@
 (function () {
 	var timer       = null;  // Interval timer to handle clock
 	var time        = 0;     // Time elapsed in game
-	var gameWaiting = true;  // Whether game is waiting for the first move
+	var gameWaiting = true;  // Whether game is waiting to start
+	var noMoves     = true;  // Whether no moves have been made yet
 	var gameOver    = false; // Whether the game has ended (win or explode)
 	var exploded    = false; // Whether the user has lost the game in a fiery explosion
 	var minesLeft   = 0;     // Number of mines unflagged. from the user perspective
@@ -289,7 +290,7 @@
 		tiles[row][col] = tile;
 
 		// Mine explodes if triggered during game
-		if (!gameWaiting && tile.isMine)
+		if (!noMoves && tile.isMine)
 		{
 			explode(row, col);
 
@@ -297,7 +298,7 @@
 			return;
 		}
 		// Mine must be relocated if this is the first click
-		else if (gameWaiting && tile.isMine)
+		else if (noMoves && tile.isMine)
 		{
 			// Disable this mine and recalculate the numbers around it
 			tiles[row][col].isMine = false;
@@ -321,6 +322,8 @@
 		{
 			winGame();
 		}
+
+		noMoves = false;
 	}
 
 	/**
@@ -642,6 +645,7 @@
 		endGame();
 		gameWaiting = true;
 		gameOver = false;
+		noMoves = true;
 
 		// Set up defaults based on difficulty level, unless using a custom setting
 		var defaults = {
