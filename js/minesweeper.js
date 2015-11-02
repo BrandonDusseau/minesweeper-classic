@@ -23,6 +23,13 @@
 	var tiles       = null;  // Array of game tiles ([row][column])
 	var tilesLeft   = 0;     // Number of uncovered tiles left, excluding mines
 	var tileActive  = false; // Whether the mouse button was pressed down on a tile
+	var allowMarks  = true;  // Whether ? tiles are allowed
+	var allowSound  = false; // Whether sound plays on certain events
+
+	// Intialize audio
+	var sndWin     = new Audio('snd/win.ogg');
+	var sndExplode = new Audio('snd/explode.ogg');
+	var sndTick    = new Audio('snd/boop.ogg');
 
 	/**
 	 * Tile object
@@ -119,6 +126,27 @@
 			$("#game_exp").removeClass("checked");
 		});
 
+		// Enable/disabled mark tile menu option
+		$("#game_mrk:not(.disabled)").on('click', function(e) {
+			allowMarks = !allowMarks;
+
+			$("#game_mrk").removeClass("checked");
+			if (allowMarks)
+			{
+				$("#game_mrk").addClass("checked");
+			}
+		});
+
+		// Enable/disabled sound
+		$("#game_snd:not(.disabled)").on('click', function(e) {
+			allowSound = !allowSound;
+
+			$("#game_snd").removeClass("checked");
+			if (allowSound)
+			{
+				$("#game_snd").addClass("checked");
+			}
+		});
 
 		initGame(0);
 	});
@@ -234,15 +262,22 @@
 					flag(row, col);
 					subMine();
 				}
-				// If tile is flagged, mark it instead
-				else if (isFlagged(row, col))
+				// If tile is flagged and it is allowed, mark the tile
+				else if (allowMarks && isFlagged(row, col))
 				{
+					// Mark the tile and restore a mine to the counter
 					mark(row, col);
 					addMine();
 				}
 				// Tile must be marked, so clear it
 				else
 				{
+					// If marks aren't allowed, add back the mine value here instead
+					if (!allowMarks)
+					{
+						addMine();
+					}
+
 					clear(row, col);
 				}
 			}
@@ -436,6 +471,12 @@
 		tile.exploded = true;
 		tiles[i][j] = tile;
 
+		// Play explosion sound, if enabled
+		if (allowSound)
+		{
+			sndExplode.play();
+		}
+
 		// End the game!
 		endGame();
 
@@ -596,8 +637,7 @@
 	 */
 	function timeStart()
 	{
-		time = 1;
-		digitRender('time', time);
+		timeTick();
 		timer = setInterval(function() {timeTick()}, 1000);
 	};
 
@@ -621,6 +661,12 @@
 		{
 			time++;
 			digitRender('time', time);
+
+			// Play tick sound, if enabled
+			if (allowSound)
+			{
+				sndTick.play();
+			}
 		}
 	}
 
@@ -917,6 +963,14 @@
 	{
 		// Smiley is very happy B)
 		$(".smiley-icon").addClass('cool');
+
+		// Play win sound, if enabled
+		if (allowSound)
+		{
+			sndWin.play();
+		}
+
+		// Game over!
 		endGame();
 	}
 })();
