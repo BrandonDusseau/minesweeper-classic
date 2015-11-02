@@ -1,6 +1,9 @@
 @import "compass/reset";
 @import "compass/css3/images";
 @import "compass/css3/user-interface";
+@import "compass/css3/text-shadow";
+
+/* Common colors */
 $win-bg: #D4D0C8;
 $border-med: #808080;
 
@@ -17,6 +20,9 @@ $wa-suboffset-x: -13px;
 $wa-suboffset-y: -11px;
 $icnsm-offset-x: -103px;
 $icnsm-offset-y: -21px;
+$chkmk-offset-x: -96px;
+$chkmk-offset-y: -60px;
+$chkmk-suboffset-y: -13px;
 $icnlg-offset-x: -64px;
 $icnlg-offset-y: -60px;
 $smi-offset-x: -64px;
@@ -56,7 +62,7 @@ body {
 		border-bottom-color: $border-med;
 
 		.title-bar {
-			@include background-image(linear-gradient(to right, #000080, #A6CAF0));
+			@include background-image(linear-gradient(to right, #808080, #C0C0C0));
 			height: 14px;
 			padding: 2px;
 			overflow: hidden;
@@ -73,7 +79,7 @@ body {
 			}
 
 			.title {
-				color: #FFF;
+				color: #D4D0C8;
 				font-weight: bold;
 				height: 16px;
 				margin-top: 1px;
@@ -150,15 +156,17 @@ body {
 		}
 
 		.menu-bar {
-			overflow: hidden;
+			color: $border-med;
+			margin-bottom: 1px;
+			position: relative;
 
 			.menu-btn {
 				display: inline-block;
 				text-align: center;
 				height: 14px;
 				padding: 2px 5px 0 5px;
-				overflow: hidden;
 				border: 1px solid transparent;
+				overflow: hidden;
 			}
 
 			.menu-btn:hover {
@@ -175,6 +183,81 @@ body {
 				.text {
 					display: inline-block;
 					margin: 1px -1px -1px 1px;
+				}
+			}
+
+			.menu {
+				text-align: left;
+				display: none;
+				position: absolute;
+				background-color: $win-bg;
+				border: 1px solid $win-bg;
+				border-right-color: #404040;
+				border-bottom-color: #404040;
+				z-index: 1000;
+				float: left;
+
+				.menu-inner {
+					border: 1px solid #FFF;
+					border-right-color: $border-med;
+					border-bottom-color: $border-med;
+					padding: 1px;
+
+					.menu-item {
+						padding: 3px 41px 3px 16px;
+						overflow: hidden;
+						height: 11px;
+						position: relative;
+
+						.menu-text {
+							margin-top: -1px;
+							white-space: nowrap;
+							overflow: hidden;
+						}
+
+						.shortcut {
+							width: 30px;
+							position: absolute;
+							top: 2px;
+							right: 0;
+							float: right;
+						}
+					}
+
+					.menu-item.disabled {
+						color: $border-med;
+					}
+
+					.menu-item.disabled:not(.selected) {
+						@include single-text-shadow(1px, 1px, 0px, 0px, #FFF);
+					}
+
+					.menu-item.selected:not(.disabled) {
+						color: #FFF;
+					}
+
+					.menu-item.selected {
+						background-color: #0A246A;
+					}
+
+					.menu-item.checked {
+						background-image: image-url("sprite.gif", false, false);
+						background-repeat: no-repeat;
+						background-position: $chkmk-offset-x $chkmk-offset-y;
+					}
+
+					.menu-item.selected.checked:not(.disabled) {
+						background-position: $chkmk-offset-x ($chkmk-offset-y + $chkmk-suboffset-y);
+					}
+
+					.separator-item {
+						padding: 3px 0 4px;
+
+						.separator {
+							border-top: 1px solid $border-med;
+							border-bottom: 1px solid #FFF;
+						}
+					}
 				}
 			}
 		}
@@ -427,7 +510,21 @@ body {
 	}
 }
 
-.window#ms-main {
+.window.focused {
+	.title-bar {
+		@include background-image(linear-gradient(to right, #000080, #A6CAF0));
+
+		.title {
+			color: #FFF;
+		}
+	}
+
+	.menu-bar {
+		color: #000 !important;
+	}
+}
+
+#ms-main {
 	top: 30px;
 	left: 30px;
 }

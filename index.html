@@ -5,17 +5,17 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<script type="text/javascript" src="js/jquery.min.js"></script>
-	<script type="text/javascript" src="js/window.js"></script>
-	<script type="text/javascript" src="js/minesweeper.js"></script>
+	<script type="text/javascript" src="js/window.min.js"></script>
+	<script type="text/javascript" src="js/minesweeper.min.js"></script>
 	<title>Minesweeper</title>
 </head>
 <body>
-	<div class="window" id="ms-main">
+	<div class="window focused" id="ms-main">
 		<div class="inner-window">
 			<div class="title-bar">
 				<span class="icon"></span>
 				<div class="btn-container">
-					<div class="btn">
+					<div class="btn disabled">
 						<div class="inner-btn minimize">
 							<div class="btn-icon"></div>
 						</div>
@@ -25,7 +25,7 @@
 							<div class="btn-icon"></div>
 						</div>
 					</div
-					><div class="btn x-btn">
+					><div class="btn x-btn disabled">
 						<div class="inner-btn close">
 							<div class="btn-icon"></div>
 						</div>
@@ -34,8 +34,44 @@
 				<div class="title">Minesweeper</div>
 			</div>
 			<div class="menu-bar">
-				<div class="menu-btn" id="menu-game"><span class="text">Game</span></div
-				><div class="menu-btn" id="menu-help"><span class="text">Help</span></div>
+				<div class="menu-btn" id="game">
+					<span class="text">Game</span>
+				</div><div class="menu-btn" id="help">
+					<span class="text">Help</span>
+				</div>
+				<div class="menu" id="mnu_game">
+					<div class="menu-inner">
+						<div class="menu-item">
+							<div class="menu-text" id="game_new">New</div>
+							<div class="shortcut">F2</div>
+						</div>
+						<div class="separator-item"><div class="separator"></div></div>
+						<div class="menu-item checked" id="game_beg"><div class="menu-text">Beginner</div></div>
+						<div class="menu-item" id="game_int"><div class="menu-text">Intermediate</div></div>
+						<div class="menu-item" id="game_exp"><div class="menu-text">Expert</div></div>
+						<div class="menu-item disabled" id="game_cst"><div class="menu-text">Custom...</div></div>
+						<div class="separator-item"><div class="separator"></div></div>
+						<div class="menu-item disabled" id="game_clr"><div class="menu-text">Marks (?)</div></div>
+						<div class="menu-item disabled" id="game_clr"><div class="menu-text">Color</div></div>
+						<div class="menu-item disabled" id="game_snd"><div class="menu-text">Sound</div></div>
+						<div class="separator-item"><div class="separator"></div></div>
+						<div class="menu-item disabled" id="game_ldr"><div class="menu-text">Best Times...</div></div>
+						<div class="separator-item"><div class="separator"></div></div>
+						<div class="menu-item disabled"><div class="menu-text">Exit</div></div>
+					</div>
+				</div>
+				<div class="menu" id="mnu_help">
+					<div class="menu-inner">
+						<div class="menu-item disabled">
+							<div class="menu-text" id="help_cnt">Contents</div>
+							<div class="shortcut">F1</div>
+						</div>
+						<div class="menu-item disabled"><div class="menu-text">Search for Help on...</div></div>
+						<div class="menu-item disabled"><div class="menu-text">Using Help</div></div>
+						<div class="separator-item"><div class="separator"></div></div>
+						<div class="menu-item disabled" id="help_abt"><div class="menu-text">About Minesweeper...</div></div>
+					</div>
+				</div>
 			</div>
 			<div class="minesweeper">
 				<div class="ms-status">

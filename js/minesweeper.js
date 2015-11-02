@@ -24,8 +24,6 @@
 	var tilesLeft   = 0;     // Number of uncovered tiles left, excluding mines
 	var tileActive  = false; // Whether the mouse button was pressed down on a tile
 
-	var debugdiff = 0;
-
 	/**
 	 * Tile object
 	 */
@@ -50,6 +48,26 @@
 			}
 		});
 
+		// Bind keys
+		$("body").on('keydown', function (e) {
+			// Bind keys to Minesweeper window
+			if ($(".window#ms-main").hasClass('focused'))
+			{
+				// F2 - new game
+				if (e.which == 113)
+				{
+					e.preventDefault();
+					initGame(difficulty);
+				}
+				else if (e.which == 112)
+				{
+					e.preventDefault();
+					// TODO
+				}
+			}
+		});
+
+		// Any click in the minesweeper space will trigger the active face
 		$(".minesweeper").off('mousedown').on('mousedown', function (e) {
 			if (!gameOver && e.which == 1)
 			{
@@ -58,16 +76,49 @@
 			}
 		});
 
-		// Game menu click
-		$("#menu-game").off('click').on('click', function(e) {
-			initGame(++debugdiff % 3);
-		});
-
 		// Smiley button click
 		$(".smiley-btn").off('click').on('click', function(e) {
 			// Reset the game at the current difficulty
 			initGame(difficulty);
 		});
+
+		// New game menu option
+		$("#game_new").on('click', function(e) {
+			initGame(difficulty);
+		});
+
+		// Beginner menu option
+		$("#game_beg:not(.disabled)").on('click', function(e) {
+			initGame(0);
+			$("#game_beg").addClass("checked");
+			$("#game_int").removeClass("checked");
+			$("#game_exp").removeClass("checked");
+		});
+
+		// Intermediate menu option
+		$("#game_int:not(.disabled)").on('click', function(e) {
+			initGame(1);
+			$("#game_beg").removeClass("checked");
+			$("#game_int").addClass("checked");
+			$("#game_exp").removeClass("checked");
+		});
+
+		// Expert menu option
+		$("#game_exp:not(.disabled)").on('click', function(e) {
+			initGame(2);
+			$("#game_beg").removeClass("checked");
+			$("#game_int").removeClass("checked");
+			$("#game_exp").addClass("checked");
+		});
+
+		// Custom menu option
+		$("#game_cst:not(.disabled)").on('click', function(e) {
+			initGame(0);
+			$("#game_beg").addClass("checked");
+			$("#game_int").removeClass("checked");
+			$("#game_exp").removeClass("checked");
+		});
+
 
 		initGame(0);
 	});
