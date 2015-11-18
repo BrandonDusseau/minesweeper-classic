@@ -23,13 +23,9 @@
 	var tiles       = null;  // Array of game tiles ([row][column])
 	var tilesLeft   = 0;     // Number of uncovered tiles left, excluding mines
 	var tileActive  = false; // Whether the mouse button was pressed down on a tile
+	var groupActive = false; // Whether the middle button was pressed down on a tile
 	var allowMarks  = true;  // Whether ? tiles are allowed
 	var allowSound  = false; // Whether sound plays on certain events
-
-	// Intialize audio
-	var sndWin     = new Audio('snd/win.ogg');
-	var sndExplode = new Audio('snd/explode.ogg');
-	var sndTick    = new Audio('snd/boop.ogg');
 
 	/**
 	 * Tile object
@@ -47,12 +43,15 @@
 	$(document).ready(function () {
 		// Handle global mouseup
 		$("body").on('mouseup', function (e) {
-			if (!gameOver)
-			{
-				// Set smiley back to :)
-				$(".smiley-icon").removeClass('active');
-				tileActive = false;
-			}
+			// Set smiley back to :)
+			$(".smiley-icon").removeClass('active');
+
+			// Reset mousedown triggers
+			tileActive = false;
+			groupActive = false;
+
+			// If middle mouse is down, raise all down tiles
+			$(".ms-panel.down").removeClass("down");
 		});
 
 		// Bind keys
@@ -76,7 +75,7 @@
 
 		// Any click in the minesweeper space will trigger the active face
 		$(".minesweeper").off('mousedown').on('mousedown', function (e) {
-			if (!gameOver && e.which == 1)
+			if (!gameOver && (e.which == 1 || e.which == 2))
 			{
 				// Set smiley icon to 8O face
 				$(".smiley-icon").addClass('active');
@@ -166,15 +165,26 @@
 		// Handle mousedown on a mine panel
 		$(".ms-panel").off('mousedown').on('mousedown', function (e) {
 			// Left mouse button when game has not ended and panel is not triggered
-			if (e.which == 1 && !gameOver)
+			if (!gameOver)
 			{
-				tileActive = true;
-			}
-			else if (e.which == 3 && !gameOver)
-			{
-				// Forward the event to the click handler
-				var target = $(this);
-				handlePanelClick(target, e);
+				switch (e.which)
+				{
+					case 1:
+						// Left mouse press
+						tileActive = true;
+						$(this).trigger('mouseenter');
+						break;
+					case 2:
+						// Middle mouse press
+						groupActive = true;
+						$(this).trigger('mouseenter');
+						break;
+					case 3:
+						// Right mouse press - forward the event to the click handler
+						var target = $(this);
+						handlePanelClick(target, e);
+						break;
+				}
 			}
 		});
 
@@ -185,21 +195,38 @@
 				// Apply the down action
 				$(this).addClass("down");
 			}
+			else if (groupActive)
+			{
+				// Apply the down action on element and all surrounding it
+				var coords = getCoords($(this));
+				var tileRange = getTileRange(coords[0], coords[1]);
+
+				for (var i = tileRange[0][0]; i <= tileRange[0][1]; i++)
+				{
+					for (var j = tileRange[1][0]; j <= tileRange[1][1]; j++)
+					{
+						if (!isFlagged(i,j))
+						{
+							$(".ms-panel[data-coord=\"" + i + "," + j +"\"]").addClass("down");
+						}
+					}
+				}
+			}
 		});
 
 		// Handle mouseup on a mine panel
 		$(".ms-panel").off('mouseleave').on('mouseleave', function (e) {
-			// Left mouse button when game has not ended and panel is not triggered
-			if (e.which == 1 && !$(this).hasClass("triggered"))
+			// Left or middle mouse button will cuase all downed tiles to reset
+			if (e.which == 1 || e.which == 2)
 			{
 				// Remove the down class
-				$(this).removeClass("down");
+				$(".ms-panel.down").removeClass("down");
 			}
 		});
 
 		// Handle mouseup on mine panel
 		$(".ms-panel").off('mouseup').on('mouseup', function(e) {
-			if (tileActive && !gameOver)
+			if ((tileActive || groupActive) && !gameOver)
 			{
 				// If game hasn't started yet, start it!
 				if (gameWaiting)
@@ -209,6 +236,9 @@
 
 				var target = $(this);
 				handlePanelClick(target, e);
+
+				// Trigger the body mouseup event because propagation was stopped
+				$('body').trigger('mouseup');
 			}
 		});
 	}
@@ -248,6 +278,73 @@
 				{
 					trigger(row, col);
 				}
+			}
+		}
+		// Middle click (only on numbered tiles)
+		if (ev.which == 2 && isNumber(row, col) && isTriggered(row, col))
+		{
+			var tileRange = getTileRange(row, col);
+			var triggerQueue = [];
+
+			// Number of flags left to find in range
+			var flagsLeft = getNumber(row, col);
+
+			// Go through each tile around the one clicked
+			for (var i = tileRange[0][0]; i <= tileRange[0][1]; i++)
+			{
+				for (var j = tileRange[1][0]; j <= tileRange[1][1]; j++)
+				{
+					// Skip the clicked tile
+					if (i == row && j == col)
+					{
+						continue;
+					}
+
+					// If tile is flagged, subtract from number of flags left
+					if (isFlagged(i, j))
+					{
+						flagsLeft--;
+					}
+					// Otherwise, add to the trigger queue
+					else
+					{
+						triggerQueue.push([i, j]);
+					}
+				}
+			}
+
+			// If there are the wrong number of flags, abort!
+			if (flagsLeft !== 0)
+			{
+				return;
+			}
+
+			// Reorder the trigger queue to put mines last
+			// This guarantees that non-mine tiles will trigger before
+			// a game-ending explosion.
+			var tilesInQueue = triggerQueue.length;
+			for (var i = 0; i < tilesInQueue; i++)
+			{
+				var qRow = triggerQueue[i][0];
+				var qCol = triggerQueue[i][1];
+
+				if (isMine(qRow, qCol))
+				{
+					triggerQueue.splice(i, 1);
+					triggerQueue.push([qRow, qCol]);
+
+					// Shorten the array and rewind
+					tilesInQueue--;
+					i--;
+				}
+			}
+
+			// Trigger the mines--err.. tiles. >:)
+			for (var i = 0; i < triggerQueue.length; i++)
+			{
+				var qRow = triggerQueue[i][0];
+				var qCol = triggerQueue[i][1];
+				trigger(qRow, qCol);
 			}
 		}
 		// Right click
@@ -474,7 +571,7 @@
 		// Play explosion sound, if enabled
 		if (allowSound)
 		{
-			sndExplode.play();
+			document.getElementById("snd_explode").play();
 		}
 
 		// End the game!
@@ -540,6 +637,17 @@
 	}
 
 	/**
+	 * Checks whether a tile is a number
+	 * @param int row Row to check
+	 * @param int col Column to check
+	 * @return boolean True if tile is a number, false otherwise
+	 */
+	function isNumber(i, j)
+	{
+		return tiles[i][j].number != 0;
+	}
+
+	/**
 	 * Checks whether a tile is marked
 	 * @param int row Row to check
 	 * @param int col Column to check
@@ -570,6 +678,17 @@
 	function isMine(i, j)
 	{
 		return tiles[i][j].isMine;
+	}
+
+	/**
+	 * Returns the number of a tile
+	 * @param int row Row to check
+	 * @param int col Column to check
+	 * @return int Number of tile
+	 */
+	function getNumber(i, j)
+	{
+		return tiles[i][j].number;
 	}
 
 	/**
@@ -665,7 +784,7 @@
 			// Play tick sound, if enabled
 			if (allowSound)
 			{
-				sndTick.play();
+				document.getElementById("snd_tick").play();
 			}
 		}
 	}
@@ -865,17 +984,12 @@
 	 */
 	function setNumbers(row, col, recalc)
 	{
-		// Do not allow checks outside the board
-		var rowMinBound = (row == 0) ? 0 : row - 1;
-		var rowMaxBound = (row == boardHeight - 1) ? boardHeight - 1 : row + 1;
-		var colMinBound = (col == 0) ? 0 : col - 1;
-		var colMaxBound = (col == boardWidth - 1) ? boardWidth - 1 : col + 1;
-
 		// Loop through up to nine tiles
+		var tileRange = getTileRange(row, col);
 		var adjMines = 0;
-		for (var i = rowMinBound; i <= rowMaxBound; i++)
+		for (var i = tileRange[0][0]; i <= tileRange[0][1]; i++)
 		{
-			for (var j = colMinBound; j <= colMaxBound; j++)
+			for (var j = tileRange[1][0]; j <= tileRange[1][1]; j++)
 			{
 				// If mine, add to the count of adjacent mines and then ignore the tile
 				if (isMine(i,j))
@@ -919,6 +1033,23 @@
 	function getRandomNumber(min, max)
 	{
 		return Math.floor(Math.random() * (max + 1 - min)) + min;
+	}
+
+	/**
+	 * Provides range of tiles surrounding a specified tile
+	 * @param int row Row of tile to use
+	 * @param int col Column of file to use
+	 * @return array List of surrounding tiles [[rowMin, rowMax], [colMin, colMax]]
+	 */
+	function getTileRange(row, col)
+	{
+		// Get surrounding tiles, within the board
+		var rowMinBound = (row == 0) ? 0 : row - 1;
+		var rowMaxBound = (row == boardHeight - 1) ? boardHeight - 1 : row + 1;
+		var colMinBound = (col == 0) ? 0 : col - 1;
+		var colMaxBound = (col == boardWidth - 1) ? boardWidth - 1 : col + 1;
+
+		return [[rowMinBound, rowMaxBound], [colMinBound, colMaxBound]];
 	}
 
 	/**
@@ -967,7 +1098,7 @@
 		// Play win sound, if enabled
 		if (allowSound)
 		{
-			sndWin.play();
+			document.getElementById("snd_win").play();
 		}
 
 		// Game over!

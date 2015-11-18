@@ -485,12 +485,8 @@ body {
 					background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + ($tile-suboffset * 3));
 				}
 
-				.ms-panel.marked.triggered {
+				.ms-panel.marked.down {
 					background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 2));
-				}
-
-				.ms-panel.flagged.triggered {
-					background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + ($tile-suboffset * 2));
 				}
 
 				.ms-panel.mine.triggered {
