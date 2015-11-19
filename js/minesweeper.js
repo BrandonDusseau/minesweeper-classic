@@ -26,6 +26,8 @@
 	var groupActive = false; // Whether the middle button was pressed down on a tile
 	var allowMarks  = true;  // Whether ? tiles are allowed
 	var allowSound  = false; // Whether sound plays on certain events
+	var firstGame   = true;  // Whether this is the first game (used for initialization)
+	var leaderboard = null;  // Contains top scores for each board type
 
 	/**
 	 * Tile object
@@ -95,60 +97,128 @@
 
 		// Beginner menu option
 		$("#game_beg:not(.disabled)").on('click', function(e) {
-			initGame(0);
-			$("#game_beg").addClass("checked");
-			$("#game_int").removeClass("checked");
-			$("#game_exp").removeClass("checked");
+			setDifficulty(0);
 		});
 
 		// Intermediate menu option
 		$("#game_int:not(.disabled)").on('click', function(e) {
-			initGame(1);
-			$("#game_beg").removeClass("checked");
-			$("#game_int").addClass("checked");
-			$("#game_exp").removeClass("checked");
+			setDifficulty(1);
 		});
 
 		// Expert menu option
 		$("#game_exp:not(.disabled)").on('click', function(e) {
-			initGame(2);
-			$("#game_beg").removeClass("checked");
-			$("#game_int").removeClass("checked");
-			$("#game_exp").addClass("checked");
+			setDifficulty(2);
 		});
 
 		// Custom menu option
 		$("#game_cst:not(.disabled)").on('click', function(e) {
-			initGame(0);
-			$("#game_beg").addClass("checked");
-			$("#game_int").removeClass("checked");
-			$("#game_exp").removeClass("checked");
+			setDifficulty(3);
 		});
 
 		// Enable/disabled mark tile menu option
 		$("#game_mrk:not(.disabled)").on('click', function(e) {
-			allowMarks = !allowMarks;
-
-			$("#game_mrk").removeClass("checked");
-			if (allowMarks)
-			{
-				$("#game_mrk").addClass("checked");
-			}
+			setMarks(!allowMarks);
 		});
 
-		// Enable/disabled sound
+		// Enable/disable sound
 		$("#game_snd:not(.disabled)").on('click', function(e) {
-			allowSound = !allowSound;
-
-			$("#game_snd").removeClass("checked");
-			if (allowSound)
-			{
-				$("#game_snd").addClass("checked");
-			}
+			setSound(!allowSound);
 		});
 
 		initGame(0);
 	});
+
+	/**
+	 * Enables or disables sound
+	 * @param boolean enabled True to enable, false to disable
+	 * @return undefined
+	 */
+	function setSound(enabled, skipCookie)
+	{
+		// Apply the setting
+		if (enabled == true)
+		{
+			allowSound = true;
+			$("#game_snd").addClass("checked");
+		}
+		else
+		{
+			allowSound = false;
+			$("#game_snd").removeClass("checked");
+		}
+
+		// Write preference to cookie if
+		if (!skipCookie)
+		{
+			setCookie("SWEEP_SND", allowSound ? 1 : 0, 365);
+		}
+	}
+
+	/**
+	 * Enables or disables marks (?)
+	 * @param boolean enabled True to enable, false to disable
+	 * @return undefined
+	 */
+	function setMarks(enabled, skipCookie)
+	{
+		// Apply the setting
+		if (enabled == true)
+		{
+			allowMarks = true;
+			$("#game_mrk").addClass("checked");
+		}
+		else
+		{
+			allowMarks = false;
+			$("#game_mrk").removeClass("checked");
+		}
+
+		// Write preference to cookie if
+		if (!skipCookie)
+		{
+			setCookie("SWEEP_MRK", allowMarks ? 1 : 0, 365);
+		}
+	}
+
+	/**
+	 * Sets the difficulty level
+	 * @param int diff level
+	 * @return undefined
+	 */
+	function setDifficulty(diff, skipCookie)
+	{
+		// TODO: Enable custom level
+		// Only accept valid levels
+		if (diff < 0 || diff > 2)
+		{
+			return;
+		}
+
+		// Apply the setting
+		difficulty = diff;
+		initGame(difficulty);
+
+		// Adjust the context menu entries
+		var lvl = ["beg", "int", "exp", "cst"];
+		for (var i = 0; i < lvl.length; i++)
+		{
+			var element = $("#game_" + lvl[i]);
+			if (i == diff)
+			{
+				element.addClass("checked");
+			}
+			else
+			{
+				element.removeClass("checked");
+			}
+		}
+
+		// Write preference to cookie if
+		if (!skipCookie)
+		{
+			setCookie("SWEEP_LVL", difficulty, 365);
+		}
+	}
 
 	/**
 	 * Binds events to elements which might be regenerated
@@ -902,6 +972,39 @@
 		// Bind event handlers
 		rebindEvents();
 
+		// On first game, initialize some preferences
+		if (firstGame)
+		{
+			firstGame = false;
+
+			// Restore sound preference
+			var sndPref = getCookie("SWEEP_SND");
+			if (sndPref !== "")
+			{
+				setSound(sndPref, true);
+			}
+
+			// Restore marks preference
+			var mrkPref = getCookie("SWEEP_MRK");
+			if (mrkPref !== "")
+			{
+				setMarks(mrkPref, true);
+			}
+
+			// Restore level preference
+			var lvlPref = getCookie("SWEEP_LVL");
+			var bwPref = getCookie("SWEEP_WIDTH");
+			var bhPref = getCookie("SWEEP_HEIGHT");
+			if (lvlPref !== "")
+			{
+				// Don't restore the preference if custom has invalid bounds
+				if (lvlPref != "3" || (bwPref !== "" && bhPref !== ""))
+				{
+					setDifficulty(lvlPref, true);
+				}
+			}
+		}
+
 		// Display the window if it was hidden
 		$('.window#ms-main').css('display', 'inline-block');
 	}
@@ -1103,5 +1206,46 @@
 
 		// Game over!
 		endGame();
+	}
+
+	/**
+	 * Sets a cookie
+	 * @param string name Name of cookie
+	 * @param string value Value of cookie
+	 * @param int expiry Expiration in days
+	 * @return undefined
+	 */
+	function setCookie(name, value, expiry)
+	{
+		// Convert days to ms
+		expiry *= 86400000;
+    var expDate = new Date(Date.now() + expiry);
+    var expires = "expires=" + expDate.toUTCString();
+    document.cookie = name + "=" + value + "; " + expires;
+	}
+
+	/**
+	 * Gets the value of a cookie
+	 * @param string name Name of cookie
+	 * @return string Cookie value
+	 */
+	function getCookie(name)
+	{
+		name = name + "=";
+		var cookieList = document.cookie.split(';');
+		for (var i = 0; i < cookieList.length; i++) {
+			var cookie = cookieList[i];
+
+			while (cookie.charAt(0) == ' ')
+			{
+				cookie = cookie.substring(1);
+			}
+
+			if (cookie.indexOf(name) == 0)
+				{
+					return cookie.substring(name.length,cookie.length);
+				}
+		}
+		return "";
 	}
 })();
