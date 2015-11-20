@@ -9,28 +9,38 @@
  */
 
 (function () {
-	var timer       = null;  // Interval timer to handle clock
-	var time        = 0;     // Time elapsed in game
-	var gameWaiting = true;  // Whether game is waiting to start
-	var noMoves     = true;  // Whether no moves have been made yet
-	var gameOver    = false; // Whether the game has ended (win or explode)
-	var exploded    = false; // Whether the user has lost the game in a fiery explosion
-	var minesLeft   = 0;     // Number of mines unflagged. from the user perspective
-	var maxMines    = 0;     // Number of mines in the game
-	var difficulty  = 0;     // Difficulty level. 0 = Beginner, 1 = Interm., 2 = Expert, 3 = Custom
-	var boardWidth  = 0;     // Number of tiles across the board
-	var boardHeight = 0;     // Number of tiles down the board
-	var tiles       = null;  // Array of game tiles ([row][column])
-	var tilesLeft   = 0;     // Number of uncovered tiles left, excluding mines
-	var tileActive  = false; // Whether the mouse button was pressed down on a tile
-	var groupActive = false; // Whether the middle button was pressed down on a tile
-	var allowMarks  = true;  // Whether ? tiles are allowed
-	var allowSound  = false; // Whether sound plays on certain events
-	var firstGame   = true;  // Whether this is the first game (used for initialization)
-	var leaderboard = null;  // Contains top scores for each board type
+	var timer        = null;  // Interval timer to handle clock
+	var time         = 0;     // Time elapsed in game
+	var gameWaiting  = true;  // Whether game is waiting to start
+	var noMoves      = true;  // Whether no moves have been made yet
+	var gameOver     = false; // Whether the game has ended (win or explode)
+	var exploded     = false; // Whether the user has lost the game in a fiery explosion
+	var minesLeft    = 0;     // Number of mines unflagged. from the user perspective
+	var maxMines     = 0;     // Number of mines in the game
+	var difficulty   = 0;     // Difficulty level. 0 = Beginner, 1 = Interm., 2 = Expert, 3 = Custom
+	var boardWidth   = 0;     // Number of tiles across the board
+	var boardHeight  = 0;     // Number of tiles down the board
+	var tiles        = null;  // Array of game tiles ([row][column])
+	var tilesLeft    = 0;     // Number of uncovered tiles left, excluding mines
+	var tileActive   = false; // Whether the mouse button was pressed down on a tile
+	var groupActive  = false; // Whether the middle button was pressed down on a tile
+	var allowMarks   = true;  // Whether ? tiles are allowed
+	var allowSound   = false; // Whether sound plays on certain events
+	var customSet    = false; // Whether the board has custom dimensions set up
+	var customWidth  = 0;     // Width of board on custom level
+	var customHeight = 0;     // Height of board on custom level
+	var customMines  = 0;     // Number of mines on board on custom level
+	var firstGame    = true;  // Whether this is the first game (used for initialization)
+
+	// Initialize the leaderboard
+	var leaderboard = [
+		["Anonymous", 999], // Beginner
+		["Anonymous", 999], // Intermediate
+		["Anonymous", 999]  // Expert
+	];
 
 	/**
-	 * Tile object
+	 * Tile object definition
 	 */
 	function Tile() {
 		this.number = 0;
@@ -112,6 +122,8 @@
 
 		// Custom menu option
 		$("#game_cst:not(.disabled)").on('click', function(e) {
+			// TODO: Remove this and open a customization dialog
+			setCustomBoard(16, 10, 15);
 			setDifficulty(3);
 		});
 
@@ -131,6 +143,7 @@
 	/**
 	 * Enables or disables sound
 	 * @param boolean enabled True to enable, false to disable
+	 * @param boolean skipCookie If true, do not set cookie
 	 * @return undefined
 	 */
 	function setSound(enabled, skipCookie)
@@ -147,7 +160,7 @@
 			$("#game_snd").removeClass("checked");
 		}
 
-		// Write preference to cookie if
+		// Write preference to cookie if enabled
 		if (!skipCookie)
 		{
 			setCookie("SWEEP_SND", allowSound ? 1 : 0, 365);
@@ -157,6 +170,7 @@
 	/**
 	 * Enables or disables marks (?)
 	 * @param boolean enabled True to enable, false to disable
+	 * @param boolean skipCookie If true, do not set cookie
 	 * @return undefined
 	 */
 	function setMarks(enabled, skipCookie)
@@ -173,7 +187,7 @@
 			$("#game_mrk").removeClass("checked");
 		}
 
-		// Write preference to cookie if
+		// Write preference to cookie if enabled
 		if (!skipCookie)
 		{
 			setCookie("SWEEP_MRK", allowMarks ? 1 : 0, 365);
@@ -183,20 +197,16 @@
 	/**
 	 * Sets the difficulty level
 	 * @param int diff level
+	 * @param boolean skipCookie If true, do not set cookie
 	 * @return undefined
 	 */
 	function setDifficulty(diff, skipCookie)
 	{
-		// TODO: Enable custom level
 		// Only accept valid levels
-		if (diff < 0 || diff > 2)
+		if (diff < 0 || diff > 3)
 		{
 			return;
 		}
-
-		// Apply the setting
-		difficulty = diff;
-		initGame(difficulty);
 
 		// Adjust the context menu entries
 		var lvl = ["beg", "int", "exp", "cst"];
@@ -213,10 +223,52 @@
 			}
 		}
 
-		// Write preference to cookie if
+		// Write preference to cookie if enabled
 		if (!skipCookie)
 		{
-			setCookie("SWEEP_LVL", difficulty, 365);
+			setCookie("SWEEP_LVL", diff, 365);
+		}
+
+		// Apply the setting
+		initGame(diff);
+	}
+
+	/**
+	 * Enables or disables marks (?)
+	 * @param int width Width of board
+	 * @param int heightHeight of board
+	 * @param int mines Number of mines to place
+	 * @param boolean skipCookie If true, do not set cookie
+	 * @return undefined
+	 */
+	function setCustomBoard(width, height, mines, skipCookie)
+	{
+		// Override invalid board preferences
+		// Width must be between 9 and 30, inclusive
+		width = (width > 30 ? 30 : width);
+		width = (width < 9 ? 9 : width);
+
+		// Height must be between 9 and 24, inclusive
+		height = (height > 24 ? 24 : height);
+		height = (height < 9 ? 9 : height);
+
+		// Mines must be between 10 and (x-1)(y-1), inclusive
+		mines = (mines < 10 ? 10 : mines);
+		var minesAllowed = (height - 1) * (width - 1);
+		mines = (mines > minesAllowed ? minesAllowed : mines);
+
+		// Update the game state
+		customSet = true;
+		customWidth = width;
+		customHeight = height;
+		customMines = mines;
+
+		// Write preference to cookie if enabled
+		if (!skipCookie)
+		{
+			setCookie("SWEEP_WIDTH", width, 365);
+			setCookie("SWEEP_HEIGHT", height, 365);
+			setCookie("SWEEP_MINES", mines, 365);
 		}
 	}
 
@@ -925,13 +977,20 @@
 	 * @param int mines Optional number of mines specification (diff = 3)
 	 * @return undefined
 	 */
-	function initGame(diff, width, height, mines)
+	function initGame(diff)
 	{
 		// Reset the game state
 		endGame();
 		gameWaiting = true;
 		gameOver = false;
 		noMoves = true;
+
+		// If custom settings are not set, override custom difficulty
+		// Also do this if the difficulty setting is invalid
+		if (diff < 0 || diff > 3 || (diff == 3 && !customSet))
+		{
+			diff = 0;
+		}
 
 		// Set up defaults based on difficulty level, unless using a custom setting
 		var defaults = {
@@ -940,12 +999,18 @@
 			'mines': [10,40,99]
 		};
 
-		// Set defaults if using a built-in difficulty
-		if (diff >= 0 || diff <= 2)
+		// Set defaults if using a non-custom difficulty
+		if (diff != 3)
 		{
-			width = defaults.width[diff];
-			height = defaults.height[diff];
-			mines = defaults.mines[diff];
+			var width = defaults.width[diff];
+			var height = defaults.height[diff];
+			var mines = defaults.mines[diff];
+		}
+		else
+		{
+			var width = customWidth;
+			var height = customHeight;
+			var mines = customMines;
 		}
 
 		// Set up initial game data
@@ -959,23 +1024,26 @@
 		tiles = [];
 		tilesLeft = (width * height) - mines;
 
-		// Create the grid
-		generateGrid();
-
-		// Render the numeric displays with initial values
-		digitRender('time', time);
-		digitRender('mines', minesLeft);
-
-		// Reset the smiley icon :)
-		$(".smiley-icon").removeClass("active cool dead");
-
-		// Bind event handlers
-		rebindEvents();
-
 		// On first game, initialize some preferences
 		if (firstGame)
 		{
 			firstGame = false;
+
+			// Load the leaderboard from cookie, if available
+			leaderboard = getCookie("SWEEP_TOP");
+			try
+			{
+				if (leaderboard !== "")
+				{
+					leaderboard = $.parseJSON(leaderboard);
+				}
+			}
+			catch (e)
+			{
+				// Silently reset if the cookie is malformed
+				console.log("Error: leaderboard data is corrupt. Resetting to default...");
+				setCookie("SWEEP_TOP", leaderboard, 365);
+			}
 
 			// Restore sound preference
 			var sndPref = getCookie("SWEEP_SND");
@@ -992,18 +1060,41 @@
 			}
 
 			// Restore level preference
+			// This must be last because it may reinitialize the game board
 			var lvlPref = getCookie("SWEEP_LVL");
 			var bwPref = getCookie("SWEEP_WIDTH");
 			var bhPref = getCookie("SWEEP_HEIGHT");
+			var bmPref = getCookie("SWEEP_MINES");
 			if (lvlPref !== "")
 			{
 				// Don't restore the preference if custom has invalid bounds
-				if (lvlPref != "3" || (bwPref !== "" && bhPref !== ""))
+				if (lvlPref != 3 || (bwPref !== "" && bhPref !== "" && bmPref !== ""))
 				{
+					if (lvlPref == 3)
+					{
+						setCustomBoard(bwPref, bhPref, bmPref, true);
+					}
+
 					setDifficulty(lvlPref, true);
+
+					// Break out so that the board does not initialize multiple times
+					return;
 				}
 			}
 		}
+
+		// Create the grid
+		generateGrid();
+
+		// Render the numeric displays with initial values
+		digitRender('time', time);
+		digitRender('mines', minesLeft);
+
+		// Reset the smiley icon :)
+		$(".smiley-icon").removeClass("active cool dead");
+
+		// Bind event handlers
+		rebindEvents();
 
 		// Display the window if it was hidden
 		$('.window#ms-main').css('display', 'inline-block');
@@ -1202,6 +1293,16 @@
 		if (allowSound)
 		{
 			document.getElementById("snd_win").play();
+		}
+
+		// Update the leaderboard if the score is better
+		if (difficulty < 3 && difficulty >= 0)
+		{
+			if (leaderboard[difficulty][1] < time)
+			{
+				leaderboard[difficulty][1] = time;
+				setCookie("SWEEP_TOP", JSON.stringify(leaderboard), 365);
+			}
 		}
 
 		// Game over!
