@@ -234,7 +234,7 @@
 	}
 
 	/**
-	 * Enables or disables marks (?)
+	 * Sets up custom board dimensions
 	 * @param int width Width of board
 	 * @param int heightHeight of board
 	 * @param int mines Number of mines to place
