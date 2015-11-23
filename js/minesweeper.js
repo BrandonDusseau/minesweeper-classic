@@ -311,7 +311,7 @@
 		});
 
 		// Handle mouseenter on a mine panel (if the mouse button was clicked)
-		$(".ms-panel").off('mousenter').on('mouseenter', function (e) {
+		$(".ms-panel").off('mouseenter').on('mouseenter', function (e) {
 			if (tileActive && !$(this).hasClass("flagged"))
 			{
 				// Apply the down action
@@ -339,7 +339,7 @@
 		// Handle mouseup on a mine panel
 		$(".ms-panel").off('mouseleave').on('mouseleave', function (e) {
 			// Left or middle mouse button will cuase all downed tiles to reset
-			if (e.which == 1 || e.which == 2)
+			if ((tileActive || groupActive) && (e.which == 1 || e.which == 2))
 			{
 				// Remove the down class
 				$(".ms-panel.down").removeClass("down");
@@ -358,9 +358,6 @@
 
 				var target = $(this);
 				handlePanelClick(target, e);
-
-				// Trigger the body mouseup event because propagation was stopped
-				$('body').trigger('mouseup');
 			}
 		});
 	}
@@ -373,8 +370,6 @@
 	 */
 	function handlePanelClick(target, ev)
 	{
-		ev.stopPropagation();
-
 		// A target of type ms-panel must be provided
 		if (!target.length || !target.hasClass("ms-panel"))
 		{
@@ -1030,12 +1025,12 @@
 			firstGame = false;
 
 			// Load the leaderboard from cookie, if available
-			leaderboard = getCookie("SWEEP_TOP");
+			var top = getCookie("SWEEP_TOP");
 			try
 			{
-				if (leaderboard !== "")
+				if (top !== "")
 				{
-					leaderboard = $.parseJSON(leaderboard);
+					leaderboard = $.parseJSON(top);
 				}
 			}
 			catch (e)

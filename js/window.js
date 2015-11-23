@@ -8,64 +8,13 @@
 (function() {
 	var winMove  = false; // Whether the window is being dragged
 	var menuOpen = false; // Whether a window menu is open
+	var menuPending = false; // Whether to ignore menu close events
+	var focusPending = false; // Whether to ignore unfocus events
 
 	// When document loads, bind events
 	$(document).ready(function() {
+		// Bind the titlebars for dragging
 		bindTitleDrag();
-
-		// A click focuses the window
-		// TODO: Implement a window stack for proper overlapping
-		$(".window").on('mousedown', function (e) {
-			e.stopPropagation()
-			focusWindow($(this));
-		});
-
-		// Bind click on menu to open it or close it
-		$(".menu-btn").on('click', function (e) {
-			e.stopPropagation();
-			var target = $(this);
-			if (e.which == 1)
-			{
-				if (menuOpen)
-				{
-					resetMenus();
-				}
-				else
-				{
-					openMenu(target, e);
-				}
-			}
-		});
-
-		// Switch menus if one is open and the cursor enters another menu button
-		$(".menu-btn").on('mouseenter', function (e) {
-			e.stopPropagation();
-			var target = $(this);
-			if (menuOpen)
-			{
-				resetMenus();
-				openMenu(target, e);
-			}
-		});
-
-		// Clicking anywhere outside the menu (see next function) will close it
-		// Also take the opportunity to unfocus all windows
-		$('body').on('mousedown', function (e) {
-			$(".window").removeClass("focused");
-
-			if (menuOpen)
-			{
-				resetMenus();
-			}
-		});
-
-		// Prevent clicking on menus from closing them
-		$('.menu-btn, .menu').on('mousedown', function (e) {
-			e.stopPropagation();
-
-			// This conflicts with the window focus handler, so implementing it here too
-			focusWindow($(this).closest(".window"));
-		});
 
 		// When cursor is on menu item, highlight it
 		$(".menu-item").on('mouseenter', function (e) {
@@ -77,10 +26,87 @@
 			$(this).removeClass("selected");
 		});
 
-		// Close the menu when a menu item is selected
+		// Do not allow clicks inside a menu to close them
+		$('.menu, .menu *').on('mousedown', function(e) {
+			menuPending = true;
+		});
+
+		// If a valid item is selected, override menu close blocking
 		$('.menu-item:not(.disabled)').on('click', function(e) {
-			e.stopPropagation();
 			resetMenus();
+		});
+
+		// Bind click on menu to open it or close it
+		$(".menu-btn").on('mousedown', function (e) {
+			var target = $(this);
+			if (e.which == 1)
+			{
+				var queueOpen = true;
+
+				if (menuOpen)
+				{
+					// Prevent the menu from reopening
+					if ($(this).hasClass("active"))
+					{
+						queueOpen = false;
+					}
+
+					// Close all open menus
+					resetMenus();
+				}
+
+				// Menu will only open if it wasn't just closed
+				if (queueOpen)
+				{
+					openMenu(target, e);
+				}
+			}
+		});
+
+		// Switch menus if one is open and the cursor enters another menu button
+		$(".menu-btn").on('mouseenter', function (e) {
+			if (menuOpen && !$(this).hasClass("active"))
+			{
+				var target = $(this);
+				resetMenus();
+				openMenu(target, e);
+			}
+		});
+
+		// Clicking anywhere off an open menu will close it
+		$(':not(.menu-btn, .menu-btn *, .menu, .menu *)').on('mousedown', function (e) {
+			if (menuOpen && !menuPending)
+			{
+				resetMenus();
+			}
+
+			// Once event has bubbled to the top level, menu is in a closable state
+			if ($(this).is("html")) {
+				menuPending = false;
+			}
+		});
+
+		// Clicking on a window will focus it
+		$('.window').on('mousedown', function (e) {
+				// Prevent anything from unfocusing window
+				focusPending = true;
+
+				// Focus the window if it is not already
+				focusWindow($(this));
+		});
+
+		// A click on a window will focus it
+		$('body').on('mousedown', function (e) {
+			// Unfocus all windows
+			if (!focusPending)
+			{
+				$(".window").removeClass("focused");
+			}
+
+			// Once event has bubbled to the top level, windows can be unfocused
+			if ($(this).is("html")) {
+				focusPending = false;
+			}
 		});
 	});
 
@@ -95,6 +121,7 @@
 		{
 			target.addClass("active");
 			menuOpen = true;
+			menuPending = true;
 
 			var childMenu = target.closest('.menu-bar').find('.menu#mnu_' + target.attr('id'));
 			childMenu.css('top', (target.height() + 4) + 'px');
@@ -116,6 +143,9 @@
 			$(".menu-btn").removeClass("active");
 			$(".menu").css('display', 'none');
 		}
+
+		// Remove menu pending in case it wasn't done already
+		menuPending = false;
 	}
 
 	/**
@@ -125,6 +155,7 @@
 	 */
 	function focusWindow(target)
 	{
+		// TODO: Implement a window stack for proper overlapping
 		if (!target.hasClass("focused"))
 		{
 			$(".window").removeClass("focused");
@@ -167,7 +198,6 @@
 			// Only try to disable dragging if a window is being dragged
 			if (winMove)
 			{
-				e.stopPropagation();
 				if (e.which == 1)
 				{
 					// Disable the drag
