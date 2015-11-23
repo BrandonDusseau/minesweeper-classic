@@ -6,9 +6,9 @@
  * http://www.github.com/BrandonDusseau/minesweeper-classic
  */
 (function() {
-	var winMove  = false; // Whether the window is being dragged
-	var menuOpen = false; // Whether a window menu is open
-	var menuPending = false; // Whether to ignore menu close events
+	var winMove      = false; // Whether the window is being dragged
+	var menuOpen     = false; // Whether a window menu is open
+	var menuPending  = false; // Whether to ignore menu close events
 	var focusPending = false; // Whether to ignore unfocus events
 
 	// When document loads, bind events
@@ -104,9 +104,7 @@
 			}
 
 			// Once event has bubbled to the top level, windows can be unfocused
-			if ($(this).is("html")) {
-				focusPending = false;
-			}
+			focusPending = false;
 		});
 	});
 
