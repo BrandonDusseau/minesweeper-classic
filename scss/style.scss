@@ -18,7 +18,7 @@ $wa-offset-x: -64px;
 $wa-offset-y: -21px;
 $wa-suboffset-x: -13px;
 $wa-suboffset-y: -11px;
-$icnsm-offset-x: -103px;
+$icnsm-offset-x: -117px;
 $icnsm-offset-y: -21px;
 $chkmk-offset-x: -96px;
 $chkmk-offset-y: -60px;
@@ -50,8 +50,8 @@ body {
 	display: none;
 	background-color: $win-bg;
 	border: 1px solid $win-bg;
-	border-right-color: #000;
-	border-bottom-color: #000;
+	border-right-color: #404040;
+	border-bottom-color: #404040;
 	overflow: none;
 	position: relative;
 
@@ -83,7 +83,7 @@ body {
 				font-weight: bold;
 				height: 16px;
 				margin-top: 1px;
-				white-space: no-wrap;
+				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
@@ -94,8 +94,8 @@ body {
 				.btn {
 					display: inline-block;
 					border: 1px solid #FFF;
-					border-bottom-color: #000;
-					border-right-color: #000;
+					border-bottom-color: #404040;
+					border-right-color: #404040;
 					background-color: $win-bg;
 					height: 12px;
 					width: 14px;
@@ -120,6 +120,10 @@ body {
 
 					.inner-btn.maximize .btn-icon {
 						background-position: ($wa-offset-x + ($wa-suboffset-x * 1)) $wa-offset-y;
+					}
+
+					.inner-btn.question .btn-icon {
+						background-position: ($wa-offset-x + ($wa-suboffset-x * 3)) $wa-offset-y;
 					}
 				}
 
@@ -146,6 +150,10 @@ body {
 
 					.inner-btn.minimize .btn-icon {
 						background-position: $wa-offset-x ($wa-offset-y + $wa-suboffset-y);
+					}
+
+					.inner-btn.question .btn-icon {
+						background-position: ($wa-offset-x + ($wa-suboffset-x * 3)) ($wa-offset-y + $wa-suboffset-y);
 					}
 				}
 
@@ -522,4 +530,80 @@ body {
 #ms-main {
 	top: 40px;
 	left: 40px;
+}
+
+#custom {
+	.cst-form {
+		margin: 34px 15px 37px;
+		height: 68px;
+		overflow: hidden;
+
+		.dims {
+			display: inline-block;
+			margin-right: 19px;
+
+			.row:first-of-type {
+				margin-top: 0;
+			}
+
+			.row {
+				margin-top: 4px;
+
+				.label {
+					display: inline-block;
+					width: 41px;
+				}
+
+				.input-container {
+					display: inline-block;
+					border: 1px solid $border-med;
+					border-bottom-color: #FFF;
+					border-right-color: #FFF;
+
+					input[type=text] {
+						display: inline-block;
+						border: 1px solid #404040;
+						border-bottom-color: $win-bg;
+						border-right-color: $win-bg;
+						width: 32px;
+						height: 14px;
+						font-size: 11px;
+						cursor: text;
+					}
+				}
+			}
+		}
+
+		.btns {
+			display: inline-block;
+
+			.btn-default-outer:first-of-type {
+				margin-bottom: 16px;
+			}
+
+			.btn-outer {
+				border: 1px solid #FFF;
+				border-bottom-color: #404040;
+				border-right-color: #404040;
+
+				.btn {
+					border: 1px solid $border-med;
+					border-top: none;
+					border-left: none;
+					padding: 6px 0;
+					width: 57px;
+					text-align: center;
+				}
+			}
+
+			.btn-default-outer.active {
+				border: 1px solid #000;
+
+				.btn {
+					padding: 5px 0;
+					width: 55px;
+				}
+			}
+		}
+	}
 }

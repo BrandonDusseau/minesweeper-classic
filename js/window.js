@@ -178,10 +178,12 @@
 				winMove = true;
 
 				// Get the difference between the cursor and the window position
+				console.log(target);
 				var win = target.closest(".window");
 				var curOffset = win.offset();
 				var diffX = e.pageX - curOffset.left;
 				var diffY = e.pageY - curOffset.top;
+				console.log(win);
 
 				// Move the window
 				$('body').on('mousemove', function(e) {
