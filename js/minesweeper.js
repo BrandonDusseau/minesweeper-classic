@@ -9,6 +9,16 @@
  */
 
 (function () {
+	// Check that the required environment is present
+	if (typeof window.SweeperOSEnvironment == 'undefined')
+	{
+		console.log("Sweeper OS envrionment is unavailable. Minesweeper cannot run.");
+		return;
+	}
+
+	// Get the environment
+	var env = window.SweeperOSEnvironment;
+
 	var timer        = null;  // Interval timer to handle clock
 	var time         = 0;     // Time elapsed in game
 	var gameWaiting  = true;  // Whether game is waiting to start
@@ -27,9 +37,9 @@
 	var allowMarks   = true;  // Whether ? tiles are allowed
 	var allowSound   = false; // Whether sound plays on certain events
 	var customSet    = false; // Whether the board has custom dimensions set up
-	var customWidth  = 0;     // Width of board on custom level
-	var customHeight = 0;     // Height of board on custom level
-	var customMines  = 0;     // Number of mines on board on custom level
+	var customWidth  = 9;     // Width of board on custom level
+	var customHeight = 9;     // Height of board on custom level
+	var customMines  = 10;     // Number of mines on board on custom level
 	var firstGame    = true;  // Whether this is the first game (used for initialization)
 
 	// Initialize the leaderboard
@@ -122,9 +132,13 @@
 
 		// Custom menu option
 		$("#game_cst:not(.disabled)").on('click', function(e) {
-			// TODO: Remove this and open a customization dialog
-			setCustomBoard(16, 10, 15);
-			setDifficulty(3);
+			// Open the customization dialog and position it at the top left of the game board
+			// Also, preload it with the current values of the custom board
+			var containerOffset = $(".minesweeper").offset();
+			$("#ms-custom-board #cst-height").val(customHeight);
+			$("#ms-custom-board #cst-width").val(customWidth);
+			$("#ms-custom-board #cst-mines").val(customMines);
+			env.showWindow($('#ms-custom-board'), containerOffset.left, containerOffset.top, $('#ms-main'));
 		});
 
 		// Enable/disabled mark tile menu option
@@ -1092,7 +1106,7 @@
 		rebindEvents();
 
 		// Display the window if it was hidden
-		$('.window#ms-main').css('display', 'inline-block');
+		env.showWindow($("#ms-main"));
 	}
 
 	/**

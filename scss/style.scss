@@ -53,7 +53,7 @@ body {
 	border-right-color: #404040;
 	border-bottom-color: #404040;
 	overflow: none;
-	position: relative;
+	position: absolute;
 
 	.inner-window {
 		padding: 1px;
@@ -62,7 +62,6 @@ body {
 		border-bottom-color: $border-med;
 
 		.title-bar {
-			@include background-image(linear-gradient(to right, #808080, #C0C0C0));
 			height: 14px;
 			padding: 2px;
 			overflow: hidden;
@@ -79,7 +78,6 @@ body {
 			}
 
 			.title {
-				color: #D4D0C8;
 				font-weight: bold;
 				height: 16px;
 				margin-top: 1px;
@@ -175,12 +173,6 @@ body {
 				padding: 2px 5px 0 5px;
 				border: 1px solid transparent;
 				overflow: hidden;
-			}
-
-			.menu-btn:hover {
-				border: 1px solid #FFF;
-				border-right-color: $border-med;
-				border-bottom-color: $border-med;
 			}
 
 			.menu-btn.active, .menu-btn:active {
@@ -513,6 +505,26 @@ body {
 	}
 }
 
+.window:not(.modal-frozen) {
+	.menu-bar .menu-btn:hover {
+		border: 1px solid #FFF;
+		border-right-color: $border-med;
+		border-bottom-color: $border-med;
+	}
+}
+
+.window.open {
+	display: inline-block;
+}
+
+.window:not(.focused) .title-bar, .window.focused .title-bar.blinking {
+		@include background-image(linear-gradient(to right, #808080, #C0C0C0));
+
+		.title {
+			color: #D4D0C8;
+		}
+}
+
 .window.focused {
 	.title-bar {
 		@include background-image(linear-gradient(to right, #000080, #A6CAF0));
@@ -532,7 +544,7 @@ body {
 	left: 40px;
 }
 
-#custom {
+#ms-custom-board {
 	.cst-form {
 		margin: 34px 15px 37px;
 		height: 68px;
@@ -551,7 +563,9 @@ body {
 
 				.label {
 					display: inline-block;
-					width: 41px;
+					width: 45px;
+					float: left;
+					margin-top: 4px;
 				}
 
 				.input-container {
@@ -565,10 +579,12 @@ body {
 						border: 1px solid #404040;
 						border-bottom-color: $win-bg;
 						border-right-color: $win-bg;
-						width: 32px;
-						height: 14px;
+						width: 31px;
+						height: 13px;
 						font-size: 11px;
 						cursor: text;
+						padding-bottom: 2px;
+						padding-left: 2px;
 					}
 				}
 			}
@@ -576,6 +592,8 @@ body {
 
 		.btns {
 			display: inline-block;
+			float: right;
+			margin-left: 3px;
 
 			.btn-default-outer:first-of-type {
 				margin-bottom: 16px;

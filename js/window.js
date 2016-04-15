@@ -13,8 +13,43 @@
 
 	// When document loads, bind events
 	$(document).ready(function() {
+		// If a modal is open, clicks should not register on the parent window
+		$(".window, .window *").on('click', function (e) {
+			if (windowHasActiveModalChild($(this).closest('.window')))
+			{
+				// Flash the modal window and cancel the event
+				// FIXME: window flashes when opened
+				// FIXME: Minesweeper game events still fire
+				windowGetAttention($(".window[data-modal-parent=" + $(this).closest('.window').attr('id') + "]"));
+
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		});
+
+		// If a modal is open, mousedown should not register on the parent window
+		$(".window, .window *").on('mousedown', function (e) {
+			if (windowHasActiveModalChild($(this).closest('.window')))
+			{
+				// Cancel the event
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		});
+
 		// Bind the titlebars for dragging
 		bindTitleDrag();
+
+		// Handle window close
+		$(".window .btn > .close").on('click', function (e) {
+			// Disallow close operation if button is disabled
+			if ($(this).closest('btn').hasClass('disabled'))
+			{
+				return;
+			}
+
+			closeWindow($(this).closest('.window'));
+		});
 
 		// When cursor is on menu item, highlight it
 		$(".menu-item").on('mouseenter', function (e) {
@@ -156,6 +191,13 @@
 		// TODO: Implement a window stack for proper overlapping
 		if (!target.hasClass("focused"))
 		{
+			// Do not allow change of focus to parent of modal
+			if (windowHasActiveModalChild(target))
+			{
+				return;
+			}
+
+			// Unfocus all windows and focus the target
 			$(".window").removeClass("focused");
 			target.addClass("focused");
 		}
@@ -172,18 +214,22 @@
 
 		// Title mouse down binding
 		target.on('mousedown', function(e) {
+			// Disallow dragging if window has a modal
+			if (windowHasActiveModalChild($(this).closest('.window')))
+			{
+				return;
+			}
+
 			if (e.which == 1)
 			{
 				// Window is about to be dragged
 				winMove = true;
 
 				// Get the difference between the cursor and the window position
-				console.log(target);
-				var win = target.closest(".window");
+				var win = $(this).closest(".window");
 				var curOffset = win.offset();
 				var diffX = e.pageX - curOffset.left;
 				var diffY = e.pageY - curOffset.top;
-				console.log(win);
 
 				// Move the window
 				$('body').on('mousemove', function(e) {
@@ -207,4 +253,182 @@
 			}
 		});
 	}
+
+	/**
+	 * Displays a targeted window
+	 *
+	 * @param jQuery target Target window
+	 * @param jQuery modal_parent If the window is modal, specifies the parent window
+	 * @return void
+	 */
+	function showWindow(target, posX, posY, modal_parent)
+	{
+		if (target.hasClass('window') && !target.hasClass('open'))
+		{
+			// TODO: Position window if not specified
+			if (typeof posX !== 'undefined' && typeof posY !== 'undefined')
+			{
+				target.css('top', posY + "px");
+				target.css('left', posX + "px");
+			}
+
+			// If this is a modal window, apply special properties
+			if (modal_parent && modal_parent.length && modal_parent.hasClass('window'))
+			{
+				modal_parent.addClass('modal-frozen');
+				target.addClass('modal');
+				target.attr('data-modal-parent', modal_parent.attr('id'));
+			}
+
+			focusWindow(target);
+			target.addClass('open');
+		}
+	}
+
+	/**
+	 * Hides a targeted window
+	 *
+	 * @param jQuery target Target window
+	 * @return void
+	 */
+	function closeWindow(target)
+	{
+		if (target.hasClass('window') && target.hasClass('open') && !windowHasActiveModalChild(target))
+		{
+			target.removeClass('open active focused');
+
+			// If this is a modal, focus the parent. Otherwise,
+			if (target.hasClass('modal'))
+			{
+				var parentWin = target.data('modal-parent') || false;
+				if (parentWin !== false)
+				{
+					$("#" + parentWin).removeClass('modal-frozen');
+					focusWindow($("#" + parentWin));
+					target.attr('data-modal-parent', '');
+				}
+
+				target.removeClass('modal');
+			}
+			else
+			{
+				// TODO: Add focus stack
+			}
+		}
+	}
+
+	/**
+	 * Returns whether a window has an active modal child window
+	 *
+	 * @param jQuery target Target parent window
+	 * @return bool Whether window has active modal child
+	 */
+	function windowHasActiveModalChild(target)
+	{
+		// Return true if there is an open modal that is the child of the target
+		var hasActiveModalChild = false;
+		$('.window.modal.open').each(function ()
+		{
+			if ($(this).data('modal-parent') == target.attr('id'))
+			{
+				hasActiveModalChild = true;
+				return;
+			}
+		});
+
+		return hasActiveModalChild;
+	}
+
+	/**
+	 * Blinks the titlebar of a window (or focuses the window if it is not focused)
+	 * @param jQuery target Target window
+	 * @return bool Whether window has active modal child
+	 */
+	function windowGetAttention(target)
+	{
+		if (target.hasClass('focused'))
+		{
+			blinkWindow(target, 70, 3);
+		}
+		else
+		{
+			focusWindow(target);
+		}
+	}
+
+	/**
+	 * Blinks the targeted window with default options (externally accessible)
+	 * @param jQuery target Target window
+	 * @return void
+	 */
+	function blinkWindowExternal(target)
+	{
+		blinkWindow(target, 500, 0);
+	}
+
+	/**
+	 * Blinks the targeted window title bar
+	 * @param jQuery target Target window
+	 * @param int interval Interval of blinks in ms
+	 * @param int repeat Number of times to blink, 0 for infinite
+	 * @return void
+	 */
+	function blinkWindow(target, interval, repeat)
+	{
+		if (!target.hasClass('window') || !target.hasClass('open'))
+		{
+			return;
+		}
+
+		// If window is already blinking, reset and start blinking again
+		if (target.data('is-blinking'))
+		{
+			stopBlinkingWindow(target);
+		}
+
+		target.data('blinks-completed', 0);
+		target.data('is-blinking', true);
+
+		target.data('blink-timer', window.setInterval(function(target, repeat) {
+			// If the target window has disappeared, stop trying to flash it
+			if (!target.length) {
+				stopBlinkingWindow(target);
+				return;
+			}
+
+			// Swap the blinking class and increment the counter
+			target.find('.title-bar').first().toggleClass('blinking');
+
+			var blinksCompleted = target.data('blinks-completed') + 1;
+			target.data('blinks-completed', blinksCompleted);
+
+			// If we're not blinking forever and
+			if (repeat != 0 && target.data('blinks-completed') == repeat * 2) {
+				stopBlinkingWindow(target);
+			}
+		}, interval, target, repeat || 0));
+	}
+
+	/**
+	 * Stops the targeted window from blinking
+	 * @param jQuery target Target window
+	 * @return void
+	 */
+	function stopBlinkingWindow(target)
+	{
+		if (!target.length || typeof target.data('blink-timer') == 'undefined') {
+			return;
+		}
+
+		window.clearInterval(target.data('blink-timer'));
+		target.data('is-blinking', false);
+		target.removeClass('blinking');
+	}
+
+	// Make a couple functions public for interoperability
+	window.SweeperOSEnvironment = {
+		'showWindow': showWindow,
+		'closeWindow': closeWindow,
+		'blinkWindow': blinkWindowExternal
+	};
 })();
