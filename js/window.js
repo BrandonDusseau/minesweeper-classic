@@ -17,11 +17,7 @@
 		$(".window, .window *").on('click', function (e) {
 			if (windowHasActiveModalChild($(this).closest('.window')))
 			{
-				// Flash the modal window and cancel the event
-				// FIXME: window flashes when opened
-				// FIXME: Minesweeper game events still fire
-				windowGetAttention($(".window[data-modal-parent=" + $(this).closest('.window').attr('id') + "]"));
-
+				// Cancel the event
 				e.preventDefault();
 				e.stopPropagation();
 			}
@@ -31,6 +27,11 @@
 		$(".window, .window *").on('mousedown', function (e) {
 			if (windowHasActiveModalChild($(this).closest('.window')))
 			{
+				// Flash the modal window and cancel the event
+				// FIXME: window flashes when opened
+				// FIXME: Minesweeper game events still fire
+				windowGetAttention($(".window[data-modal-parent=" + $(this).closest('.window').attr('id') + "]"));
+
 				// Cancel the event
 				e.preventDefault();
 				e.stopPropagation();
@@ -41,9 +42,9 @@
 		bindTitleDrag();
 
 		// Handle window close
-		$(".window .btn > .close").on('click', function (e) {
+		$(".window .btn.x-btn").on('click', function (e) {
 			// Disallow close operation if button is disabled
-			if ($(this).closest('btn').hasClass('disabled'))
+			if ($(this).hasClass('disabled'))
 			{
 				return;
 			}
@@ -257,7 +258,9 @@
 	/**
 	 * Displays a targeted window
 	 *
-	 * @param jQuery target Target window
+	 * @param jQuery target       Target window
+	 * @param int    posX         Position of the window from the left of the viewport (optional)
+	 * @param int    posY         Position of the window from the top of the viewport (optional)
 	 * @param jQuery modal_parent If the window is modal, specifies the parent window
 	 * @return void
 	 */
@@ -268,8 +271,12 @@
 			// TODO: Position window if not specified
 			if (typeof posX !== 'undefined' && typeof posY !== 'undefined')
 			{
-				target.css('top', posY + "px");
 				target.css('left', posX + "px");
+			}
+
+			if (typeof posY !== 'undefined')
+			{
+				target.css('top', posY + "px");
 			}
 
 			// If this is a modal window, apply special properties
@@ -280,6 +287,7 @@
 				target.attr('data-modal-parent', modal_parent.attr('id'));
 			}
 
+			// Apply appropriate attributes to the new window
 			focusWindow(target);
 			target.addClass('open');
 		}
@@ -346,6 +354,7 @@
 	 */
 	function windowGetAttention(target)
 	{
+		// If modal is focused, quickly blink three times. Otherwise, focus the modal.
 		if (target.hasClass('focused'))
 		{
 			blinkWindow(target, 70, 3);
@@ -363,6 +372,7 @@
 	 */
 	function blinkWindowExternal(target)
 	{
+		// External applications can only request that the window blink, nothing more.
 		blinkWindow(target, 500, 0);
 	}
 
@@ -396,11 +406,20 @@
 				return;
 			}
 
-			// Swap the blinking class and increment the counter
-			target.find('.title-bar').first().toggleClass('blinking');
-
+			// Increment the blink counter
 			var blinksCompleted = target.data('blinks-completed') + 1;
 			target.data('blinks-completed', blinksCompleted);
+
+			// Gray out title bar on odd ticks
+			var titleBar = target.find('.title-bar').first();
+			if (blinksCompleted % 2 != 0)
+			{
+				titleBar.addClass('blinking');
+			}
+			else
+			{
+					titleBar.removeClass('blinking');
+			}
 
 			// If we're not blinking forever and
 			if (repeat != 0 && target.data('blinks-completed') == repeat * 2) {
