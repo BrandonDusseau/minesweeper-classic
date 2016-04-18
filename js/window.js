@@ -142,6 +142,15 @@
 			// Once event has bubbled to the top level, windows can be unfocused
 			focusPending = false;
 		});
+
+		// Switch the active button when clicked
+		$('.btns .btn').on('mousedown', function (e) {
+			if (!$(this).hasClass('active'))
+			{
+				$(this).closest('.btns').find('.active').removeClass('active');
+				$(this).closest('.btn-container').addClass('active');
+			}
+		});
 	});
 
 	/**

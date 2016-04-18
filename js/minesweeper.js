@@ -87,10 +87,22 @@
 					e.preventDefault();
 					initGame(difficulty);
 				}
+				// F1 - Help
 				else if (e.which == 112)
 				{
 					e.preventDefault();
 					// TODO
+				}
+			}
+			// Bind keys to custom board dialog
+			if ($(".window#ms-custom-board").hasClass("focused")) {
+				// ESC - cancel
+				if (e.which == 27) {
+					customBoardCancel();
+				}
+				// Enter - OK
+				else if (e.which == 13) {
+					customBoardConfirm();
 				}
 			}
 		});
@@ -151,8 +163,37 @@
 			setSound(!allowSound);
 		});
 
+		// Commit the changes in the custom field dialog
+		$("#cst_ok").on('click', customBoardConfirm);
+
+		// Cancel the changes in the custom field dialog
+		$("#cst_cancel").on('click', customBoardCancel);
+
 		initGame(0);
 	});
+
+	/**
+	 * Event handler for custom board dialog OK
+	 * @return void
+	 */
+	function customBoardConfirm() {
+		var cstWidth = $("#cst-width").val();
+		var cstHeight = $("#cst-height").val();
+		var cstMines = $("#cst-mines").val();
+
+		setCustomBoard(cstWidth, cstHeight, cstMines);
+		setDifficulty(3);
+		env.closeWindow($("#ms-custom-board"));
+	}
+
+	/**
+	 * Event handler for custom board dialog cancel
+	 * @return void
+	 */
+	function customBoardCancel() {
+		initGame(difficulty);
+		env.closeWindow($("#ms-custom-board"));
+	}
 
 	/**
 	 * Enables or disables sound
@@ -222,6 +263,15 @@
 			return;
 		}
 
+		// Reset custom board if switching away from it
+		if (diff != 3)
+		{
+			customWidth = 9;
+			customHeight = 9;
+			customMines = 10;
+			customSet = false;
+		}
+
 		// Adjust the context menu entries
 		var lvl = ["beg", "int", "exp", "cst"];
 		for (var i = 0; i < lvl.length; i++)
@@ -258,13 +308,28 @@
 	function setCustomBoard(width, height, mines, skipCookie)
 	{
 		// Override invalid board preferences
+		// Width must be a decimal integer
+		if (!/^\d*$/.test(width)) {
+			width = 9;
+		}
+
 		// Width must be between 9 and 30, inclusive
 		width = (width > 30 ? 30 : width);
 		width = (width < 9 ? 9 : width);
 
+		// Height must be a decimal integer
+		if (!/^\d*$/.test(height)) {
+			height = 9;
+		}
+
 		// Height must be between 9 and 24, inclusive
 		height = (height > 24 ? 24 : height);
 		height = (height < 9 ? 9 : height);
+
+		// Number of mines must be a decimal integer
+		if (!/^\d*$/.test(mines)) {
+			mines = 10;
+		}
 
 		// Mines must be between 10 and (x-1)(y-1), inclusive
 		mines = (mines < 10 ? 10 : mines);
