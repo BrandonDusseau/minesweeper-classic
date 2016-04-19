@@ -36,6 +36,7 @@
 	var groupActive  = false; // Whether the middle button was pressed down on a tile
 	var allowMarks   = true;  // Whether ? tiles are allowed
 	var allowSound   = false; // Whether sound plays on certain events
+	var allowColor   = true;  // Whether to display a color gameboard
 	var customSet    = false; // Whether the board has custom dimensions set up
 	var customWidth  = 9;     // Width of board on custom level
 	var customHeight = 9;     // Height of board on custom level
@@ -163,6 +164,11 @@
 			setSound(!allowSound);
 		});
 
+		// Enable/disable color
+		$("#game_clr:not(.disabled)").on('click', function(e) {
+			setColor(!allowColor);
+		});
+
 		// Commit the changes in the custom field dialog
 		$("#cst_ok").on('click', customBoardConfirm);
 
@@ -246,6 +252,35 @@
 		if (!skipCookie)
 		{
 			setCookie("SWEEP_MRK", allowMarks ? 1 : 0, 365);
+		}
+	}
+
+	/**
+	 * Enables or disables color display
+	 * @param boolean enabled True to enable, false to disable
+	 * @param boolean skipCookie If true, do not set cookie
+	 * @return undefined
+	 */
+	function setColor(enabled, skipCookie)
+	{
+		// Apply the setting
+		if (enabled == true)
+		{
+			allowColor = true;
+			$("#game_clr").addClass("checked");
+			$(".minesweeper").removeClass("no-color");
+		}
+		else
+		{
+			allowColor = false;
+			$("#game_clr").removeClass("checked");
+			$(".minesweeper").addClass("no-color");
+		}
+
+		// Write preference to cookie if enabled
+		if (!skipCookie)
+		{
+			setCookie("SWEEP_CLR", allowColor ? 1 : 0, 365);
 		}
 	}
 
@@ -1121,17 +1156,27 @@
 
 			// Restore sound preference
 			var sndPref = getCookie("SWEEP_SND");
-			if (sndPref !== "")
+			if (sndPref == "")
 			{
-				setSound(sndPref, true);
+				sndPref = false;
 			}
+			setSound(sndPref, true);
 
 			// Restore marks preference
 			var mrkPref = getCookie("SWEEP_MRK");
-			if (mrkPref !== "")
+			if (mrkPref == "")
 			{
-				setMarks(mrkPref, true);
+				mrkPref = true;
 			}
+			setMarks(mrkPref, true);
+
+			// Restore color preference
+			var clrPref = getCookie("SWEEP_CLR");
+			if (clrPref == "")
+			{
+				clrPref = true;
+			}
+			setColor(clrPref, true);
 
 			// Restore level preference
 			// This must be last because it may reinitialize the game board

@@ -14,13 +14,15 @@ $digit-suboffset-x: -11px;
 $tile-offset-x: 0;
 $tile-offset-y: -21px;
 $tile-suboffset: -16px;
+$bw-explode-offset-x: -107px;
+$bw-explode-offset-y: -60px;
 $wa-offset-x: -64px;
 $wa-offset-y: -21px;
 $wa-suboffset-x: -13px;
 $wa-suboffset-y: -11px;
 $icnsm-offset-x: -117px;
 $icnsm-offset-y: -21px;
-$chkmk-offset-x: -96px;
+$chkmk-offset-x: -121px;
 $chkmk-offset-y: -60px;
 $chkmk-suboffset-y: -13px;
 $icnlg-offset-x: -64px;
@@ -512,6 +514,92 @@ body {
 
 				.ms-panel.exploded {
 					background-color: #F00;
+				}
+			}
+		}
+
+		.minesweeper.no-color {
+			.ms-status {
+				border-left-color: #000;
+				border-top-color: #000;
+
+				.num-box {
+					border-color: #000;
+					border-right-color: #FFF;
+					border-bottom-color: #FFF;
+
+					.digit {
+						background-image: image-url("spritebw.gif", false, false);
+					}
+				}
+
+				.smiley-btn {
+					border-color: #000;
+					border-top-width: 2px;
+					border-left-width: 2px;
+					width: 23px;
+					height: 23px;
+					background-image: image-url("bw_bg.gif", false, false);
+
+					.smiley-inner {
+						border-top-width: 1px;
+						border-left-width: 1px;
+						border-right-color: #000;
+						border-bottom-color: #000;
+
+						.smiley-icon {
+							background-image: image-url("spritebw.gif", false, false);
+						}
+					}
+				}
+
+				.smiley-btn:active {
+					.smiley-inner {
+						border: none;
+					}
+				}
+			}
+
+			.ms-grid {
+				background-image: image-url("bw_bg.gif", false, false);
+				border-left-color: #000;
+				border-top-color: #000;
+				background-color: #FFF;
+
+				.ms-panel {
+					background-color: transparent;
+					background-repeat: repeat;
+					height: 13px;
+					width: 13px;
+					border-left-width: 1px;
+					border-top-width: 1px;
+					border-right-color: #000;
+					border-bottom-color: #000;
+				}
+
+				.ms-panel.down, .ms-panel.triggered {
+					height: 15px;
+					width: 15px;
+					border-color: #000;
+					background-color: #FFF;
+					border: 1px solid #000;
+					border-top: none;
+					border-left: none;
+				}
+
+				.ms-panel.flagged, .ms-panel.marked, .ms-panel.m1, .ms-panel.m2,
+				.ms-panel.m3, .ms-panel.m4, .ms-panel.m5, .ms-panel.m6, .ms-panel.m7,
+				.ms-panel.m8, .ms-panel.mine, .ms-panel.bogus, .ms-panel.exploded {
+					background-image: image-url("spritebw.gif", false, false);
+				}
+
+				.ms-panel.exploded {
+					background-color: #000;
+					background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 4));
+				}
+
+				.ms-panel.exploded.down {
+					background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + ($tile-suboffset * 4));
 				}
 			}
 		}
