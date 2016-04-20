@@ -42,7 +42,7 @@
 		bindTitleDrag();
 
 		// Handle window close
-		$(".window .btn.x-btn").on('click', function (e) {
+		$(".window .btn-container.x-btn").on('click', function (e) {
 			// Disallow close operation if button is disabled
 			if ($(this).hasClass('disabled'))
 			{
@@ -144,7 +144,7 @@
 		});
 
 		// Switch the active button when clicked
-		$('.btns .btn').on('mousedown', function (e) {
+		$('.btns .btn-container').on('mousedown', function (e) {
 			if (!$(this).hasClass('active'))
 			{
 				$(this).closest('.btns').find('.active').removeClass('active');
@@ -220,7 +220,7 @@
 	function bindTitleDrag()
 	{
 		// Target window title bars, but exclude icons and buttons
-		var target = $(".title-bar *:not(.btn-container, .btn-container *, .icon)");
+		var target = $(".title-bar *:not(.window-btns, .window-btns *, .icon)");
 
 		// Title mouse down binding
 		target.on('mousedown', function(e) {
