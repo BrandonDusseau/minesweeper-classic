@@ -95,6 +95,7 @@
 					// TODO
 				}
 			}
+
 			// Bind keys to custom board dialog
 			if ($(".window#ms-custom-board").hasClass("focused")) {
 				// ESC - cancel
@@ -104,6 +105,14 @@
 				// Enter - OK
 				else if (e.which == 13) {
 					customBoardConfirm();
+				}
+			}
+
+			// Bind keys to high score dialog
+			if ($(".window#ms-high-score").hasClass("focused")) {
+				// ESC / Enter - OK
+				if (e.which == 27 || e.which == 13) {
+					highScoreConfirm();
 				}
 			}
 		});
@@ -175,6 +184,9 @@
 		// Cancel the changes in the custom field dialog
 		$("#cst_cancel").on('click', customBoardCancel);
 
+		// Commit the changes in the high score dialog
+		$("#hs_ok").on('click', highScoreConfirm);
+
 		initGame(0);
 	});
 
@@ -183,6 +195,7 @@
 	 * @return void
 	 */
 	function customBoardConfirm() {
+		// Set up a new game board with the custom parameters
 		var cstWidth = $("#cst-width").val();
 		var cstHeight = $("#cst-height").val();
 		var cstMines = $("#cst-mines").val();
@@ -197,9 +210,19 @@
 	 * @return void
 	 */
 	function customBoardCancel() {
+		// Canceling the custom dialog results in resetting the current game board
 		initGame(difficulty);
 		env.closeWindow($("#ms-custom-board"));
 	}
+
+	/**
+	 * Event handler for high score dialog OK
+	 * @return void
+	 */
+	 function highScoreConfirm() {
+		 updateLeaderboard(difficulty, $("#ms-high-score #hs-name").val(), time);
+		 env.closeWindow($("#ms-high-score"));
+	 }
 
 	/**
 	 * Enables or disables sound
@@ -1414,18 +1437,49 @@
 			document.getElementById("snd_win").play();
 		}
 
-		// Update the leaderboard if the score is better
+		// A new low time will trigger the name window
 		if (difficulty < 3 && difficulty >= 0)
 		{
-			if (leaderboard[difficulty][1] < time)
+			if (leaderboard[difficulty][1] > time)
 			{
-				leaderboard[difficulty][1] = time;
-				setCookie("SWEEP_TOP", JSON.stringify(leaderboard), 365);
+				// Update the text in the window
+				var levelNames = ["beginner", "intermediate", "expert"];
+				var highScoreMsgContainer = $("#ms-high-score #hs-description");
+				var highScoreMsg = highScoreMsgContainer.data('hs-msg').replace("%LEVEL%", levelNames[difficulty]);
+				highScoreMsgContainer.html(highScoreMsg);
+
+				// Prepopulate the name field with the last name used for this level
+				$("#ms-high-score #hs-name").val(leaderboard[difficulty][0]);
+
+				// Display low time window
+				var containerOffset = $(".minesweeper").offset();
+				var statusOffset = $(".ms-status").offset().top + $(".ms-status").outerHeight();
+				env.showWindow($("#ms-high-score"), containerOffset.left, statusOffset, $("#ms-main"));
+				$("#ms-high-score #hs-name").select();
 			}
 		}
 
 		// Game over!
 		endGame();
+	}
+
+	/**
+	 * Updates the leaderboard
+
+	 * @param int    difficulty Difficulty to update (0-2 valid)
+	 * @param string name       Name of player
+	 * @param int    time       Time taken by player to complete game
+	 * @return void
+	 */
+	function updateLeaderboard(difficulty, name, time) {
+		if (difficulty < 0 || difficulty > 2 || time < 0 || time > 999) {
+			return;
+		}
+
+		// Update the leaderboard and save it
+		leaderboard[difficulty][0] = name;
+		leaderboard[difficulty][1] = time;
+		setCookie("SWEEP_TOP", JSON.stringify(leaderboard), 365);
 	}
 
 	/**
