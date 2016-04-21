@@ -1,6 +1,6 @@
 /*
  * Minesweeper Classic, a Microsoft Minesweeper clone for the browser
- * Copyright (c) 2015 Brandon Dusseau
+ * Copyright (c) 2016 Brandon Dusseau
  * Licensed with the MIT license; see LICENSE file for details
  *
  * Some graphical assets copyright (c) 1981-2007 Microsoft Corporation
@@ -227,10 +227,10 @@
 	/**
 	 * Enables or disables sound
 	 * @param boolean enabled True to enable, false to disable
-	 * @param boolean skipCookie If true, do not set cookie
+	 * @param boolean skipSave If true, do not save preference
 	 * @return undefined
 	 */
-	function setSound(enabled, skipCookie)
+	function setSound(enabled, skipSave)
 	{
 		// Apply the setting
 		if (enabled == true)
@@ -244,20 +244,20 @@
 			$("#game_snd").removeClass("checked");
 		}
 
-		// Write preference to cookie if enabled
-		if (!skipCookie)
+		// Write preference to local storage if enabled
+		if (!skipSave)
 		{
-			setCookie("SWEEP_SND", allowSound ? 1 : 0, 365);
+			localStorage.setItem('snd', allowSound);
 		}
 	}
 
 	/**
 	 * Enables or disables marks (?)
 	 * @param boolean enabled True to enable, false to disable
-	 * @param boolean skipCookie If true, do not set cookie
+	 * @param boolean skipSave If true, do not save preference
 	 * @return undefined
 	 */
-	function setMarks(enabled, skipCookie)
+	function setMarks(enabled, skipSave)
 	{
 		// Apply the setting
 		if (enabled == true)
@@ -271,20 +271,20 @@
 			$("#game_mrk").removeClass("checked");
 		}
 
-		// Write preference to cookie if enabled
-		if (!skipCookie)
+		// Write preference to local storage if enabled
+		if (!skipSave)
 		{
-			setCookie("SWEEP_MRK", allowMarks ? 1 : 0, 365);
+			localStorage.setItem('mrk', allowMarks);
 		}
 	}
 
 	/**
 	 * Enables or disables color display
 	 * @param boolean enabled True to enable, false to disable
-	 * @param boolean skipCookie If true, do not set cookie
+	 * @param boolean skipSave If true, do not save preference
 	 * @return undefined
 	 */
-	function setColor(enabled, skipCookie)
+	function setColor(enabled, skipSave)
 	{
 		// Apply the setting
 		if (enabled == true)
@@ -300,20 +300,20 @@
 			$(".minesweeper").addClass("no-color");
 		}
 
-		// Write preference to cookie if enabled
-		if (!skipCookie)
+		// Write preference to local storage if enabled
+		if (!skipSave)
 		{
-			setCookie("SWEEP_CLR", allowColor ? 1 : 0, 365);
+			localStorage.setItem('clr', allowColor);
 		}
 	}
 
 	/**
 	 * Sets the difficulty level
 	 * @param int diff level
-	 * @param boolean skipCookie If true, do not set cookie
+	 * @param boolean skipSave If true, do not save preference
 	 * @return undefined
 	 */
-	function setDifficulty(diff, skipCookie)
+	function setDifficulty(diff, skipSave)
 	{
 		// Only accept valid levels
 		if (diff < 0 || diff > 3)
@@ -345,10 +345,10 @@
 			}
 		}
 
-		// Write preference to cookie if enabled
-		if (!skipCookie)
+		// Write preference to local storage if enabled
+		if (!skipSave)
 		{
-			setCookie("SWEEP_LVL", diff, 365);
+			localStorage.setItem('lvl', diff);
 		}
 
 		// Apply the setting
@@ -360,10 +360,10 @@
 	 * @param int width Width of board
 	 * @param int heightHeight of board
 	 * @param int mines Number of mines to place
-	 * @param boolean skipCookie If true, do not set cookie
+	 * @param boolean skipSave If true, do not save preference
 	 * @return undefined
 	 */
-	function setCustomBoard(width, height, mines, skipCookie)
+	function setCustomBoard(width, height, mines, skipSave)
 	{
 		// Override invalid board preferences
 		// Width must be a decimal integer
@@ -400,12 +400,12 @@
 		customHeight = height;
 		customMines = mines;
 
-		// Write preference to cookie if enabled
-		if (!skipCookie)
+		// Write preference to local storage if enabled
+		if (!skipSave)
 		{
-			setCookie("SWEEP_WIDTH", width, 365);
-			setCookie("SWEEP_HEIGHT", height, 365);
-			setCookie("SWEEP_MINES", mines, 365);
+			localStorage.setItem('board_width', width);
+			localStorage.setItem('board_height', height);
+			localStorage.setItem('board_mines', mines);
 		}
 	}
 
@@ -1161,56 +1161,47 @@
 		{
 			firstGame = false;
 
-			// Load the leaderboard from cookie, if available
-			var top = getCookie("SWEEP_TOP");
+			// Load the leaderboard from local storage, if available
+			var top = localStorage.getItem('leaderboard');
 			try
 			{
-				if (top !== "")
+				if (top != null)
 				{
 					leaderboard = $.parseJSON(top);
 				}
 			}
 			catch (e)
 			{
-				// Silently reset if the cookie is malformed
+				// Silently reset if the leaderboard storage is malformed
 				console.log("Error: leaderboard data is corrupt. Resetting to default...");
-				setCookie("SWEEP_TOP", leaderboard, 365);
+				localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
 			}
 
 			// Restore sound preference
-			var sndPref = getCookie("SWEEP_SND");
-			if (sndPref == "")
-			{
-				sndPref = false;
-			}
+			var sndPref = localStorage.getItem('snd');
+			sndPref = (sndPref == "true" || sndPref == null) ? true : false;
 			setSound(sndPref, true);
 
 			// Restore marks preference
-			var mrkPref = getCookie("SWEEP_MRK");
-			if (mrkPref == "")
-			{
-				mrkPref = true;
-			}
+			var mrkPref = localStorage.getItem('mrk');
+			mrkPref = (mrkPref == "true" || mrkPref == null) ? true : false;
 			setMarks(mrkPref, true);
 
 			// Restore color preference
-			var clrPref = getCookie("SWEEP_CLR");
-			if (clrPref == "")
-			{
-				clrPref = true;
-			}
+			var clrPref = localStorage.getItem('clr');
+			clrPref = (clrPref == "true" || clrPref == null) ? true : false;
 			setColor(clrPref, true);
 
 			// Restore level preference
 			// This must be last because it may reinitialize the game board
-			var lvlPref = getCookie("SWEEP_LVL");
-			var bwPref = getCookie("SWEEP_WIDTH");
-			var bhPref = getCookie("SWEEP_HEIGHT");
-			var bmPref = getCookie("SWEEP_MINES");
-			if (lvlPref !== "")
+			var lvlPref = localStorage.getItem('lvl');
+			var bwPref = localStorage.getItem('board_width');
+			var bhPref = localStorage.getItem('board_height');
+			var bmPref = localStorage.getItem('board_mines');
+			if (lvlPref !== null)
 			{
 				// Don't restore the preference if custom has invalid bounds
-				if (lvlPref != 3 || (bwPref !== "" && bhPref !== "" && bmPref !== ""))
+				if (lvlPref != 3 || (bwPref !== null && bhPref != null && bmPref != null))
 				{
 					if (lvlPref == 3)
 					{
@@ -1479,47 +1470,6 @@
 		// Update the leaderboard and save it
 		leaderboard[difficulty][0] = name;
 		leaderboard[difficulty][1] = time;
-		setCookie("SWEEP_TOP", JSON.stringify(leaderboard), 365);
-	}
-
-	/**
-	 * Sets a cookie
-	 * @param string name Name of cookie
-	 * @param string value Value of cookie
-	 * @param int expiry Expiration in days
-	 * @return undefined
-	 */
-	function setCookie(name, value, expiry)
-	{
-		// Convert days to ms
-		expiry *= 86400000;
-    var expDate = new Date(Date.now() + expiry);
-    var expires = "expires=" + expDate.toUTCString();
-    document.cookie = name + "=" + value + "; " + expires;
-	}
-
-	/**
-	 * Gets the value of a cookie
-	 * @param string name Name of cookie
-	 * @return string Cookie value
-	 */
-	function getCookie(name)
-	{
-		name = name + "=";
-		var cookieList = document.cookie.split(';');
-		for (var i = 0; i < cookieList.length; i++) {
-			var cookie = cookieList[i];
-
-			while (cookie.charAt(0) == ' ')
-			{
-				cookie = cookie.substring(1);
-			}
-
-			if (cookie.indexOf(name) == 0)
-				{
-					return cookie.substring(name.length,cookie.length);
-				}
-		}
-		return "";
+		localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
 	}
 })();
