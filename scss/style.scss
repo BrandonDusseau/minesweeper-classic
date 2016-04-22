@@ -649,7 +649,7 @@ body {
 	display: inline-block;
 }
 
-.window:not(.focused) .title-bar, .window.focused .title-bar.blinking {
+.window:not(.focused) .inner-window .title-bar, .window.focused .inner-window .title-bar.blinking {
 		@include background-image(linear-gradient(to right, #808080, #C0C0C0));
 
 		.title {
