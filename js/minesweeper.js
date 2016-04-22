@@ -1234,7 +1234,7 @@
 
 			// Restore sound preference
 			var sndPref = localStorage.getItem('snd');
-			sndPref = (sndPref == "true" || sndPref == null) ? true : false;
+			sndPref = (sndPref == "true") ? true : false;
 			setSound(sndPref, true);
 
 			// Restore marks preference
