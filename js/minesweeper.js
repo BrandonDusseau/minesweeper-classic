@@ -102,9 +102,14 @@
 				if (e.which == 27) {
 					customBoardCancel();
 				}
-				// Enter - OK
+				// Enter - whichever button is active, or confirm if text box is active
 				else if (e.which == 13) {
-					customBoardConfirm();
+					if ($("#cst-form input").is(':focus')) {
+						customBoardConfirm();
+					}
+					else {
+						$(this).find(".btn-container.active").first().click();
+					}
 				}
 			}
 
@@ -113,6 +118,18 @@
 				// ESC / Enter - OK
 				if (e.which == 27 || e.which == 13) {
 					highScoreConfirm();
+				}
+			}
+
+			// Bind keys to leaderboard dialog
+			if ($(".window#ms-high-score").hasClass("focused")) {
+				// ESC - Exit
+				if (e.which == 27) {
+					leaderboardConfirm();
+				}
+				// Enter - whichever button is active
+				else if (e.which == 13) {
+					$(this).find(".btn-container.active").first().click();
 				}
 			}
 		});
@@ -178,6 +195,11 @@
 			setColor(!allowColor);
 		});
 
+		// Open the leaderboard
+		$("#game_ldr:not(.disabled)").on('click', function(e) {
+			openLeaderboard();
+		});
+
 		// Commit the changes in the custom field dialog
 		$("#cst_ok").on('click', customBoardConfirm);
 
@@ -186,6 +208,12 @@
 
 		// Commit the changes in the high score dialog
 		$("#hs_ok").on('click', highScoreConfirm);
+
+		// Close the leaderboard dialog
+		$("#leader_ok").on('click', leaderboardConfirm);
+
+		// Reset the leaderboard
+		$("#leader_reset").on('click', resetLeaderboard);
 
 		initGame(0);
 	});
@@ -219,10 +247,29 @@
 	 * Event handler for high score dialog OK
 	 * @return void
 	 */
-	 function highScoreConfirm() {
-		 updateLeaderboard(difficulty, $("#ms-high-score #hs-name").val(), time);
-		 env.closeWindow($("#ms-high-score"));
-	 }
+	function highScoreConfirm() {
+		updateLeaderboard(difficulty, $("#ms-high-score #hs-name").val(), time);
+		env.closeWindow($("#ms-high-score"));
+		openLeaderboard();
+	}
+
+	/**
+		* Event handler for leaderboard dialog OK
+		* @return void
+		*/
+	function leaderboardConfirm() {
+		env.closeWindow($("#ms-leaderboard"));
+	}
+
+	/**
+		* Opens the leaderboard window
+		* @return void
+		*/
+	function openLeaderboard() {
+		var containerOffset = $(".minesweeper").offset();
+		var statusOffset = $(".ms-status").offset().top + $(".ms-status").outerHeight();
+		env.showWindow($("#ms-leaderboard"), containerOffset.left, statusOffset, $("#ms-main"));
+	}
 
 	/**
 	 * Enables or disables sound
@@ -1160,14 +1207,14 @@
 		if (firstGame)
 		{
 			firstGame = false;
-
 			// Load the leaderboard from local storage, if available
 			var top = localStorage.getItem('leaderboard');
+			var leaders = leaderboard;
 			try
 			{
 				if (top != null)
 				{
-					leaderboard = $.parseJSON(top);
+					leaders = $.parseJSON(top);
 				}
 			}
 			catch (e)
@@ -1175,6 +1222,12 @@
 				// Silently reset if the leaderboard storage is malformed
 				console.log("Error: leaderboard data is corrupt. Resetting to default...");
 				localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+			}
+
+			// Initialize the internal leaderboard
+			for (var leaderLvl = 0; leaderLvl < 3; leaderLvl++) {
+				console.log(leaders[leaderLvl]);
+				updateLeaderboard(leaderLvl, leaders[leaderLvl][0], leaders[leaderLvl][1], true);
 			}
 
 			// Restore sound preference
@@ -1230,7 +1283,7 @@
 		rebindEvents();
 
 		// Display the window if it was hidden
-		env.showWindow($("#ms-main"));
+		env.showWindow($("#ms-main"), 40, 40);
 	}
 
 	/**
@@ -1460,16 +1513,44 @@
 	 * @param int    difficulty Difficulty to update (0-2 valid)
 	 * @param string name       Name of player
 	 * @param int    time       Time taken by player to complete game
+	 * @param bool   skipSave   Do not save leaderboard information to local storage
 	 * @return void
 	 */
-	function updateLeaderboard(difficulty, name, time) {
-		if (difficulty < 0 || difficulty > 2 || time < 0 || time > 999) {
+	function updateLeaderboard(difficulty, name, time, skipSave) {
+		if (difficulty < 0 || difficulty > 2 || time < 0 || time > 999)
+		{
 			return;
 		}
+
+		// Truncate name if longer than 32 characters
+		name = name.substr(0, 32);
 
 		// Update the leaderboard and save it
 		leaderboard[difficulty][0] = name;
 		leaderboard[difficulty][1] = time;
-		localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+
+		if (!skipSave)
+		{
+			localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+		}
+
+		// Update the leaderboard window
+		var row = $("#ms-leaderboard .leader-container .row[data-leader-row=" + difficulty + "]");
+		var timeText = $("#ms-leaderboard .leader-container").data('time-string').replace('%TIME%', time);
+		console.log(timeText);
+		console.log(row.find('.time'));
+		row.find('.time').first().html(timeText);
+		row.find('.name').first().html(name);
+	}
+
+	/**
+	 * Resets leaderboard scores to default
+	 *
+	 * @return void
+	 */
+	function resetLeaderboard() {
+		for (var lvl = 0; lvl < 2; lvl++) {
+			updateLeaderboard(lvl, "Anonymous", 999);
+		}
 	}
 })();

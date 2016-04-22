@@ -701,11 +701,6 @@ body {
 	}
 }
 
-#ms-main {
-	top: 40px;
-	left: 40px;
-}
-
 #ms-custom-board {
 	.cst-form {
 		margin: 34px 15px 37px;
@@ -793,6 +788,72 @@ body {
 				.inner-btn {
 					width: 49px;
 				}
+			}
+		}
+	}
+}
+
+#ms-leaderboard {
+	.btns {
+		margin-bottom: 13px;
+		margin-left: 38px;
+
+		.btn-container {
+			.btn {
+				.inner-btn {
+					padding-top: 3px;
+					padding-bottom: 2px;
+				}
+			}
+		}
+
+		.btn-container#leader_reset {
+			margin-right: 56px;
+
+			.btn {
+				.inner-btn {
+					width: 71px;
+				}
+			}
+		}
+
+		.btn-container#leader_ok {
+			.btn {
+				.inner-btn {
+					width: 40px;
+				}
+			}
+		}
+	}
+
+	.leader-container {
+		margin: 26px 0 18px 16px;
+
+		.row {
+			margin-bottom: 4px;
+		}
+
+		.row:last-of-type {
+			margin: 0;
+		}
+
+		.row {
+			.category, .time, .name {
+				display: inline-block;
+				height: 1.05em;
+				overflow: hidden;
+			}
+
+			.category {
+				width: 72px;
+			}
+
+			.time {
+				width: 79px;
+			}
+
+			.name {
+				width: 82px;
 			}
 		}
 	}

@@ -62,7 +62,7 @@
 						<div class="menu-item" id="game_clr"><div class="menu-text">Color</div></div>
 						<div class="menu-item" id="game_snd"><div class="menu-text">Sound</div></div>
 						<div class="separator-item"><div class="separator"></div></div>
-						<div class="menu-item disabled" id="game_ldr"><div class="menu-text">Best Times...</div></div>
+						<div class="menu-item" id="game_ldr"><div class="menu-text">Best Times...</div></div>
 						<div class="separator-item"><div class="separator"></div></div>
 						<div class="menu-item disabled"><div class="menu-text">Exit</div></div>
 					</div>
@@ -155,14 +155,64 @@
 	</div>
 	<div class="window" id="ms-high-score">
 		<div class="inner-window">
-			<div id="hs-description" data-hs-msg="You have the fastest time<br />for the %LEVEL% level.<br />Please enter your name.">
-				You have the fastest time<br />for the %LEVEL% level.<br />Please enter your name.
-			</div>
-			<div class="input-container"><input type="text" name="name" id="hs-name" value="Anonymous" /></div>
+			<div id="hs-description" data-hs-msg="You have the fastest time<br />for the %LEVEL% level.<br />Please enter your name."></div>
+			<div class="input-container"><input type="text" size="32" name="name" id="hs-name" value="Anonymous" /></div>
 			<div class="btns">
 				<div class="btn-container active">
 					<div class="btn">
 						<div class="inner-btn" id="hs_ok">OK</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="window" id="ms-leaderboard">
+		<div class="inner-window">
+			<div class="title-bar">
+				<span class="icon"></span>
+				<div class="window-btns">
+					<div class="btn-container disabled">
+						<div class="btn">
+							<div class="inner-btn question">
+								<div class="btn-icon"></div>
+							</div>
+						</div>
+					</div><div class="btn-container x-btn">
+						<div class="btn">
+							<div class="inner-btn close">
+								<div class="btn-icon"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="title">Fastest Mine Sweepers</div>
+			</div>
+			<div class="leader-container" data-time-string="%TIME% seconds">
+				<div class="row" data-leader-row="0">
+					<div class="category">Beginner:</div>
+					<div class="time"></div>
+					<div class="name"></div>
+				</div>
+				<div class="row" data-leader-row="1">
+					<div class="category">Intermediate:</div>
+					<div class="time"></div>
+					<div class="name"></div>
+				</div>
+				<div class="row" data-leader-row="2">
+					<div class="category">Expert:</div>
+					<div class="time"></div>
+					<div class="name"></div>
+				</div>
+			</div>
+			<div class="btns">
+				<div class="btn-container" id="leader_reset">
+					<div class="btn">
+						<div class="inner-btn">Reset Scores</div>
+					</div>
+				</div>
+				<div class="btn-container active" id="leader_ok">
+					<div class="btn">
+						<div class="inner-btn">OK</div>
 					</div>
 				</div>
 			</div>
