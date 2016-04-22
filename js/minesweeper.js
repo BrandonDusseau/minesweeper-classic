@@ -104,11 +104,11 @@
 				}
 				// Enter - whichever button is active, or confirm if text box is active
 				else if (e.which == 13) {
-					if ($("#cst-form input").is(':focus')) {
+					if ($(".cst-form input").is(':focus')) {
 						customBoardConfirm();
 					}
 					else {
-						$(this).find(".btn-container.active").first().click();
+						$("#ms-custom-board .btns .btn-container.active").click();
 					}
 				}
 			}
@@ -122,14 +122,14 @@
 			}
 
 			// Bind keys to leaderboard dialog
-			if ($(".window#ms-high-score").hasClass("focused")) {
+			if ($(".window#ms-leaderboard").hasClass("focused")) {
 				// ESC - Exit
 				if (e.which == 27) {
 					leaderboardConfirm();
 				}
 				// Enter - whichever button is active
 				else if (e.which == 13) {
-					$(this).find(".btn-container.active").first().click();
+					$(this).find("#ms-leaderboard .btns .btn-container.active").click();
 				}
 			}
 		});
@@ -1226,7 +1226,6 @@
 
 			// Initialize the internal leaderboard
 			for (var leaderLvl = 0; leaderLvl < 3; leaderLvl++) {
-				console.log(leaders[leaderLvl]);
 				updateLeaderboard(leaderLvl, leaders[leaderLvl][0], leaders[leaderLvl][1], true);
 			}
 
@@ -1537,8 +1536,6 @@
 		// Update the leaderboard window
 		var row = $("#ms-leaderboard .leader-container .row[data-leader-row=" + difficulty + "]");
 		var timeText = $("#ms-leaderboard .leader-container").data('time-string').replace('%TIME%', time);
-		console.log(timeText);
-		console.log(row.find('.time'));
 		row.find('.time').first().html(timeText);
 		row.find('.name').first().html(name);
 	}

@@ -314,6 +314,10 @@
 		{
 			target.removeClass('open active focused');
 
+			// Reset active button state
+			target.find(".btn-container.active").removeClass('active');
+			target.find(".btn-container.default").addClass('active');
+
 			// If this is a modal, focus the parent. Otherwise,
 			if (target.hasClass('modal'))
 			{
