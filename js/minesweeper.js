@@ -80,8 +80,7 @@
 		// Bind keys
 		$("body").on('keydown', function (e) {
 			// Bind keys to Minesweeper window
-			if ($(".window#ms-main").hasClass('focused'))
-			{
+			if ($(".window#ms-main").hasClass('focused')) {
 				// F2 - new game
 				if (e.which == 113)
 				{
@@ -94,6 +93,7 @@
 					e.preventDefault();
 					// TODO
 				}
+				return;
 			}
 
 			// Bind keys to custom board dialog
@@ -111,6 +111,7 @@
 						$("#ms-custom-board .btns .btn-container.active").click();
 					}
 				}
+				return;
 			}
 
 			// Bind keys to high score dialog
@@ -119,6 +120,7 @@
 				if (e.which == 27 || e.which == 13) {
 					highScoreConfirm();
 				}
+				return;
 			}
 
 			// Bind keys to leaderboard dialog
@@ -131,6 +133,7 @@
 				else if (e.which == 13) {
 					$(this).find("#ms-leaderboard .btns .btn-container.active").click();
 				}
+				return;
 			}
 		});
 
