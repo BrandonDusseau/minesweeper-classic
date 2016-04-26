@@ -68,6 +68,7 @@ body {
 			border: 1px solid #404040;
 			border-top: none;
 			border-left: none;
+			overflow: hidden;
 
 			.btn {
 				border: 1px solid #FFF;
@@ -700,6 +701,9 @@ body {
 		}
 	}
 }
+.window.focused .btn-container.active .btn .inner-btn {
+	padding: 5px 0;
+}
 
 #ms-custom-board {
 	.cst-form {
@@ -758,9 +762,6 @@ body {
 	}
 }
 
-.window.focused .btn-container.active .btn .inner-btn {
-	padding: 5px 0;
-}
 
 #ms-high-score {
 	text-align: center;
@@ -801,8 +802,7 @@ body {
 		.btn-container {
 			.btn {
 				.inner-btn {
-					padding-top: 3px;
-					padding-bottom: 2px;
+					padding: 3px 0 2px 1px;
 				}
 			}
 		}
@@ -842,6 +842,7 @@ body {
 				display: inline-block;
 				height: 1.05em;
 				overflow: hidden;
+				white-space: nowrap;
 			}
 
 			.category {
@@ -857,4 +858,8 @@ body {
 			}
 		}
 	}
+}
+
+.window.focused#ms-leaderboard .btn-container.active .btn .inner-btn {
+	padding: 2px 0;
 }
