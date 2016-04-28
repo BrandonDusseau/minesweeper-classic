@@ -20,7 +20,7 @@ $wa-suboffset-x: -13px;
 $wa-suboffset-y: -11px;
 $icnsm-offset-x: -117px;
 $icnsm-offset-y: -21px;
-$chkmk-offset-x: -121px;
+$chkmk-offset-x: -122px;
 $chkmk-offset-y: -60px;
 $chkmk-suboffset-y: -13px;
 $icnlg-offset-x: -66px;
@@ -44,6 +44,10 @@ body {
 .window * {
 	cursor: default;
 	@include user-select(none);
+}
+
+.window a {
+	cursor: pointer;
 }
 
 .window {
@@ -110,7 +114,7 @@ body {
 				display: inline-block;
 				width: 16px;
 				height: 16px;
-				margin-right: 2px;
+				margin-right: 1px;
 				margin-top: -1px;
 				float: left;
 				background: image-url("sprite.gif", false, false) $icnsm-offset-x $icnsm-offset-y no-repeat;
@@ -191,7 +195,6 @@ body {
 
 		.menu-bar {
 			color: $border-med;
-			margin-bottom: 1px;
 			position: relative;
 
 			.menu-btn {
@@ -229,10 +232,10 @@ body {
 					border: 1px solid #FFF;
 					border-right-color: $border-med;
 					border-bottom-color: $border-med;
-					padding: 1px;
+					padding: 1px 2px;
 
 					.menu-item {
-						padding: 3px 41px 3px 16px;
+						padding: 3px 38px 3px 16px;
 						overflow: hidden;
 						height: 11px;
 						position: relative;
@@ -309,7 +312,7 @@ body {
 		}
 
 		.minesweeper {
-			padding: 5px;
+			padding: 6px 5px 5px 6px;
 			background-color: #c0c0c0;
 			border: 3px solid #FFF;
 			border-bottom: none;
@@ -317,13 +320,12 @@ body {
 
 			.ms-status {
 				height: 29px;
-				margin-bottom: 5px;
+				margin-bottom: 6px;
 				border: 2px solid $border-med;
 				border-right-color: #FFF;
 				border-bottom-color: #FFF;
 				padding: 4px 7px 0 5px;
 				overflow: hidden;
-				text-align: center;
 
 				.num-box {
 					height: 23px;
@@ -401,6 +403,7 @@ body {
 					height: 24px;
 					border: 1px solid $border-med;
 					border-radius: 0 2px 0 2px;
+					margin-left: 14px;
 
 					.smiley-inner {
 						padding: 2px 1px 1px 2px;

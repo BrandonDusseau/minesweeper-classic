@@ -297,7 +297,7 @@
 		*/
 	function openAbout() {
 		var containerOffset = $(".minesweeper").offset();
-		env.showWindow($("#ms-about"), containerOffset.left + 29, containerOffset.top + 32, $("#ms-main"));
+		env.showWindow($("#ms-about"), containerOffset.left + 30, containerOffset.top + 33, $("#ms-main"));
 	}
 
 	/**
