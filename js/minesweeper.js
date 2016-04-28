@@ -135,6 +135,15 @@
 				}
 				return;
 			}
+
+			// Bind keys to about dialog
+			if ($(".window#ms-about").hasClass("focused")) {
+				// ESC / Enter - OK
+				if (e.which == 27 || e.which == 13) {
+					aboutConfirm();
+				}
+				return;
+			}
 		});
 
 		// Any click in the minesweeper space will trigger the active face
@@ -203,6 +212,11 @@
 			openLeaderboard();
 		});
 
+		// Open the about dialog
+		$("#help_abt:not(.disabled)").on('click', function(e) {
+			openAbout();
+		});
+
 		// Commit the changes in the custom field dialog
 		$("#cst_ok").on('click', customBoardConfirm);
 
@@ -217,6 +231,9 @@
 
 		// Reset the leaderboard
 		$("#leader_reset").on('click', resetLeaderboard);
+
+		// Close the about dialog
+		$("#about_ok").on('click', aboutConfirm);
 
 		initGame(0);
 	});
@@ -272,6 +289,23 @@
 		var containerOffset = $(".minesweeper").offset();
 		var statusOffset = $(".ms-status").offset().top + $(".ms-status").outerHeight();
 		env.showWindow($("#ms-leaderboard"), containerOffset.left, statusOffset, $("#ms-main"));
+	}
+
+	/**
+		* Opens the about window
+		* @return void
+		*/
+	function openAbout() {
+		var containerOffset = $(".minesweeper").offset();
+		env.showWindow($("#ms-about"), containerOffset.left + 29, containerOffset.top + 32, $("#ms-main"));
+	}
+
+	/**
+		* Event handler for about dialog OK
+		* @return void
+		*/
+	function aboutConfirm() {
+		env.closeWindow($("#ms-about"));
 	}
 
 	/**

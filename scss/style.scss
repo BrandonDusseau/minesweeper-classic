@@ -23,8 +23,8 @@ $icnsm-offset-y: -21px;
 $chkmk-offset-x: -121px;
 $chkmk-offset-y: -60px;
 $chkmk-suboffset-y: -13px;
-$icnlg-offset-x: -64px;
-$icnlg-offset-y: -60px;
+$icnlg-offset-x: -66px;
+$icnlg-offset-y: -62px;
 $smi-offset-x: -64px;
 $smi-offset-y: -43px;
 $smi-suboffset: -17px;
@@ -862,4 +862,52 @@ body {
 
 .window.focused#ms-leaderboard .btn-container.active .btn .inner-btn {
 	padding: 2px 0;
+}
+
+#ms-about {
+	.btns {
+		margin-bottom: 8px;
+		margin-left: 330px;
+
+		.btn-container {
+			.btn {
+				.inner-btn {
+					padding: 4px 0 3px 1px;
+					width: 70px;
+				}
+			}
+		}
+	}
+
+	.header {
+		width: 413px;
+		height: 77px;
+		background: image-url("about_header.gif", false, false) no-repeat 0 0;
+	}
+
+	.about-content {
+		width: 413px;
+		margin-top: 10px;
+		margin-bottom: 29px;
+
+		.ms-icon {
+			float: left;
+			margin-top: 4px;
+			margin-left: 34px;
+			width: 28px;
+			height: 28px;
+			background: image-url("sprite.gif", false, false) no-repeat $icnlg-offset-x $icnlg-offset-y;
+		}
+
+		.about-text {
+			display: inline-block;
+			margin-left: 43px;
+			line-height: 1.5em;
+			width: 307px;
+		}
+	}
+}
+
+.window.focused#ms-about .btn-container.active .btn .inner-btn {
+	padding: 3px 0;
 }
