@@ -74,6 +74,11 @@
 
 		// Bind click on menu to open it or close it
 		$(".menu-btn").on('mousedown', function (e) {
+			// If the window is frozen, do not perform the action
+			if ($(this).closest(".window").hasClass('modal-frozen')) {
+				return;
+			}
+
 			var target = $(this);
 			if (e.which == 1)
 			{
@@ -81,7 +86,7 @@
 
 				if (menuOpen)
 				{
-					// Prevent the menu from reopening
+					// Prevent the menu from reopening when clicking the button to close
 					if ($(this).hasClass("active"))
 					{
 						queueOpen = false;
@@ -94,7 +99,7 @@
 				// Menu will only open if it wasn't just closed
 				if (queueOpen)
 				{
-					openMenu(target, e);
+					openMenu(target);
 				}
 			}
 		});
@@ -105,7 +110,10 @@
 			{
 				var target = $(this);
 				resetMenus();
-				openMenu(target, e);
+
+				// Open the menu but do not set it to pending, as it was not opened by a click
+				// event.
+				openMenu(target, true);
 			}
 		});
 
@@ -116,7 +124,8 @@
 				resetMenus();
 			}
 
-			// Once event has bubbled to the top level, menu is in a closable state
+			// This prevents the menu from closing when the mousedown event traverses to the parent,
+			// of a menu button, which would cause the menu to immediately close again.
 			if ($(this).is("html")) {
 				menuPending = false;
 			}
@@ -156,15 +165,16 @@
 	/**
 	 * Displays a dropdown menu
 	 * @param jquery target Element clicked
+	 * @param bool   noPend If true, do not set menu to a pending state
 	 * @return undefined
 	 */
-	function openMenu(target)
+	function openMenu(target, noPend)
 	{
 		if (!menuOpen)
 		{
 			target.addClass("active");
 			menuOpen = true;
-			menuPending = true;
+			menuPending = !noPend;
 
 			var childMenu = target.closest('.menu-bar').find('.menu#mnu_' + target.attr('id'));
 			childMenu.css('top', (target.height() + 4) + 'px');

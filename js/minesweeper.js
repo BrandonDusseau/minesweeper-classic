@@ -148,6 +148,11 @@
 
 		// Any click in the minesweeper space will trigger the active face
 		$(".minesweeper").off('mousedown').on('mousedown', function (e) {
+			// If the window is frozen, do not perform the action
+			if ($(this).closest(".window").hasClass('modal-frozen')) {
+				return;
+			}
+
 			if (!gameOver && (e.which == 1 || e.which == 2))
 			{
 				// Set smiley icon to 8O face
@@ -235,6 +240,7 @@
 		// Close the about dialog
 		$("#about_ok").on('click', aboutConfirm);
 
+		// Start a new game
 		initGame(0);
 	});
 
@@ -507,6 +513,11 @@
 
 		// Handle mousedown on a mine panel
 		$(".ms-panel").off('mousedown').on('mousedown', function (e) {
+			// If the window is frozen, do not perform the action
+			if ($(this).closest(".window").hasClass('modal-frozen')) {
+				return;
+			}
+
 			// Left mouse button when game has not ended and panel is not triggered
 			if (!gameOver)
 			{
