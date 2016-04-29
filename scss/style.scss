@@ -34,20 +34,26 @@ $smi-suboffset: -17px;
 }
 
 body {
+	cursor: image-url("cursor_default.gif", false, false), default;
 	background-color: #3A6EA5;
 	font-size: 11px;
 	font-family: "Tahoma", Arial, sans-serif;
+}
+
+.desktop {
+	height: 100%;
+	width: 100%;
 	overflow: hidden;
 	position: relative;
 }
 
 .window * {
-	cursor: default;
+	cursor: image-url("cursor_default.gif", false, false), default;
 	@include user-select(none);
 }
 
 .window a {
-	cursor: pointer;
+	cursor: image-url("cursor_pointer.gif", false, false) 6 0, pointer;
 }
 
 .window {
@@ -326,6 +332,7 @@ body {
 				border-bottom-color: #FFF;
 				padding: 4px 7px 0 5px;
 				overflow: hidden;
+				text-align: center;
 
 				.num-box {
 					height: 23px;
@@ -403,7 +410,7 @@ body {
 					height: 24px;
 					border: 1px solid $border-med;
 					border-radius: 0 2px 0 2px;
-					margin-left: 14px;
+					margin-left: 2px;
 
 					.smiley-inner {
 						padding: 2px 1px 1px 2px;

@@ -4,10 +4,11 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="icon" type="image/png" href="img/favicon.png" />
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/window.min.js"></script>
 	<script type="text/javascript" src="js/minesweeper.min.js"></script>
-	<title>Minesweeper</title>
+	<title>Minesweeper Classic</title>
 </head>
 <body>
 	<audio id="snd_explode"><source src="snd/explode.ogg" /></audio>
@@ -125,15 +126,15 @@
 				<div class="dims">
 					<div class="row">
 						<div class="label">Height:</div>
-						<div class="input-container"><input type="text" name="height" id="cst-height" /></div>
+						<div class="input-container"><input type="text" name="height" id="cst-height" autocomplete="off" /></div>
 					</div>
 					<div class="row">
 						<div class="label">Width:</div>
-						<div class="input-container"><input type="text" name="width" id="cst-width" /></div>
+						<div class="input-container"><input type="text" name="width" id="cst-width" autocomplete="off" /></div>
 					</div>
 					<div class="row">
 						<div class="label">Mines:</div>
-						<div class="input-container"><input type="text" name="mines" id="cst-mines" /></div>
+						<div class="input-container"><input type="text" name="mines" id="cst-mines" autocomplete="off" /></div>
 					</div>
 				</div>
 				<div class="btns">
@@ -154,7 +155,7 @@
 	<div class="window" id="ms-high-score">
 		<div class="inner-window">
 			<div id="hs-description" data-hs-msg="You have the fastest time<br />for the %LEVEL% level.<br />Please enter your name."></div>
-			<div class="input-container"><input type="text" size="32" name="name" id="hs-name" value="Anonymous" /></div>
+			<div class="input-container"><input type="text" size="32" name="name" id="hs-name" value="Anonymous" autocomplete="off" /></div>
 			<div class="btns">
 				<div class="btn-container active default" id="hs_ok">
 					<div class="btn">
