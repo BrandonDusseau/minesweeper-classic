@@ -21,6 +21,7 @@
 
 	var timer        = null;  // Interval timer to handle clock
 	var time         = 0;     // Time elapsed in game
+	var timerEnabled = true;  // True to enable the game timer
 	var gameWaiting  = true;  // Whether game is waiting to start
 	var noMoves      = true;  // Whether no moves have been made yet
 	var gameOver     = false; // Whether the game has ended (win or explode)
@@ -40,8 +41,9 @@
 	var customSet    = false; // Whether the board has custom dimensions set up
 	var customWidth  = 9;     // Width of board on custom level
 	var customHeight = 9;     // Height of board on custom level
-	var customMines  = 10;     // Number of mines on board on custom level
+	var customMines  = 10;    // Number of mines on board on custom level
 	var firstGame    = true;  // Whether this is the first game (used for initialization)
+	var middleActive = false; // True when the middle mouse button is being held down (used for timer stop)
 
 	// Initialize the leaderboard
 	var leaderboard = [
@@ -91,7 +93,14 @@
 				else if (e.which == 112)
 				{
 					e.preventDefault();
-					// TODO
+					openHelp();
+				}
+				// ESC - Timer stop feature
+				else if (e.which == 27)
+				{
+					if (middleActive) {
+						timerEnabled = false;
+					}
 				}
 				return;
 			}
@@ -141,6 +150,15 @@
 				// ESC / Enter - OK
 				if (e.which == 27 || e.which == 13) {
 					aboutConfirm();
+				}
+				return;
+			}
+
+			// Bind keys to help dialog
+			if ($(".window#ms-help").hasClass("focused")) {
+				// ESC / Enter - OK
+				if (e.which == 27 || e.which == 13) {
+					helpConfirm();
 				}
 				return;
 			}
@@ -222,6 +240,11 @@
 			openAbout();
 		});
 
+		// Open the help dialog
+		$("#help_play:not(.disabled)").on('click', function(e) {
+			openHelp();
+		});
+
 		// Commit the changes in the custom field dialog
 		$("#cst_ok").on('click', customBoardConfirm);
 
@@ -239,6 +262,9 @@
 
 		// Close the about dialog
 		$("#about_ok").on('click', aboutConfirm);
+
+		// Close the help dialog
+		$("#help_ok").on('click', helpConfirm);
 
 		// Start a new game
 		initGame(0);
@@ -312,6 +338,24 @@
 		*/
 	function aboutConfirm() {
 		env.closeWindow($("#ms-about"));
+	}
+
+	/**
+		* Opens the help window
+		* @return void
+		*/
+	function openHelp() {
+		var containerOffset = $(".minesweeper").offset();
+		env.showWindow($("#ms-help"), containerOffset.left + 30, containerOffset.top + 33, $("#ms-main"));
+	}
+
+	/**
+		* Event handler for help dialog OK
+		* @return void
+		*/
+	function helpConfirm() {
+		$("#ms-help .help-content-inner").scrollTop(0);
+		env.closeWindow($("#ms-help"));
 	}
 
 	/**
@@ -511,8 +555,20 @@
 			e.preventDefault();
 		});
 
+		// Handle middle mousedown on the whole game board, for timer stop feature
+		$(".minesweeper").off('mousedown').on('mousedown', function (e) {
+			if (e.which == 2) {
+				middleActive = true;
+			}
+		});
+
+		// Handle middle mouseup on the whole game board, for timer stop feature
+		$(".minesweeper").off('mouseup').on('mouseup', function (e) {
+			middleActive = false;
+		});
+
 		// Handle mousedown on a mine panel
-		$(".ms-panel").off('mousedown').on('mousedown', function (e) {
+		$(".minesweeper .ms-panel").off('mousedown').on('mousedown', function (e) {
 			// If the window is frozen, do not perform the action
 			if ($(this).closest(".window").hasClass('modal-frozen')) {
 				return;
@@ -543,7 +599,7 @@
 		});
 
 		// Handle mouseenter on a mine panel (if the mouse button was clicked)
-		$(".ms-panel").off('mouseenter').on('mouseenter', function (e) {
+		$(".minesweeper .ms-panel").off('mouseenter').on('mouseenter', function (e) {
 			if (tileActive && !$(this).hasClass("flagged"))
 			{
 				// Apply the down action
@@ -569,7 +625,7 @@
 		});
 
 		// Handle mouseup on a mine panel
-		$(".ms-panel").off('mouseleave').on('mouseleave', function (e) {
+		$(".minesweeper .ms-panel").off('mouseleave').on('mouseleave', function (e) {
 			// Left or middle mouse button will cuase all downed tiles to reset
 			if ((tileActive || groupActive) && (e.which == 1 || e.which == 2))
 			{
@@ -579,7 +635,7 @@
 		});
 
 		// Handle mouseup on mine panel
-		$(".ms-panel").off('mouseup').on('mouseup', function(e) {
+		$(".minesweeper .ms-panel").off('mouseup').on('mouseup', function(e) {
 			if ((tileActive || groupActive) && !gameOver)
 			{
 				// If game hasn't started yet, start it!
@@ -1124,16 +1180,19 @@
 	 */
 	function timeTick()
 	{
-		// Do not exceed 999
-		if (time < 999)
+		if (timerEnabled)
 		{
-			time++;
-			digitRender('time', time);
-
-			// Play tick sound, if enabled
-			if (allowSound)
+			// Do not exceed 999
+			if (time < 999)
 			{
-				document.getElementById("snd_tick").play();
+				time++;
+				digitRender('time', time);
+
+				// Play tick sound, if enabled
+				if (allowSound)
+				{
+					document.getElementById("snd_tick").play();
+				}
 			}
 		}
 	}

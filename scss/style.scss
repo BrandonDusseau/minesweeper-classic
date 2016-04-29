@@ -6,6 +6,7 @@
 /* Common colors */
 $win-bg: #D4D0C8;
 $border-med: #808080;
+$border-dark: #404040;
 
 /* Sprite map offsets */
 $digit-offset-x: 0;
@@ -316,335 +317,6 @@ body {
 				padding-left: 2px;
 			}
 		}
-
-		.minesweeper {
-			padding: 6px 5px 5px 6px;
-			background-color: #c0c0c0;
-			border: 3px solid #FFF;
-			border-bottom: none;
-			border-right: none;
-
-			.ms-status {
-				height: 29px;
-				margin-bottom: 6px;
-				border: 2px solid $border-med;
-				border-right-color: #FFF;
-				border-bottom-color: #FFF;
-				padding: 4px 7px 0 5px;
-				overflow: hidden;
-				text-align: center;
-
-				.num-box {
-					height: 23px;
-					width: 39px;
-					background-color: #000;
-					border: 1px solid $border-med;
-					border-right-color: #FFF;
-					border-bottom-color: #FFF;
-					border-radius: 0 2px 0 2px;
-
-					.digit {
-						margin: 1px 1px 0;
-						background: image-url("sprite.gif", false, false) $digit-offset-x $digit-offset-y #000 no-repeat;
-						width: 11px;
-						height: 21px;
-						float: left;
-					}
-
-					.digit.d0 {
-						background-position: ($digit-offset-x + $digit-suboffset-x) $digit-offset-y;
-					}
-
-					.digit.d1 {
-						background-position: ($digit-offset-x + ($digit-suboffset-x * 2)) $digit-offset-y;
-					}
-
-					.digit.d2 {
-						background-position: ($digit-offset-x + ($digit-suboffset-x * 3)) $digit-offset-y;
-					}
-
-					.digit.d3 {
-						background-position: ($digit-offset-x + ($digit-suboffset-x * 4)) $digit-offset-y;
-					}
-
-					.digit.d4 {
-						background-position: ($digit-offset-x + ($digit-suboffset-x * 5)) $digit-offset-y;
-					}
-
-					.digit.d5 {
-						background-position: ($digit-offset-x + ($digit-suboffset-x * 6)) $digit-offset-y;
-					}
-
-					.digit.d6 {
-						background-position: ($digit-offset-x + ($digit-suboffset-x * 7)) $digit-offset-y;
-					}
-
-					.digit.d7 {
-						background-position: ($digit-offset-x + ($digit-suboffset-x * 8)) $digit-offset-y;
-					}
-
-					.digit.d8 {
-						background-position: ($digit-offset-x + ($digit-suboffset-x * 9)) $digit-offset-y;
-					}
-
-					.digit.d9 {
-						background-position: ($digit-offset-x + ($digit-suboffset-x * 10)) $digit-offset-y;
-					}
-
-					.digit.dn {
-						background-position: ($digit-offset-x + ($digit-suboffset-x * 11)) $digit-offset-y;
-					}
-				}
-
-				.num-box#mines {
-					float: left;
-				}
-
-				.num-box#time {
-					float: right;
-				}
-
-				.smiley-btn {
-					display: inline-block;
-					width: 24px;
-					height: 24px;
-					border: 1px solid $border-med;
-					border-radius: 0 2px 0 2px;
-					margin-left: 2px;
-
-					.smiley-inner {
-						padding: 2px 1px 1px 2px;
-						border: 2px solid #FFF;
-						border-right-color: $border-med;
-						border-bottom-color: $border-med;
-
-						.smiley-icon {
-							height: 17px;
-							width: 17px;
-							background: transparent image-url("sprite.gif", false, false) $smi-offset-x $smi-offset-y no-repeat;
-						}
-
-						.smiley-icon.active {
-							background-position: ($smi-offset-x + $smi-suboffset) $smi-offset-y;
-						}
-
-						.smiley-icon.dead {
-							background-position: ($smi-offset-x + ($smi-suboffset * 2)) $smi-offset-y;
-						}
-
-						.smiley-icon.cool {
-							background-position: ($smi-offset-x + ($smi-suboffset * 3)) $smi-offset-y;
-						}
-					}
-				}
-
-				.smiley-btn:active {
-
-					.smiley-inner {
-						height: 17px;
-						width: 17px;
-						padding: 4px 2px 2px 4px;
-						border: 1px solid $border-med;
-						border-right: none;
-						border-bottom: none;
-					}
-
-					.smiley-icon {
-						background-position: $smi-offset-x $smi-offset-y !important;
-					}
-				}
-			}
-
-			.ms-grid {
-				border: 3px solid $border-med;
-				border-right-color: #FFF;
-				border-bottom-color: #FFF;
-				position: relative;
-
-				.ms-row {
-					margin-bottom: -1px;
-				}
-
-				.ms-panel {
-					display: inline-block;
-					background-color: #c0c0c0;
-					height: 12px;
-					width: 12px;
-					border: 2px solid #FFF;
-					border-right-color: $border-med;
-					border-bottom-color: $border-med;
-				}
-
-				.ms-panel.down, .ms-panel.triggered {
-					height: 15px;
-					width: 15px;
-					border: 1px solid $border-med;
-					border-right: none;
-					border-bottom: none;
-				}
-
-				.ms-panel.triggered {
-					background-color: transparent;
-				}
-
-				.ms-panel.flagged, .ms-panel.marked, .ms-panel.m1, .ms-panel.m2,
-				.ms-panel.m3, .ms-panel.m4, .ms-panel.m5, .ms-panel.m6, .ms-panel.m7,
-				.ms-panel.m8, .ms-panel.mine, .ms-panel.bogus {
-					background-image: image-url("sprite.gif", false, false);
-					background-repeat: no-repeat;
-				}
-
-				.ms-panel.m1 {
-					background-position: $tile-offset-x $tile-offset-y;
-				}
-
-				.ms-panel.m2 {
-					background-position: ($tile-offset-x + $tile-suboffset) $tile-offset-y;
-				}
-
-				.ms-panel.m3 {
-					background-position: ($tile-offset-x + ($tile-suboffset * 2)) $tile-offset-y;
-				}
-
-				.ms-panel.m4 {
-					background-position: ($tile-offset-x + ($tile-suboffset * 3)) $tile-offset-y;
-				}
-
-				.ms-panel.m5 {
-					background-position: $tile-offset-x ($tile-offset-y + $tile-suboffset);
-				}
-
-				.ms-panel.m6 {
-					background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + $tile-suboffset);
-				}
-
-				.ms-panel.m7 {
-					background-position: ($tile-offset-x + ($tile-suboffset * 2)) ($tile-offset-y + $tile-suboffset);
-				}
-
-				.ms-panel.m8 {
-					background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + $tile-suboffset);
-				}
-
-				.ms-panel.marked {
-					background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 3));
-				}
-
-				.ms-panel.flagged {
-					background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + ($tile-suboffset * 3));
-				}
-
-				.ms-panel.mine {
-					background-position: ($tile-offset-x + ($tile-suboffset * 2)) ($tile-offset-y + ($tile-suboffset * 3));
-				}
-
-				.ms-panel.bogus {
-					background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + ($tile-suboffset * 3));
-				}
-
-				.ms-panel.marked.down {
-					background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 2));
-				}
-
-				.ms-panel.mine.triggered {
-					background-position: ($tile-offset-x + ($tile-suboffset * 2)) ($tile-offset-y + ($tile-suboffset * 2));
-				}
-
-				.ms-panel.bogus.triggered {
-					background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + ($tile-suboffset * 2));
-				}
-
-				.ms-panel.exploded {
-					background-color: #F00;
-				}
-			}
-		}
-
-		.minesweeper.no-color {
-			.ms-status {
-				border-left-color: #000;
-				border-top-color: #000;
-
-				.num-box {
-					border-color: #000;
-					border-right-color: #FFF;
-					border-bottom-color: #FFF;
-
-					.digit {
-						background-image: image-url("spritebw.gif", false, false);
-					}
-				}
-
-				.smiley-btn {
-					border-color: #000;
-					border-top-width: 2px;
-					border-left-width: 2px;
-					width: 23px;
-					height: 23px;
-					background-image: image-url("bw_bg.gif", false, false);
-
-					.smiley-inner {
-						border-top-width: 1px;
-						border-left-width: 1px;
-						border-right-color: #000;
-						border-bottom-color: #000;
-
-						.smiley-icon {
-							background-image: image-url("spritebw.gif", false, false);
-						}
-					}
-				}
-
-				.smiley-btn:active {
-					.smiley-inner {
-						border: none;
-					}
-				}
-			}
-
-			.ms-grid {
-				background-image: image-url("bw_bg.gif", false, false);
-				border-left-color: #000;
-				border-top-color: #000;
-				background-color: #FFF;
-
-				.ms-panel {
-					background-color: transparent;
-					background-repeat: repeat;
-					height: 13px;
-					width: 13px;
-					border-left-width: 1px;
-					border-top-width: 1px;
-					border-right-color: #000;
-					border-bottom-color: #000;
-				}
-
-				.ms-panel.down, .ms-panel.triggered {
-					height: 15px;
-					width: 15px;
-					border-color: #000;
-					background-color: #FFF;
-					border: 1px solid #000;
-					border-top: none;
-					border-left: none;
-				}
-
-				.ms-panel.flagged, .ms-panel.marked, .ms-panel.m1, .ms-panel.m2,
-				.ms-panel.m3, .ms-panel.m4, .ms-panel.m5, .ms-panel.m6, .ms-panel.m7,
-				.ms-panel.m8, .ms-panel.mine, .ms-panel.bogus, .ms-panel.exploded {
-					background-image: image-url("spritebw.gif", false, false);
-				}
-
-				.ms-panel.exploded {
-					background-color: #000;
-					background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 4));
-				}
-
-				.ms-panel.exploded.down {
-					background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + ($tile-suboffset * 4));
-				}
-			}
-		}
 	}
 }
 
@@ -713,6 +385,347 @@ body {
 }
 .window.focused .btn-container.active .btn .inner-btn {
 	padding: 5px 0;
+}
+
+#ms-main {
+	.minesweeper {
+		padding: 6px 5px 5px 6px;
+		background-color: #c0c0c0;
+		border: 3px solid #FFF;
+		border-bottom: none;
+		border-right: none;
+
+		.ms-status {
+			height: 29px;
+			margin-bottom: 6px;
+			border: 2px solid $border-med;
+			border-right-color: #FFF;
+			border-bottom-color: #FFF;
+			padding: 4px 7px 0 5px;
+			overflow: hidden;
+			text-align: center;
+
+			.num-box {
+				height: 23px;
+				width: 39px;
+				background-color: #000;
+				border: 1px solid $border-med;
+				border-right-color: #FFF;
+				border-bottom-color: #FFF;
+				border-radius: 0 2px 0 2px;
+
+				.digit {
+					margin: 1px 1px 0;
+					background: image-url("sprite.gif", false, false) $digit-offset-x $digit-offset-y #000 no-repeat;
+					width: 11px;
+					height: 21px;
+					float: left;
+				}
+
+				.digit.d0 {
+					background-position: ($digit-offset-x + $digit-suboffset-x) $digit-offset-y;
+				}
+
+				.digit.d1 {
+					background-position: ($digit-offset-x + ($digit-suboffset-x * 2)) $digit-offset-y;
+				}
+
+				.digit.d2 {
+					background-position: ($digit-offset-x + ($digit-suboffset-x * 3)) $digit-offset-y;
+				}
+
+				.digit.d3 {
+					background-position: ($digit-offset-x + ($digit-suboffset-x * 4)) $digit-offset-y;
+				}
+
+				.digit.d4 {
+					background-position: ($digit-offset-x + ($digit-suboffset-x * 5)) $digit-offset-y;
+				}
+
+				.digit.d5 {
+					background-position: ($digit-offset-x + ($digit-suboffset-x * 6)) $digit-offset-y;
+				}
+
+				.digit.d6 {
+					background-position: ($digit-offset-x + ($digit-suboffset-x * 7)) $digit-offset-y;
+				}
+
+				.digit.d7 {
+					background-position: ($digit-offset-x + ($digit-suboffset-x * 8)) $digit-offset-y;
+				}
+
+				.digit.d8 {
+					background-position: ($digit-offset-x + ($digit-suboffset-x * 9)) $digit-offset-y;
+				}
+
+				.digit.d9 {
+					background-position: ($digit-offset-x + ($digit-suboffset-x * 10)) $digit-offset-y;
+				}
+
+				.digit.dn {
+					background-position: ($digit-offset-x + ($digit-suboffset-x * 11)) $digit-offset-y;
+				}
+			}
+
+			.num-box#mines {
+				float: left;
+			}
+
+			.num-box#time {
+				float: right;
+			}
+
+			.smiley-btn {
+				display: inline-block;
+				width: 24px;
+				height: 24px;
+				border: 1px solid $border-med;
+				border-radius: 0 2px 0 2px;
+				margin-left: 2px;
+
+				.smiley-inner {
+					padding: 2px 1px 1px 2px;
+					border: 2px solid #FFF;
+					border-right-color: $border-med;
+					border-bottom-color: $border-med;
+
+					.smiley-icon {
+						height: 17px;
+						width: 17px;
+						background: transparent image-url("sprite.gif", false, false) $smi-offset-x $smi-offset-y no-repeat;
+					}
+
+					.smiley-icon.active {
+						background-position: ($smi-offset-x + $smi-suboffset) $smi-offset-y;
+					}
+
+					.smiley-icon.dead {
+						background-position: ($smi-offset-x + ($smi-suboffset * 2)) $smi-offset-y;
+					}
+
+					.smiley-icon.cool {
+						background-position: ($smi-offset-x + ($smi-suboffset * 3)) $smi-offset-y;
+					}
+				}
+			}
+
+			.smiley-btn:active {
+
+				.smiley-inner {
+					height: 17px;
+					width: 17px;
+					padding: 4px 2px 2px 4px;
+					border: 1px solid $border-med;
+					border-right: none;
+					border-bottom: none;
+				}
+
+				.smiley-icon {
+					background-position: $smi-offset-x $smi-offset-y !important;
+				}
+			}
+		}
+
+		.ms-grid {
+			border: 3px solid $border-med;
+			border-right-color: #FFF;
+			border-bottom-color: #FFF;
+			position: relative;
+
+			.ms-row {
+				margin-bottom: -1px;
+			}
+
+			.ms-panel {
+				display: inline-block;
+				background-color: #c0c0c0;
+				height: 12px;
+				width: 12px;
+				border: 2px solid #FFF;
+				border-right-color: $border-med;
+				border-bottom-color: $border-med;
+			}
+
+			.ms-panel.down, .ms-panel.triggered {
+				height: 15px;
+				width: 15px;
+				border: 1px solid $border-med;
+				border-right: none;
+				border-bottom: none;
+			}
+
+			.ms-panel.triggered {
+				background-color: transparent;
+			}
+
+
+		}
+	}
+
+	.minesweeper.no-color {
+		.ms-status {
+			border-left-color: #000;
+			border-top-color: #000;
+
+			.num-box {
+				border-color: #000;
+				border-right-color: #FFF;
+				border-bottom-color: #FFF;
+
+				.digit {
+					background-image: image-url("spritebw.gif", false, false);
+				}
+			}
+
+			.smiley-btn {
+				border-color: #000;
+				border-top-width: 2px;
+				border-left-width: 2px;
+				width: 23px;
+				height: 23px;
+				background-image: image-url("bw_bg.gif", false, false);
+
+				.smiley-inner {
+					border-top-width: 1px;
+					border-left-width: 1px;
+					border-right-color: #000;
+					border-bottom-color: #000;
+
+					.smiley-icon {
+						background-image: image-url("spritebw.gif", false, false);
+					}
+				}
+			}
+
+			.smiley-btn:active {
+				.smiley-inner {
+					border: none;
+				}
+			}
+		}
+
+		.ms-grid {
+			background-image: image-url("bw_bg.gif", false, false);
+			border-left-color: #000;
+			border-top-color: #000;
+			background-color: #FFF;
+
+			.ms-panel {
+				background-color: transparent;
+				background-repeat: repeat;
+				height: 13px;
+				width: 13px;
+				border-left-width: 1px;
+				border-top-width: 1px;
+				border-right-color: #000;
+				border-bottom-color: #000;
+			}
+
+			.ms-panel.down, .ms-panel.triggered {
+				height: 15px;
+				width: 15px;
+				border-color: #000;
+				background-color: #FFF;
+				border: 1px solid #000;
+				border-top: none;
+				border-left: none;
+			}
+
+			.ms-panel.flagged, .ms-panel.marked, .ms-panel.m1, .ms-panel.m2,
+			.ms-panel.m3, .ms-panel.m4, .ms-panel.m5, .ms-panel.m6, .ms-panel.m7,
+			.ms-panel.m8, .ms-panel.mine, .ms-panel.bogus, .ms-panel.exploded {
+				background-image: image-url("spritebw.gif", false, false);
+			}
+
+			.ms-panel.exploded {
+				background-color: #000;
+				background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 4));
+			}
+
+			.ms-panel.exploded.down {
+				background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + ($tile-suboffset * 4));
+			}
+		}
+	}
+}
+
+.ms-panel.flagged, .ms-panel.marked, .ms-panel.m1, .ms-panel.m2,
+.ms-panel.m3, .ms-panel.m4, .ms-panel.m5, .ms-panel.m6, .ms-panel.m7,
+.ms-panel.m8, .ms-panel.mine, .ms-panel.bogus {
+	background-image: image-url("sprite.gif", false, false);
+	background-repeat: no-repeat;
+}
+
+.ms-panel.m1 {
+	background-position: $tile-offset-x $tile-offset-y;
+}
+
+.ms-panel.m2 {
+	background-position: ($tile-offset-x + $tile-suboffset) $tile-offset-y;
+}
+
+.ms-panel.m3 {
+	background-position: ($tile-offset-x + ($tile-suboffset * 2)) $tile-offset-y;
+}
+
+.ms-panel.m4 {
+	background-position: ($tile-offset-x + ($tile-suboffset * 3)) $tile-offset-y;
+}
+
+.ms-panel.m5 {
+	background-position: $tile-offset-x ($tile-offset-y + $tile-suboffset);
+}
+
+.ms-panel.m6 {
+	background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + $tile-suboffset);
+}
+
+.ms-panel.m7 {
+	background-position: ($tile-offset-x + ($tile-suboffset * 2)) ($tile-offset-y + $tile-suboffset);
+}
+
+.ms-panel.m8 {
+	background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + $tile-suboffset);
+}
+
+.ms-panel.marked {
+	background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 3));
+}
+
+.ms-panel.flagged {
+	background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + ($tile-suboffset * 3));
+}
+
+.ms-panel.mine {
+	background-position: ($tile-offset-x + ($tile-suboffset * 2)) ($tile-offset-y + ($tile-suboffset * 3));
+}
+
+.ms-panel.bogus {
+	background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + ($tile-suboffset * 3));
+}
+
+.ms-panel.marked.down {
+	background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 2));
+}
+
+.ms-panel.mine.triggered {
+	background-position: ($tile-offset-x + ($tile-suboffset * 2)) ($tile-offset-y + ($tile-suboffset * 2));
+}
+
+.ms-panel.bogus.triggered {
+	background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + ($tile-suboffset * 2));
+}
+
+.ms-panel.flagged.triggered {
+	background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + ($tile-suboffset * 2));
+}
+
+.ms-panel.marked {
+	background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 2));
+}
+
+.ms-panel.exploded {
+	background-color: #F00;
 }
 
 #ms-custom-board {
@@ -920,4 +933,62 @@ body {
 
 .window.focused#ms-about .btn-container.active .btn .inner-btn {
 	padding: 3px 0;
+}
+
+#ms-help {
+	.btns {
+		text-align: center;
+		margin-bottom: 8px;
+
+		.btn-container {
+			.btn {
+				.inner-btn {
+					width: 70px;
+				}
+			}
+		}
+	}
+
+	.help-content {
+		margin: 5px 5px 10px;
+		background-color: #FFF;
+		border: 1px solid $border-med;
+		border-bottom-color: #FFF;
+		border-right-color: #FFF;
+
+		.help-content-inner {
+			height: 100%;
+			width: 500px;
+			height: 200px;
+			padding: 3px;
+			border: 1px solid $border-dark;
+			border-bottom-color: $win-bg;
+			border-right-color: $win-bg;
+			line-height: 1.2em;
+			overflow-y: auto;
+
+			p, ul {
+				margin-bottom: 1em;
+			}
+
+			ul {
+				list-style-type: disc;
+				list-style-position: outside;
+				margin-left: 20px;
+			}
+
+			li {
+				margin-bottom: 5px;
+			}
+
+			.ms-panel {
+				display: inline-block;
+				vertical-align: middle;
+				background-color: $win-bg;
+				height: 14px;
+				width: 14px;
+				border: 1px solid $border-med;
+			}
+		}
+	}
 }

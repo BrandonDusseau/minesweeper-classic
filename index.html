@@ -49,8 +49,8 @@
 				</div>
 				<div class="menu" id="mnu_game">
 					<div class="menu-inner">
-						<div class="menu-item">
-							<div class="menu-text" id="game_new">New</div>
+						<div class="menu-item" id="game_new">
+							<div class="menu-text">New</div>
 							<div class="shortcut">F2</div>
 						</div>
 						<div class="separator-item"><div class="separator"></div></div>
@@ -70,8 +70,8 @@
 				</div>
 				<div class="menu" id="mnu_help">
 					<div class="menu-inner">
-						<div class="menu-item disabled">
-							<div class="menu-text" id="help_cnt">How to Play</div>
+						<div class="menu-item" id="help_play">
+							<div class="menu-text">How to Play</div>
 							<div class="shortcut">F1</div>
 						</div>
 						<div class="separator-item"><div class="separator"></div></div>
@@ -249,6 +249,45 @@
 			</div>
 			<div class="btns">
 				<div class="btn-container active default" id="about_ok">
+					<div class="btn">
+						<div class="inner-btn">OK</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="window" id="ms-help">
+		<div class="inner-window">
+			<div class="title-bar">
+				<span class="icon"></span>
+				<div class="window-btns">
+					<div class="btn-container x-btn">
+						<div class="btn">
+							<div class="inner-btn close">
+								<div class="btn-icon"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="title">How to Play</div>
+			</div>
+			<div class="help-content">
+				<div class="help-content-inner">
+					<p>The object of Minesweeper is to locate all the mines as quickly as possible without uncovering any of them.</p>
+					<p>The number in the upper-left of the game board indicates the number of flags left to place. The number on the upper-left of the game board indicates how many seconds have elapsed since the game started. The button between these counters starts a new game.</p>
+					<p>Click a tile on the minefield to uncover it. A number tile ( <span class="ms-panel m1 triggered"></span> - <span class="ms-panel m8 triggered"></span> ) indicates how many mines are in the tiles surrounding it.</p>
+					<p>You can right-click a tile to flag it as a mine ( <span class="ms-panel flagged triggered"></span> ) to help you keep track. Flagging a tile decreases the mine counter in the upper left of the window. If the marking feature is enabled (Game > Marks), right-clicking a tile twice will mark the tile ( <span class="ms-panel marked triggered"></span> ) if you're unsure about it. Right-clicking the tile once more will clear it.</p>
+					<p>Uncovering a mine tile ( <span class="ms-panel mine triggered"></span> ) will cause you to lose the game. Correctly flagged tiles will remain as flags, while incorrectly flagged tiles will show a crossed-out mine ( <span class="ms-panel bogus triggered"></span> ).</p>
+					<p>The game ends when a mine is uncovered, or the last safe tile is uncovered.</p>
+					<p>Tips:</p>
+					<ul>
+						<li>Middle-clicking a number tile will uncover all of its surrounding unflagged tiles if the number of flags around it matches the number indicated on the tile.</li>
+						<li>You can stop the timer for the duration of the game by holding the middle mouse button on the game board and then pressing ESC.</li>
+					</ul>
+				</div>
+			</div>
+			<div class="btns">
+				<div class="btn-container active default" id="help_ok">
 					<div class="btn">
 						<div class="inner-btn">OK</div>
 					</div>
