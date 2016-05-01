@@ -45,6 +45,15 @@ body.loading {
 	cursor: image-url("cursor_wait.gif", false, false) 6 11, wait;
 }
 
+#desktop {
+	position:absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	overflow: hidden;
+}
+
 #pixel {
 	position: absolute;
 	top: 0;
@@ -70,7 +79,7 @@ body.loading {
 	border: 1px solid $win-bg;
 	border-right-color: #404040;
 	border-bottom-color: #404040;
-	overflow: none;
+	overflow: hidden;
 	position: absolute;
 
 	.inner-window {

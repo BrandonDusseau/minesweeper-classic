@@ -6,14 +6,45 @@
  * http://www.github.com/BrandonDusseau/minesweeper-classic
  */
 (function() {
-	var winMove      = false; // Whether the window is being dragged
-	var menuOpen     = false; // Whether a window menu is open
-	var menuPending  = false; // Whether to ignore menu close events
-	var focusPending = false; // Whether to ignore unfocus events
-	var focusStack   = [];    // Stack to record order of window focus
+	var winMove      = false;  // Whether the window is being dragged
+	var menuOpen     = false;  // Whether a window menu is open
+	var menuPending  = false;  // Whether to ignore menu close events
+	var focusPending = false;  // Whether to ignore unfocus events
+	var focusStack   = [];     // Stack to record order of window focus
+	var newWinPos    = [0, 0]; // The position of the window last opened [X, Y]
+	var lastWinX     = 0;      // Used to calculate window position if vertical space exhausted
+	var resizeTimer  = null;   // Timer used to reposition windows when viewport is resized
 
 	// When document loads, bind events
-	$(document).ready(function() {
+	$(document).ready(function () {
+		// Move windows back onto the screen if the window gets smaller
+		$(window).on('resize', function (e) {
+			if (resizeTimer == null)
+			{
+				resizeTimer = window.setTimeout(function () {
+					// Move all windows out of bounds back into bounds
+					var xBound = $("#desktop").width() - 100;
+					var yBound = $("#desktop").height() - 50;
+
+					$('.window').each(function () {
+						if ($(this).offset().left > xBound)
+						{
+							$(this).css('left', xBound)
+						}
+
+						if ($(this).offset().top > yBound)
+						{
+							$(this).css('top', yBound)
+						}
+					});
+
+					// Clear the timer
+					window.clearTimeout(resizeTimer);
+					resizeTimer = null;
+				}, 500);
+			}
+		});
+
 		// If a modal is open, clicks should not register on the parent window
 		$(".window, .window *").on('click', function (e) {
 			if (windowHasActiveModalChild($(this).closest('.window')))
@@ -352,15 +383,33 @@
 	{
 		if (target.hasClass('window') && !target.hasClass('open'))
 		{
-			// TODO: Position window if not specified
+			// Use position if specified
 			if (typeof posX !== 'undefined' && typeof posY !== 'undefined')
 			{
 				target.css('left', posX + "px");
-			}
-
-			if (typeof posY !== 'undefined')
-			{
 				target.css('top', posY + "px");
+			}
+			// Otherwise cascade windows
+			else
+			{
+				target.css('left', newWinPos[0] + "px");
+				target.css('top', newWinPos[1] + "px");
+
+				// Advance the new window coordinates
+				newWinPos[0] += 22;
+				newWinPos[1] += 22;
+
+				// If the window position is too close to the edge of the viewport, start another cascade
+				var xBound = $("#desktop").width() - 100;
+				var yBound = $("#desktop").height() - 50;
+
+				if (newWinPos[0] > xBound || newWinPos[1] > yBound) {
+					// Reset the x-coord for the cascade starting point if it's too far off the screen.
+					lastWinX = (lastWinX + 60 > xBound ? 0 : lastWinX + 60);
+
+					newWinPos[0] = lastWinX;
+					newWinPos[1] = 0;
+				}
 			}
 
 			// If this is a modal window, apply special properties
