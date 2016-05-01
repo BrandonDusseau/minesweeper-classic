@@ -706,7 +706,7 @@ body {
 	background-position: ($tile-offset-x + ($tile-suboffset * 3)) ($tile-offset-y + ($tile-suboffset * 3));
 }
 
-.ms-panel.marked.down {
+.ms-panel.marked.down,.ms-panel.marked.triggered {
 	background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 2));
 }
 
@@ -720,10 +720,6 @@ body {
 
 .ms-panel.flagged.triggered {
 	background-position: ($tile-offset-x + $tile-suboffset) ($tile-offset-y + ($tile-suboffset * 2));
-}
-
-.ms-panel.marked {
-	background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 2));
 }
 
 #ms-custom-board {
