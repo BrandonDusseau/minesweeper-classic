@@ -392,7 +392,7 @@
 		// Write preference to local storage if enabled
 		if (!skipSave)
 		{
-			localStorage.setItem('snd', allowSound);
+			setLocalStorageValue('snd', allowSound);
 		}
 	}
 
@@ -419,7 +419,7 @@
 		// Write preference to local storage if enabled
 		if (!skipSave)
 		{
-			localStorage.setItem('mrk', allowMarks);
+			setLocalStorageValue('mrk', allowMarks);
 		}
 	}
 
@@ -448,7 +448,7 @@
 		// Write preference to local storage if enabled
 		if (!skipSave)
 		{
-			localStorage.setItem('clr', allowColor);
+			setLocalStorageValue('clr', allowColor);
 		}
 	}
 
@@ -493,7 +493,7 @@
 		// Write preference to local storage if enabled
 		if (!skipSave)
 		{
-			localStorage.setItem('lvl', diff);
+			setLocalStorageValue('lvl', diff);
 		}
 
 		// Apply the setting
@@ -548,9 +548,9 @@
 		// Write preference to local storage if enabled
 		if (!skipSave)
 		{
-			localStorage.setItem('board_width', width);
-			localStorage.setItem('board_height', height);
-			localStorage.setItem('board_mines', mines);
+			setLocalStorageValue('board_width', width);
+			setLocalStorageValue('board_height', height);
+			setLocalStorageValue('board_mines', mines);
 		}
 	}
 
@@ -1315,7 +1315,7 @@
 		{
 			firstGame = false;
 			// Load the leaderboard from local storage, if available
-			var top = localStorage.getItem('leaderboard');
+			var top = getLocalStorageValue('leaderboard');
 			var leaders = leaderboard;
 			try
 			{
@@ -1328,7 +1328,7 @@
 			{
 				// Silently reset if the leaderboard storage is malformed
 				console.log("Error: leaderboard data is corrupt. Resetting to default...");
-				localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+				setLocalStorageValue("leaderboard", JSON.stringify(leaderboard));
 			}
 
 			// Initialize the internal leaderboard
@@ -1337,26 +1337,26 @@
 			}
 
 			// Restore sound preference
-			var sndPref = localStorage.getItem('snd');
+			var sndPref = getLocalStorageValue('snd');
 			sndPref = (sndPref == "true") ? true : false;
 			setSound(sndPref, true);
 
 			// Restore marks preference
-			var mrkPref = localStorage.getItem('mrk');
+			var mrkPref = getLocalStorageValue('mrk');
 			mrkPref = (mrkPref == "true" || mrkPref == null) ? true : false;
 			setMarks(mrkPref, true);
 
 			// Restore color preference
-			var clrPref = localStorage.getItem('clr');
+			var clrPref = getLocalStorageValue('clr');
 			clrPref = (clrPref == "true" || clrPref == null) ? true : false;
 			setColor(clrPref, true);
 
 			// Restore level preference
 			// This must be last because it may reinitialize the game board
-			var lvlPref = localStorage.getItem('lvl');
-			var bwPref = localStorage.getItem('board_width');
-			var bhPref = localStorage.getItem('board_height');
-			var bmPref = localStorage.getItem('board_mines');
+			var lvlPref = getLocalStorageValue('lvl');
+			var bwPref = getLocalStorageValue('board_width');
+			var bhPref = getLocalStorageValue('board_height');
+			var bmPref = getLocalStorageValue('board_mines');
 			if (lvlPref !== null)
 			{
 				// Don't restore the preference if custom has invalid bounds
@@ -1637,7 +1637,7 @@
 
 		if (!skipSave)
 		{
-			localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+			setLocalStorageValue("leaderboard", JSON.stringify(leaderboard));
 		}
 
 		// Update the leaderboard window
@@ -1655,6 +1655,33 @@
 	function resetLeaderboard() {
 		for (var lvl = 0; lvl < 2; lvl++) {
 			updateLeaderboard(lvl, "Anonymous", 999);
+		}
+	}
+
+	/**
+	 * Retrieves data from local storage
+	 *
+	 * @param string key local storage key
+	 * @return object|null The contents of local storage at the specified key, or null if there is no value for the key.
+	 */
+	 function getLocalStorageValue(key) {
+		 if (typeof window.localStorage != "undefined") {
+			 return window.localStorage.getItem(key);
+		 }
+
+		 return null;
+	 }
+
+	/**
+	 * Inputs data into local storage
+	 *
+	 * @param string key local storage key
+	 * @param object value value to set
+	 * @return void
+	*/
+	function setLocalStorageValue(key, value) {
+		if (typeof window.localStorage != "undefined") {
+			window.localStorage.setItem(key, value);
 		}
 	}
 })();
