@@ -10,6 +10,7 @@
 	var menuOpen     = false; // Whether a window menu is open
 	var menuPending  = false; // Whether to ignore menu close events
 	var focusPending = false; // Whether to ignore unfocus events
+	var focusStack   = [];    // Stack to record order of window focus
 
 	// When document loads, bind events
 	$(document).ready(function() {
@@ -208,7 +209,6 @@
 	 */
 	function focusWindow(target)
 	{
-		// TODO: Implement a window stack for proper overlapping
 		if (!target.hasClass("focused"))
 		{
 			// Do not allow change of focus to parent of modal
@@ -220,6 +220,71 @@
 			// Unfocus all windows and focus the target
 			$(".window").removeClass("focused");
 			target.addClass("focused");
+
+			// Put the window on the top of the focus stack
+			winStackPush(target.attr('id'));
+		}
+	}
+
+	/**
+	 * Adds/moves a window to the front of the focus stack
+	 *
+	 * @param string id ID of the window to add.
+	 * @return void
+	 */
+	function winStackPush(id) {
+		var winPos = focusStack.indexOf(id);
+
+		// If the window is already on the top of the stack, do nothing.
+		if (winPos == 0) {
+			return;
+		}
+
+		// Remove the window from the stack if it's already on it somewhere.
+		if (winPos != -1) {
+			focusStack.splice(winPos, 1);
+		}
+
+		// If the window is a child of another window, put the parent on top first
+		var modalParent = $("#" + id).data('modal-parent')
+		if (modalParent)
+		{
+			winStackPush(modalParent);
+		}
+
+		// Add the window to the top of the stack.
+		focusStack.unshift(id);
+
+		// Correct window z-index
+		winStackRecalculate();
+	}
+
+
+	/**
+	 * Removes a window from the focus stack
+	 *
+	 * @param string id ID of the window to remove.
+	 * @return void
+	 */
+	function winStackRemove(id) {
+		// Remove the window from the stack
+		var winPos = focusStack.indexOf(id);
+		if (winPos != -1) {
+			focusStack.splice(winPos, 1);
+			winStackRecalculate();
+		}
+	}
+
+	/**
+	 * Re-evaluates the z-index of windows to reflect the focus stack order
+	 *
+	 * @return void
+	 */
+	function winStackRecalculate() {
+		// Change the z-index of all windows to reflect their position on the stack
+		for (var win = 0; win < focusStack.length; win++)
+		{
+			$("#" + focusStack[win]).css('z-index', (focusStack.length - win) * 500);
 		}
 	}
 
@@ -343,7 +408,8 @@
 			}
 			else
 			{
-				// TODO: Add focus stack
+				winStackRemove(target.attr('id'));
+				focusWindow(focusStack[0]);
 			}
 		}
 	}
