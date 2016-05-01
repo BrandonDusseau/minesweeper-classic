@@ -44,6 +44,8 @@
 	var customMines  = 10;    // Number of mines on board on custom level
 	var firstGame    = true;  // Whether this is the first game (used for initialization)
 	var middleActive = false; // True when the middle mouse button is being held down (used for timer stop)
+	var cheatActive  = false; // Whether the cheat pixel is turned on
+	var cheatStep    = 0;     // The current step of the cheat activation process
 
 	// Initialize the leaderboard
 	var leaderboard = [
@@ -102,6 +104,33 @@
 						timerEnabled = false;
 					}
 				}
+
+				// If the XYZZY cheat code is not active, handle the activation sequence (XYZZY + shift)
+				if (!cheatActive) {
+					// X
+					if (e.which == 88 && cheatStep == 0)
+					{
+						cheatStep++;
+					}
+					// Y
+					else if (e.which == 89 && (cheatStep == 1 || cheatStep == 4)) {
+						cheatStep++;
+					}
+					// Z
+					else if (e.which == 90 && (cheatStep == 2 || cheatStep == 3)) {
+						cheatStep++;
+					}
+					// Shift
+					else if (e.which == 16 && cheatStep == 5) {
+						$("#pixel").css('display', 'block');
+						cheatActive = true;
+					}
+					// Any out of sequence key resets the cheat state
+					else {
+						cheatStep = 0;
+					}
+				}
+
 				return;
 			}
 
@@ -631,6 +660,7 @@
 		});
 
 		// Handle mouseenter on a mine panel (if the mouse button was clicked)
+		// Also handle the cheat pixel color here, if the cheat is turned on
 		$(".minesweeper .ms-panel").off('mouseenter').on('mouseenter', function (e) {
 			if (tileActive && !$(this).hasClass("flagged"))
 			{
@@ -652,6 +682,19 @@
 							$(".ms-panel[data-coord=\"" + i + "," + j +"\"]").addClass("down");
 						}
 					}
+				}
+			}
+
+			if (cheatActive)
+			{
+				var coords = getCoords($(this));
+				if (isMine(coords[0], coords[1]))
+				{
+					$("#pixel").css('background-color', '#000');
+				}
+				else
+				{
+					$("#pixel").css('background-color', '#FFF');
 				}
 			}
 		});

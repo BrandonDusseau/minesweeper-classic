@@ -45,11 +45,14 @@ body.loading {
 	cursor: image-url("cursor_wait.gif", false, false) 6 11, wait;
 }
 
-.desktop {
-	height: 100%;
-	width: 100%;
-	overflow: hidden;
-	position: relative;
+#pixel {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+	height: 1px;
+	width: 1px;
+	background-color: transparent;
 }
 
 .window * {
