@@ -176,7 +176,18 @@
 				// Set smiley icon to 8O face
 				$(".smiley-icon").addClass('active');
 			}
+
+			if (e.which == 2) {
+				// Set middle click held for timer stop feature
+				middleActive = true;
+			}
 		});
+
+		// Handle middle mouseup on the whole game board, for timer stop feature
+		$(".minesweeper").off('mouseup').on('mouseup', function (e) {
+			middleActive = false;
+		});
+
 
 		// Smiley button click
 		$(".smiley-btn").off('click').on('click', function(e) {
@@ -553,18 +564,6 @@
 		// Block context menu on windows
 		$(".window *").off('contextmenu').on('contextmenu', function(e) {
 			e.preventDefault();
-		});
-
-		// Handle middle mousedown on the whole game board, for timer stop feature
-		$(".minesweeper").off('mousedown').on('mousedown', function (e) {
-			if (e.which == 2) {
-				middleActive = true;
-			}
-		});
-
-		// Handle middle mouseup on the whole game board, for timer stop feature
-		$(".minesweeper").off('mouseup').on('mouseup', function (e) {
-			middleActive = false;
 		});
 
 		// Handle mousedown on a mine panel
@@ -1270,6 +1269,7 @@
 		gameWaiting = true;
 		gameOver = false;
 		noMoves = true;
+		timerEnabled = true;
 
 		// If custom settings are not set, override custom difficulty
 		// Also do this if the difficulty setting is invalid
