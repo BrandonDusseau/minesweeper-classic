@@ -41,6 +41,10 @@ body {
 	font-family: "Tahoma", Arial, sans-serif;
 }
 
+body.loading {
+	cursor: image-url("cursor_wait.gif", false, false) 6 11, wait;
+}
+
 .desktop {
 	height: 100%;
 	width: 100%;

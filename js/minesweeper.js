@@ -277,9 +277,42 @@
 		// Close the help dialog
 		$("#help_ok").on('click', helpConfirm);
 
-		// Start a new game
-		initGame(0);
+		// Initialize the game
+		Preload();
 	});
+
+	/**
+	 * Preloads necessary assets before starting the game
+	 *
+	 * @return void
+	 */
+	function Preload() {
+		$("body").addClass('loading');
+
+		var preload_images = ["about_header.gif", "sprite.gif", "spritebw.gif", "bw_bg.gif", "cursor_default.gif", "cursor_pointer.gif"];
+		var promises = [];
+
+		var loadAsset = function (url, promise) {
+			var asset = new Image();
+			asset.onload = function () {
+				promise.resolve();
+			}
+
+			asset.src = url;
+		}
+
+		// Preload images
+		for (var img = 0; img < preload_images.length; img++) {
+			promises[img] = $.Deferred();
+			loadAsset("img/" + preload_images[img], promises[img]);
+		}
+
+		// Launch the game when we're ready
+		$.when.apply($, promises).done(function() {
+			$("body").removeClass('loading');
+			initGame(0);
+		});
+	}
 
 	/**
 	 * Event handler for custom board dialog OK
