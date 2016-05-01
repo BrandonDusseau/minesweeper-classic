@@ -558,7 +558,9 @@ body {
 				background-color: transparent;
 			}
 
-
+			.ms-panel.exploded {
+				background-color: #F00;
+			}
 		}
 	}
 
@@ -722,10 +724,6 @@ body {
 
 .ms-panel.marked {
 	background-position: $tile-offset-x ($tile-offset-y + ($tile-suboffset * 2));
-}
-
-.ms-panel.exploded {
-	background-color: #F00;
 }
 
 #ms-custom-board {
