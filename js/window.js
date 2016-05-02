@@ -1,6 +1,6 @@
 /*
  * Utility functions for window emulation
- * Copyright (c) 2015 Brandon Dusseau
+ * Copyright (c) 2015-2016 Brandon Dusseau
  * Licensed with the MIT license; see LICENSE file for details
  *
  * http://www.github.com/BrandonDusseau/minesweeper-classic

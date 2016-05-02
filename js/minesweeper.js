@@ -1,9 +1,7 @@
 /*
  * Minesweeper Classic, a Microsoft Minesweeper clone for the browser
- * Copyright (c) 2016 Brandon Dusseau
+ * Copyright (c) 2015-2016 Brandon Dusseau
  * Licensed with the MIT license; see LICENSE file for details
- *
- * Some graphical assets copyright (c) 1981-2007 Microsoft Corporation
  *
  * http://www.github.com/BrandonDusseau/minesweeper-classic
  */
