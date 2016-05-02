@@ -24,8 +24,8 @@ $icnsm-offset-y: -21px;
 $chkmk-offset-x: -122px;
 $chkmk-offset-y: -60px;
 $chkmk-suboffset-y: -13px;
-$icnlg-offset-x: -66px;
-$icnlg-offset-y: -62px;
+$icnlg-offset-x: -65px;
+$icnlg-offset-y: -61px;
 $smi-offset-x: -64px;
 $smi-offset-y: -43px;
 $smi-suboffset: -17px;
@@ -46,7 +46,7 @@ body.loading {
 }
 
 #desktop {
-	position:absolute;
+	position: absolute;
 	top: 0;
 	bottom: 0;
 	left: 0;
@@ -79,7 +79,6 @@ body.loading {
 	border: 1px solid $win-bg;
 	border-right-color: #404040;
 	border-bottom-color: #404040;
-	overflow: hidden;
 	position: absolute;
 
 	.inner-window {
@@ -926,9 +925,9 @@ body.loading {
 		.ms-icon {
 			float: left;
 			margin-top: 4px;
-			margin-left: 34px;
-			width: 28px;
-			height: 28px;
+			margin-left: 32px;
+			width: 30px;
+			height: 30px;
 			background: image-url("sprite.gif", false, false) no-repeat $icnlg-offset-x $icnlg-offset-y;
 		}
 
