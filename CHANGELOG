@@ -1,0 +1,15 @@
+1.1.0 [16 May 2016]
+ * Added preloading of graphical assets (#6).
+ * Added XYZZY cheat code (#4).
+ * Added window focus memory (#1).
+ * Added automatic positioning of windows opened without position specified (#2).
+ * Removed copyrighted Microsoft assets (#10).
+ * Fixed issue with the game failing to load when launched locally in IE/Edge (#5).
+ * Fixed issue with question mark icon on marked tile being misaligned (#7).
+ * Fixed issue where exploded tile was missing its background color (#8).
+ * Fixed issue where clicking the game board didn't cause the smiley to react (#9).
+ * Fixed issue with window contents wrapping when dragged off the right side of the screen (#3).
+ * Fixed issue with text boxes being unselectable in Firefox (#11).
+
+1.0.0 [29 Apr 2016]
+ * Initial release
