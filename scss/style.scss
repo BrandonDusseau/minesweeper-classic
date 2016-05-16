@@ -64,7 +64,7 @@ body.loading {
 	background-color: transparent;
 }
 
-.window * {
+.window *:not(input) {
 	cursor: image-url("cursor_default.gif", false, false), default;
 	@include user-select(none);
 }
