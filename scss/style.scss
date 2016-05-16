@@ -80,6 +80,7 @@ body.loading {
 	border-right-color: #404040;
 	border-bottom-color: #404040;
 	position: absolute;
+	white-space: nowrap;
 
 	.inner-window {
 		padding: 1px;
@@ -333,6 +334,10 @@ body.loading {
 			}
 		}
 	}
+
+	.window-content {
+		overflow: hidden;
+	}
 }
 
 .window:not(.modal-frozen) {
@@ -419,8 +424,10 @@ body.loading {
 			padding: 4px 7px 0 5px;
 			overflow: hidden;
 			text-align: center;
+			display: flex;
 
 			.num-box {
+				flex: 0 0 auto;
 				height: 23px;
 				width: 39px;
 				background-color: #000;
@@ -428,13 +435,14 @@ body.loading {
 				border-right-color: #FFF;
 				border-bottom-color: #FFF;
 				border-radius: 0 2px 0 2px;
+				font-size: 0;
 
 				.digit {
+					display: inline-block;
 					margin: 1px 1px 0;
 					background: image-url("sprite.gif", false, false) $digit-offset-x $digit-offset-y #000 no-repeat;
 					width: 11px;
 					height: 21px;
-					float: left;
 				}
 
 				.digit.d0 {
@@ -482,61 +490,58 @@ body.loading {
 				}
 			}
 
-			.num-box#mines {
-				float: left;
-			}
+			.smiley-container {
+				flex: 1 0 auto;
+				text-align: center;
 
-			.num-box#time {
-				float: right;
-			}
+				.smiley-btn {
+					display: inline-block;
+					width: 24px;
+					height: 24px;
+					border: 1px solid $border-med;
+					border-radius: 0 2px 0 2px;
+					margin-left: 2px;
 
-			.smiley-btn {
-				display: inline-block;
-				width: 24px;
-				height: 24px;
-				border: 1px solid $border-med;
-				border-radius: 0 2px 0 2px;
-				margin-left: 2px;
+					.smiley-inner {
+						padding: 2px 1px 1px 2px;
+						border: 2px solid #FFF;
+						border-right-color: $border-med;
+						border-bottom-color: $border-med;
 
-				.smiley-inner {
-					padding: 2px 1px 1px 2px;
-					border: 2px solid #FFF;
-					border-right-color: $border-med;
-					border-bottom-color: $border-med;
+						.smiley-icon {
+							height: 17px;
+							width: 17px;
+							background: transparent image-url("sprite.gif", false, false) $smi-offset-x $smi-offset-y no-repeat;
+						}
 
-					.smiley-icon {
+						.smiley-icon.active {
+							background-position: ($smi-offset-x + $smi-suboffset) $smi-offset-y;
+						}
+
+						.smiley-icon.dead {
+							background-position: ($smi-offset-x + ($smi-suboffset * 2)) $smi-offset-y;
+						}
+
+						.smiley-icon.cool {
+							background-position: ($smi-offset-x + ($smi-suboffset * 3)) $smi-offset-y;
+						}
+					}
+				}
+
+				.smiley-btn:active {
+
+					.smiley-inner {
 						height: 17px;
 						width: 17px;
-						background: transparent image-url("sprite.gif", false, false) $smi-offset-x $smi-offset-y no-repeat;
+						padding: 4px 2px 2px 4px;
+						border: 1px solid $border-med;
+						border-right: none;
+						border-bottom: none;
 					}
 
-					.smiley-icon.active {
-						background-position: ($smi-offset-x + $smi-suboffset) $smi-offset-y;
+					.smiley-icon {
+						background-position: $smi-offset-x $smi-offset-y !important;
 					}
-
-					.smiley-icon.dead {
-						background-position: ($smi-offset-x + ($smi-suboffset * 2)) $smi-offset-y;
-					}
-
-					.smiley-icon.cool {
-						background-position: ($smi-offset-x + ($smi-suboffset * 3)) $smi-offset-y;
-					}
-				}
-			}
-
-			.smiley-btn:active {
-
-				.smiley-inner {
-					height: 17px;
-					width: 17px;
-					padding: 4px 2px 2px 4px;
-					border: 1px solid $border-med;
-					border-right: none;
-					border-bottom: none;
-				}
-
-				.smiley-icon {
-					background-position: $smi-offset-x $smi-offset-y !important;
 				}
 			}
 		}
@@ -741,11 +746,10 @@ body.loading {
 	.cst-form {
 		margin: 34px 15px 37px;
 		height: 68px;
-		overflow: hidden;
 
 		.dims {
 			display: inline-block;
-			margin-right: 19px;
+			margin-right: 16px;
 
 			.row:first-of-type {
 				margin-top: 0;
@@ -755,9 +759,8 @@ body.loading {
 				margin-top: 4px;
 
 				.label {
-					display: inline-block;
-					width: 45px;
 					float: left;
+					width: 45px;
 					margin-top: 4px;
 				}
 
@@ -771,7 +774,7 @@ body.loading {
 
 		.btns {
 			display: inline-block;
-			float: right;
+			vertical-align: top;
 			margin-left: 3px;
 
 			.btn-container:first-of-type {
@@ -936,6 +939,7 @@ body.loading {
 			margin-left: 43px;
 			line-height: 1.5em;
 			width: 307px;
+			white-space: normal;
 		}
 	}
 }
@@ -975,6 +979,7 @@ body.loading {
 			border-right-color: $win-bg;
 			line-height: 1.2em;
 			overflow-y: auto;
+			white-space: normal;
 
 			p, ul {
 				margin-bottom: 1em;
