@@ -6,9 +6,14 @@
  * http://www.github.com/BrandonDusseau/minesweeper-classic
  */
 
-(function () {
+(function ()
+{
+	/*****************************************************
+	 * Initialization
+	 *****************************************************/
+
 	// Check that the required environment is present
-	if (typeof window.SweeperOSEnvironment == 'undefined')
+	if (typeof window.SweeperOSEnvironment == "undefined")
 	{
 		console.log("Sweeper OS envrionment is unavailable. Minesweeper cannot run.");
 		return;
@@ -23,7 +28,6 @@
 	var gameWaiting  = true;  // Whether game is waiting to start
 	var noMoves      = true;  // Whether no moves have been made yet
 	var gameOver     = false; // Whether the game has ended (win or explode)
-	var exploded     = false; // Whether the user has lost the game in a fiery explosion
 	var minesLeft    = 0;     // Number of mines unflagged. from the user perspective
 	var maxMines     = 0;     // Number of mines in the game
 	var difficulty   = 0;     // Difficulty level. 0 = Beginner, 1 = Interm., 2 = Expert, 3 = Custom
@@ -54,8 +58,11 @@
 
 	/**
 	 * Tile object definition
+	 *
+	 * @return {undefined}
 	 */
-	function Tile() {
+	function Tile()
+	{
 		this.number = 0;
 		this.isMine = false;
 		this.flagged = false;
@@ -64,12 +71,18 @@
 		this.exploded = false;
 	}
 
+	/*****************************************************
+	 * Event Bindings
+	 *****************************************************/
+
 	// When the page has loaded, initialize the game
-	$(document).ready(function () {
+	$(document).ready(function ()
+	{
 		// Handle global mouseup
-		$("body").on('mouseup', function (e) {
+		$("body").on("mouseup", function ()
+		{
 			// Set smiley back to :)
-			$(".smiley-icon").removeClass('active');
+			$(".smiley-icon").removeClass("active");
 
 			// Reset mousedown triggers
 			tileActive = false;
@@ -80,9 +93,11 @@
 		});
 
 		// Bind keys
-		$("body").on('keydown', function (e) {
+		$("body").on("keydown", function (e)
+		{
 			// Bind keys to Minesweeper window
-			if ($(".window#ms-main").hasClass('focused')) {
+			if ($(".window#ms-main").hasClass("focused"))
+			{
 				// F2 - new game
 				if (e.which == 113)
 				{
@@ -98,33 +113,31 @@
 				// ESC - Timer stop feature
 				else if (e.which == 27)
 				{
-					if (middleActive) {
+					if (middleActive)
+					{
 						timerEnabled = false;
 					}
 				}
 
 				// If the XYZZY cheat code is not active, handle the activation sequence (XYZZY + shift)
-				if (!cheatActive) {
-					// X
-					if (e.which == 88 && cheatStep == 0)
+				if (!cheatActive)
+				{
+					// XYZ
+					if ((e.which == 88 && cheatStep) == 0 ||
+						(e.which == 89 && (cheatStep == 1 || cheatStep == 4) ||
+						(e.which == 90 && (cheatStep == 2 || cheatStep == 3))))
 					{
 						cheatStep++;
 					}
-					// Y
-					else if (e.which == 89 && (cheatStep == 1 || cheatStep == 4)) {
-						cheatStep++;
-					}
-					// Z
-					else if (e.which == 90 && (cheatStep == 2 || cheatStep == 3)) {
-						cheatStep++;
-					}
 					// Shift
-					else if (e.which == 16 && cheatStep == 5) {
-						$("#pixel").css('display', 'block');
+					else if (e.which == 16 && cheatStep == 5)
+					{
+						$("#pixel").css("display", "block");
 						cheatActive = true;
 					}
 					// Any out of sequence key resets the cheat state
-					else {
+					else
+					{
 						cheatStep = 0;
 					}
 				}
@@ -133,17 +146,22 @@
 			}
 
 			// Bind keys to custom board dialog
-			if ($(".window#ms-custom-board").hasClass("focused")) {
+			if ($(".window#ms-custom-board").hasClass("focused"))
+			{
 				// ESC - cancel
-				if (e.which == 27) {
+				if (e.which == 27)
+				{
 					customBoardCancel();
 				}
 				// Enter - whichever button is active, or confirm if text box is active
-				else if (e.which == 13) {
-					if ($(".cst-form input").is(':focus')) {
+				else if (e.which == 13)
+				{
+					if ($(".cst-form input").is(":focus"))
+					{
 						customBoardConfirm();
 					}
-					else {
+					else
+					{
 						$("#ms-custom-board .btns .btn-container.active").click();
 					}
 				}
@@ -151,40 +169,49 @@
 			}
 
 			// Bind keys to high score dialog
-			if ($(".window#ms-high-score").hasClass("focused")) {
+			if ($(".window#ms-high-score").hasClass("focused"))
+			{
 				// ESC / Enter - OK
-				if (e.which == 27 || e.which == 13) {
+				if (e.which == 27 || e.which == 13)
+				{
 					highScoreConfirm();
 				}
 				return;
 			}
 
 			// Bind keys to leaderboard dialog
-			if ($(".window#ms-leaderboard").hasClass("focused")) {
+			if ($(".window#ms-leaderboard").hasClass("focused"))
+			{
 				// ESC - Exit
-				if (e.which == 27) {
+				if (e.which == 27)
+				{
 					leaderboardConfirm();
 				}
 				// Enter - whichever button is active
-				else if (e.which == 13) {
+				else if (e.which == 13)
+				{
 					$(this).find("#ms-leaderboard .btns .btn-container.active").click();
 				}
 				return;
 			}
 
 			// Bind keys to about dialog
-			if ($(".window#ms-about").hasClass("focused")) {
+			if ($(".window#ms-about").hasClass("focused"))
+			{
 				// ESC / Enter - OK
-				if (e.which == 27 || e.which == 13) {
+				if (e.which == 27 || e.which == 13)
+				{
 					aboutConfirm();
 				}
 				return;
 			}
 
 			// Bind keys to help dialog
-			if ($(".window#ms-help").hasClass("focused")) {
+			if ($(".window#ms-help").hasClass("focused"))
+			{
 				// ESC / Enter - OK
-				if (e.which == 27 || e.which == 13) {
+				if (e.which == 27 || e.which == 13)
+				{
 					helpConfirm();
 				}
 				return;
@@ -192,160 +219,305 @@
 		});
 
 		// Any click in the minesweeper space will trigger the active face
-		$(".minesweeper").off('mousedown').on('mousedown', function (e) {
+		$(".minesweeper").off("mousedown").on("mousedown", function (e)
+		{
 			// If the window is frozen, do not perform the action
-			if ($(this).closest(".window").hasClass('modal-frozen')) {
+			if ($(this).closest(".window").hasClass("modal-frozen"))
+			{
 				return;
 			}
 
 			if (!gameOver && (e.which == 1 || e.which == 2))
 			{
 				// Set smiley icon to 8O face
-				$(".smiley-icon").addClass('active');
+				$(".smiley-icon").addClass("active");
 			}
 
-			if (e.which == 2) {
+			if (e.which == 2)
+			{
 				// Set middle click held for timer stop feature
 				middleActive = true;
 			}
 		});
 
 		// Handle middle mouseup on the whole game board, for timer stop feature
-		$(".minesweeper").off('mouseup').on('mouseup', function (e) {
+		$(".minesweeper").off("mouseup").on("mouseup", function ()
+		{
 			middleActive = false;
 		});
 
 
 		// Smiley button click
-		$(".smiley-btn").off('click').on('click', function(e) {
+		$(".smiley-btn").off("click").on("click", function ()
+		{
 			// Reset the game at the current difficulty
 			initGame(difficulty);
 		});
 
 		// New game menu option
-		$("#game_new").on('click', function(e) {
+		$("#game_new").on("click", function ()
+		{
 			initGame(difficulty);
 		});
 
 		// Beginner menu option
-		$("#game_beg:not(.disabled)").on('click', function(e) {
+		$("#game_beg:not(.disabled)").on("click", function ()
+		{
 			setDifficulty(0);
 		});
 
 		// Intermediate menu option
-		$("#game_int:not(.disabled)").on('click', function(e) {
+		$("#game_int:not(.disabled)").on("click", function ()
+		{
 			setDifficulty(1);
 		});
 
 		// Expert menu option
-		$("#game_exp:not(.disabled)").on('click', function(e) {
+		$("#game_exp:not(.disabled)").on("click", function ()
+		{
 			setDifficulty(2);
 		});
 
 		// Custom menu option
-		$("#game_cst:not(.disabled)").on('click', function(e) {
+		$("#game_cst:not(.disabled)").on("click", function ()
+		{
 			// Open the customization dialog and position it at the top left of the game board
 			// Also, preload it with the current values of the custom board
 			var containerOffset = $(".minesweeper").offset();
 			$("#ms-custom-board #cst-height").val(customHeight);
 			$("#ms-custom-board #cst-width").val(customWidth);
 			$("#ms-custom-board #cst-mines").val(customMines);
-			env.showWindow($('#ms-custom-board'), containerOffset.left, containerOffset.top, $('#ms-main'));
+			env.showWindow($("#ms-custom-board"), containerOffset.left, containerOffset.top, $("#ms-main"));
 		});
 
 		// Enable/disabled mark tile menu option
-		$("#game_mrk:not(.disabled)").on('click', function(e) {
+		$("#game_mrk:not(.disabled)").on("click", function ()
+		{
 			setMarks(!allowMarks);
 		});
 
 		// Enable/disable sound
-		$("#game_snd:not(.disabled)").on('click', function(e) {
+		$("#game_snd:not(.disabled)").on("click", function ()
+		{
 			setSound(!allowSound);
 		});
 
 		// Enable/disable color
-		$("#game_clr:not(.disabled)").on('click', function(e) {
+		$("#game_clr:not(.disabled)").on("click", function ()
+		{
 			setColor(!allowColor);
 		});
 
 		// Open the leaderboard
-		$("#game_ldr:not(.disabled)").on('click', function(e) {
+		$("#game_ldr:not(.disabled)").on("click", function ()
+		{
 			openLeaderboard();
 		});
 
 		// Open the about dialog
-		$("#help_abt:not(.disabled)").on('click', function(e) {
+		$("#help_abt:not(.disabled)").on("click", function ()
+		{
 			openAbout();
 		});
 
 		// Open the help dialog
-		$("#help_play:not(.disabled)").on('click', function(e) {
+		$("#help_play:not(.disabled)").on("click", function ()
+		{
 			openHelp();
 		});
 
 		// Commit the changes in the custom field dialog
-		$("#cst_ok").on('click', customBoardConfirm);
+		$("#cst_ok").on("click", customBoardConfirm);
 
 		// Cancel the changes in the custom field dialog
-		$("#cst_cancel").on('click', customBoardCancel);
+		$("#cst_cancel").on("click", customBoardCancel);
 
 		// Commit the changes in the high score dialog
-		$("#hs_ok").on('click', highScoreConfirm);
+		$("#hs_ok").on("click", highScoreConfirm);
 
 		// Close the leaderboard dialog
-		$("#leader_ok").on('click', leaderboardConfirm);
+		$("#leader_ok").on("click", leaderboardConfirm);
 
 		// Reset the leaderboard
-		$("#leader_reset").on('click', resetLeaderboard);
+		$("#leader_reset").on("click", resetLeaderboard);
 
 		// Close the about dialog
-		$("#about_ok").on('click', aboutConfirm);
+		$("#about_ok").on("click", aboutConfirm);
 
 		// Close the help dialog
-		$("#help_ok").on('click', helpConfirm);
+		$("#help_ok").on("click", helpConfirm);
 
 		// Initialize the game
-		Preload();
+		preload();
 	});
+
+	/**
+	 * Binds events to elements which might be regenerated
+	 * This must happen every time the game is initialized to ensure bindings don't get lost
+	 *
+	 * @return {undefined}
+	 */
+	function rebindEvents()
+	{
+		// Block context menu on windows
+		$(".window *").off("contextmenu").on("contextmenu", function (e)
+		{
+			e.preventDefault();
+		});
+
+		// Handle mousedown on a mine panel
+		$(".minesweeper .ms-panel").off("mousedown").on("mousedown", function (e)
+		{
+			// If the window is frozen, do not perform the action
+			if ($(this).closest(".window").hasClass("modal-frozen"))
+			{
+				return;
+			}
+
+			// Left mouse button when game has not ended and panel is not triggered
+			if (!gameOver)
+			{
+				switch (e.which)
+				{
+					case 1:
+						// Left mouse press
+						tileActive = true;
+						$(this).trigger("mouseenter");
+						break;
+					case 2:
+						// Middle mouse press
+						groupActive = true;
+						$(this).trigger("mouseenter");
+						break;
+					case 3:
+						// Right mouse press - forward the event to the click handler
+						var target = $(this);
+						handlePanelClick(target, e);
+						break;
+					default:
+						break;
+				}
+			}
+		});
+
+		// Handle mouseenter on a mine panel (if the mouse button was clicked)
+		// Also handle the cheat pixel color here, if the cheat is turned on
+		$(".minesweeper .ms-panel").off("mouseenter").on("mouseenter", function ()
+		{
+			var coords = getCoords($(this));
+
+			if (tileActive && !$(this).hasClass("flagged"))
+			{
+				// Apply the down action
+				$(this).addClass("down");
+			}
+			else if (groupActive)
+			{
+				// Apply the down action on element and all surrounding it
+				var tileRange = getTileRange(coords[0], coords[1]);
+
+				for (var i = tileRange[0][0]; i <= tileRange[0][1]; i++)
+				{
+					for (var j = tileRange[1][0]; j <= tileRange[1][1]; j++)
+					{
+						if (!isFlagged(i, j))
+						{
+							$(".ms-panel[data-coord=\"" + i + "," + j + "\"]").addClass("down");
+						}
+					}
+				}
+			}
+
+			if (cheatActive)
+			{
+				if (isMine(coords[0], coords[1]))
+				{
+					$("#pixel").css("background-color", "#000");
+				}
+				else
+				{
+					$("#pixel").css("background-color", "#FFF");
+				}
+			}
+		});
+
+		// Handle mouseleave on a mine panel
+		$(".minesweeper .ms-panel").off("mouseleave").on("mouseleave", function (e)
+		{
+			// Left or middle mouse button will cause all downed tiles to reset
+			if ((tileActive || groupActive) && (e.which == 1 || e.which == 2))
+			{
+				// Remove the down class
+				$(".ms-panel.down").removeClass("down");
+			}
+		});
+
+		// Handle mouseup on mine panel
+		$(".minesweeper .ms-panel").off("mouseup").on("mouseup", function (e)
+		{
+			if ((tileActive || groupActive) && !gameOver)
+			{
+				// If game hasn't started yet, start it!
+				if (gameWaiting)
+				{
+					startGame();
+				}
+
+				var target = $(this);
+				handlePanelClick(target, e);
+			}
+		});
+	}
+
+	/*****************************************************
+	 * UI Interaction Functions
+	 *****************************************************/
 
 	/**
 	 * Preloads necessary assets before starting the game
 	 *
-	 * @return void
+	 * @return {undefined}
 	 */
-	function Preload() {
-		$("body").addClass('loading');
+	function preload()
+	{
+		$("body").addClass("loading");
 
-		var preload_images = ["about_header.gif", "sprite.gif", "spritebw.gif", "bw_bg.gif", "cursor_default.gif", "cursor_pointer.gif"];
+		var preloadImages = ["about_header.gif", "sprite.gif", "spritebw.gif", "bw_bg.gif", "cursor_default.gif", "cursor_pointer.gif"];
 		var promises = [];
 
-		var loadAsset = function (url, promise) {
+		var loadAsset = function (url, promise)
+		{
 			var asset = new Image();
-			asset.onload = function () {
+			asset.onload = function ()
+			{
 				promise.resolve();
-			}
+			};
 
 			asset.src = url;
-		}
+		};
 
 		// Preload images
-		for (var img = 0; img < preload_images.length; img++) {
+		for (var img = 0; img < preloadImages.length; img++)
+		{
 			promises[img] = $.Deferred();
-			loadAsset("img/" + preload_images[img], promises[img]);
+			loadAsset("img/" + preloadImages[img], promises[img]);
 		}
 
 		// Launch the game when we're ready
-		$.when.apply($, promises).done(function() {
-			$("body").removeClass('loading');
+		$.when.apply($, promises).done(function ()
+		{
+			$("body").removeClass("loading");
 			initGame(0);
 		});
 	}
 
 	/**
 	 * Event handler for custom board dialog OK
-	 * @return void
+	 *
+	 * @return {undefined}
 	 */
-	function customBoardConfirm() {
+	function customBoardConfirm()
+	{
 		// Set up a new game board with the custom parameters
 		var cstWidth = $("#cst-width").val();
 		var cstHeight = $("#cst-height").val();
@@ -358,9 +530,12 @@
 
 	/**
 	 * Event handler for custom board dialog cancel
-	 * @return void
+	 *
+	 *
+	 * @return {undefined}
 	 */
-	function customBoardCancel() {
+	function customBoardCancel()
+	{
 		// Canceling the custom dialog results in resetting the current game board
 		initGame(difficulty);
 		env.closeWindow($("#ms-custom-board"));
@@ -368,9 +543,11 @@
 
 	/**
 	 * Event handler for high score dialog OK
-	 * @return void
+	 *
+	 * @return {undefined}
 	 */
-	function highScoreConfirm() {
+	function highScoreConfirm()
+	{
 		updateLeaderboard(difficulty, $("#ms-high-score #hs-name").val(), time);
 		env.closeWindow($("#ms-high-score"));
 		openLeaderboard();
@@ -378,17 +555,21 @@
 
 	/**
 		* Event handler for leaderboard dialog OK
-		* @return void
+		*
+		* @return {undefined}
 		*/
-	function leaderboardConfirm() {
+	function leaderboardConfirm()
+	{
 		env.closeWindow($("#ms-leaderboard"));
 	}
 
 	/**
 		* Opens the leaderboard window
-		* @return void
+		*
+		* @return {undefined}
 		*/
-	function openLeaderboard() {
+	function openLeaderboard()
+	{
 		var containerOffset = $(".minesweeper").offset();
 		var statusOffset = $(".ms-status").offset().top + $(".ms-status").outerHeight();
 		env.showWindow($("#ms-leaderboard"), containerOffset.left, statusOffset, $("#ms-main"));
@@ -396,44 +577,53 @@
 
 	/**
 		* Opens the about window
-		* @return void
+		*
+		* @return {undefined}
 		*/
-	function openAbout() {
+	function openAbout()
+	{
 		var containerOffset = $(".minesweeper").offset();
 		env.showWindow($("#ms-about"), containerOffset.left + 30, containerOffset.top + 33, $("#ms-main"));
 	}
 
 	/**
 		* Event handler for about dialog OK
-		* @return void
+		*
+		* @return {undefined}
 		*/
-	function aboutConfirm() {
+	function aboutConfirm()
+	{
 		env.closeWindow($("#ms-about"));
 	}
 
 	/**
 		* Opens the help window
-		* @return void
+		*
+		* @return {undefined}
 		*/
-	function openHelp() {
+	function openHelp()
+	{
 		var containerOffset = $(".minesweeper").offset();
 		env.showWindow($("#ms-help"), containerOffset.left + 30, containerOffset.top + 33, $("#ms-main"));
 	}
 
 	/**
 		* Event handler for help dialog OK
-		* @return void
+		*
+		* @return {undefined}
 		*/
-	function helpConfirm() {
+	function helpConfirm()
+	{
 		$("#ms-help .help-content-inner").scrollTop(0);
 		env.closeWindow($("#ms-help"));
 	}
 
 	/**
 	 * Enables or disables sound
-	 * @param boolean enabled True to enable, false to disable
-	 * @param boolean skipSave If true, do not save preference
-	 * @return undefined
+	 *
+	 * @param {boolean} enabled True to enable, false to disable
+	 * @param {boolean} skipSave If true, do not save preference
+	 * @return {undefined}
 	 */
 	function setSound(enabled, skipSave)
 	{
@@ -452,15 +642,16 @@
 		// Write preference to local storage if enabled
 		if (!skipSave)
 		{
-			setLocalStorageValue('snd', allowSound);
+			setLocalStorageValue("snd", allowSound);
 		}
 	}
 
 	/**
 	 * Enables or disables marks (?)
-	 * @param boolean enabled True to enable, false to disable
-	 * @param boolean skipSave If true, do not save preference
-	 * @return undefined
+	 *
+	 * @param {boolean} enabled True to enable, false to disable
+	 * @param {boolean} skipSave If true, do not save preference
+	 * @return {undefined}
 	 */
 	function setMarks(enabled, skipSave)
 	{
@@ -479,15 +670,16 @@
 		// Write preference to local storage if enabled
 		if (!skipSave)
 		{
-			setLocalStorageValue('mrk', allowMarks);
+			setLocalStorageValue("mrk", allowMarks);
 		}
 	}
 
 	/**
 	 * Enables or disables color display
-	 * @param boolean enabled True to enable, false to disable
-	 * @param boolean skipSave If true, do not save preference
-	 * @return undefined
+	 *
+	 * @param {boolean} enabled True to enable, false to disable
+	 * @param {boolean} skipSave If true, do not save preference
+	 * @return {undefined}
 	 */
 	function setColor(enabled, skipSave)
 	{
@@ -508,15 +700,16 @@
 		// Write preference to local storage if enabled
 		if (!skipSave)
 		{
-			setLocalStorageValue('clr', allowColor);
+			setLocalStorageValue("clr", allowColor);
 		}
 	}
 
 	/**
 	 * Sets the difficulty level
-	 * @param int diff level
-	 * @param boolean skipSave If true, do not save preference
-	 * @return undefined
+	 *
+	 * @param {int} diff level
+	 * @param {boolean} skipSave If true, do not save preference
+	 * @return {undefined}
 	 */
 	function setDifficulty(diff, skipSave)
 	{
@@ -537,10 +730,10 @@
 
 		// Adjust the context menu entries
 		var lvl = ["beg", "int", "exp", "cst"];
-		for (var i = 0; i < lvl.length; i++)
+		for (var currentLvl = 0; currentLvl < lvl.length; currentLvl++)
 		{
-			var element = $("#game_" + lvl[i]);
-			if (i == diff)
+			var element = $("#game_" + lvl[currentLvl]);
+			if (currentLvl == diff)
 			{
 				element.addClass("checked");
 			}
@@ -553,7 +746,7 @@
 		// Write preference to local storage if enabled
 		if (!skipSave)
 		{
-			setLocalStorageValue('lvl', diff);
+			setLocalStorageValue("lvl", diff);
 		}
 
 		// Apply the setting
@@ -562,17 +755,19 @@
 
 	/**
 	 * Sets up custom board dimensions
-	 * @param int width Width of board
-	 * @param int heightHeight of board
-	 * @param int mines Number of mines to place
-	 * @param boolean skipSave If true, do not save preference
-	 * @return undefined
+	 *
+	 * @param {int} width  Width of board
+	 * @param {int} height Height of board
+	 * @param {int} mines  Number of mines to place
+	 * @param {boolean} skipSave If true, do not save preference
+	 * @return {undefined}
 	 */
 	function setCustomBoard(width, height, mines, skipSave)
 	{
 		// Override invalid board preferences
 		// Width must be a decimal integer
-		if (!/^\d*$/.test(width)) {
+		if (!/^\d*$/.test(width))
+		{
 			width = 9;
 		}
 
@@ -581,7 +776,8 @@
 		width = (width < 9 ? 9 : width);
 
 		// Height must be a decimal integer
-		if (!/^\d*$/.test(height)) {
+		if (!/^\d*$/.test(height))
+		{
 			height = 9;
 		}
 
@@ -590,7 +786,8 @@
 		height = (height < 9 ? 9 : height);
 
 		// Number of mines must be a decimal integer
-		if (!/^\d*$/.test(mines)) {
+		if (!/^\d*$/.test(mines))
+		{
 			mines = 10;
 		}
 
@@ -608,126 +805,18 @@
 		// Write preference to local storage if enabled
 		if (!skipSave)
 		{
-			setLocalStorageValue('board_width', width);
-			setLocalStorageValue('board_height', height);
-			setLocalStorageValue('board_mines', mines);
+			setLocalStorageValue("board_width", width);
+			setLocalStorageValue("board_height", height);
+			setLocalStorageValue("board_mines", mines);
 		}
 	}
 
 	/**
-	 * Binds events to elements which might be regenerated
-	 * This must happen every time the game is initialized to ensure bindings don't get lost
-	 * @return undefined
-	 */
-	function rebindEvents()
-	{
-		// Block context menu on windows
-		$(".window *").off('contextmenu').on('contextmenu', function(e) {
-			e.preventDefault();
-		});
-
-		// Handle mousedown on a mine panel
-		$(".minesweeper .ms-panel").off('mousedown').on('mousedown', function (e) {
-			// If the window is frozen, do not perform the action
-			if ($(this).closest(".window").hasClass('modal-frozen')) {
-				return;
-			}
-
-			// Left mouse button when game has not ended and panel is not triggered
-			if (!gameOver)
-			{
-				switch (e.which)
-				{
-					case 1:
-						// Left mouse press
-						tileActive = true;
-						$(this).trigger('mouseenter');
-						break;
-					case 2:
-						// Middle mouse press
-						groupActive = true;
-						$(this).trigger('mouseenter');
-						break;
-					case 3:
-						// Right mouse press - forward the event to the click handler
-						var target = $(this);
-						handlePanelClick(target, e);
-						break;
-				}
-			}
-		});
-
-		// Handle mouseenter on a mine panel (if the mouse button was clicked)
-		// Also handle the cheat pixel color here, if the cheat is turned on
-		$(".minesweeper .ms-panel").off('mouseenter').on('mouseenter', function (e) {
-			if (tileActive && !$(this).hasClass("flagged"))
-			{
-				// Apply the down action
-				$(this).addClass("down");
-			}
-			else if (groupActive)
-			{
-				// Apply the down action on element and all surrounding it
-				var coords = getCoords($(this));
-				var tileRange = getTileRange(coords[0], coords[1]);
-
-				for (var i = tileRange[0][0]; i <= tileRange[0][1]; i++)
-				{
-					for (var j = tileRange[1][0]; j <= tileRange[1][1]; j++)
-					{
-						if (!isFlagged(i,j))
-						{
-							$(".ms-panel[data-coord=\"" + i + "," + j +"\"]").addClass("down");
-						}
-					}
-				}
-			}
-
-			if (cheatActive)
-			{
-				var coords = getCoords($(this));
-				if (isMine(coords[0], coords[1]))
-				{
-					$("#pixel").css('background-color', '#000');
-				}
-				else
-				{
-					$("#pixel").css('background-color', '#FFF');
-				}
-			}
-		});
-
-		// Handle mouseup on a mine panel
-		$(".minesweeper .ms-panel").off('mouseleave').on('mouseleave', function (e) {
-			// Left or middle mouse button will cuase all downed tiles to reset
-			if ((tileActive || groupActive) && (e.which == 1 || e.which == 2))
-			{
-				// Remove the down class
-				$(".ms-panel.down").removeClass("down");
-			}
-		});
-
-		// Handle mouseup on mine panel
-		$(".minesweeper .ms-panel").off('mouseup').on('mouseup', function(e) {
-			if ((tileActive || groupActive) && !gameOver)
-			{
-				// If game hasn't started yet, start it!
-				if (gameWaiting)
-				{
-					startGame();
-				}
-
-				var target = $(this);
-				handlePanelClick(target, e);
-			}
-		});
-	}
-
-	/**
 	 * Handles clicks for ms-panel elements
-	 * @param jquery target The element attached to the event
-	 * @param event ev Event properties
-	 * @return undefined
+	 *
+	 * @param {jquery} target The element attached to the event
+	 * @param {event} ev Event properties
+	 * @return {undefined}
 	 */
 	function handlePanelClick(target, ev)
 	{
@@ -746,7 +835,7 @@
 		if (ev.which == 1)
 		{
 			// Set smiley back to :)
-			$(".smiley-icon").removeClass('active');
+			$(".smiley-icon").removeClass("active");
 			tileActive = false;
 
 			// Only handle left clicks if the game hasn't ended
@@ -768,31 +857,31 @@
 			var flagsLeft = getNumber(row, col);
 
 			// Go through each tile around the one clicked
-			for (var i = tileRange[0][0]; i <= tileRange[0][1]; i++)
+			for (var currentRow = tileRange[0][0]; currentRow <= tileRange[0][1]; currentRow++)
 			{
-				for (var j = tileRange[1][0]; j <= tileRange[1][1]; j++)
+				for (var currentCol = tileRange[1][0]; currentCol <= tileRange[1][1]; currentCol++)
 				{
 					// Skip the clicked tile
-					if (i == row && j == col)
+					if (currentRow == row && currentCol == col)
 					{
 						continue;
 					}
 
 					// If tile is flagged, subtract from number of flags left
-					if (isFlagged(i, j))
+					if (isFlagged(currentRow, currentCol))
 					{
 						flagsLeft--;
 					}
 					// Otherwise, add to the trigger queue
 					else
 					{
-						triggerQueue.push([i, j]);
+						triggerQueue.push([currentRow, currentCol]);
 					}
 				}
 			}
 
 			// If there are the wrong number of flags, abort!
-			if (flagsLeft !== 0)
+			if (flagsLeft != 0)
 			{
 				return;
 			}
@@ -801,28 +890,28 @@
 			// This guarantees that non-mine tiles will trigger before
 			// a game-ending explosion.
 			var tilesInQueue = triggerQueue.length;
-			for (var i = 0; i < tilesInQueue; i++)
+			for (var currentTile = 0; currentTile < tilesInQueue; currentTile++)
 			{
-				var qRow = triggerQueue[i][0];
-				var qCol = triggerQueue[i][1];
+				var tRow = triggerQueue[currentTile][0];
+				var tCol = triggerQueue[currentTile][1];
 
-				if (isMine(qRow, qCol))
+				if (isMine(tRow, tCol))
 				{
-					triggerQueue.splice(i, 1);
-					triggerQueue.push([qRow, qCol]);
+					triggerQueue.splice(currentTile, 1);
+					triggerQueue.push([tRow, tCol]);
 
 					// Shorten the array and rewind
 					tilesInQueue--;
-					i--;
+					currentTile--;
 				}
 			}
 
 			// Trigger the mines--err.. tiles. >:)
-			for (var i = 0; i < triggerQueue.length; i++)
+			for (var currentMine = 0; currentMine < triggerQueue.length; currentMine++)
 			{
-				var qRow = triggerQueue[i][0];
-				var qCol = triggerQueue[i][1];
-				trigger(qRow, qCol);
+				var mRow = triggerQueue[currentMine][0];
+				var mCol = triggerQueue[currentMine][1];
+				trigger(mRow, mCol);
 			}
 		}
 		// Right click
@@ -859,10 +948,15 @@
 		}
 	}
 
+	/*****************************************************
+	 * Tile Control and Metadata Functions
+	 *****************************************************/
+
 	/**
 	 * Gets coordinates of a mine panel
-	 * @param jquery target Element from which to get coordinates
-	 * @return array Coordinates of tile [y,x]
+	 *
+	 * @param {jquery} target Element from which to get coordinates
+	 * @return {array} Coordinates of tile [y,x]
 	 */
 	function getCoords(target)
 	{
@@ -872,15 +966,18 @@
 
 	/**
 	 * Flags a tile
-	 * @param int row Row to set
-	 * @param int col Column to set
-	 * @return undefined
+	 *
+	 * @param {int} row Row to set
+	 * @param {int} col Column to set
+	 * @return {undefined}
 	 */
-	function flag(row, col) {
+	function flag(row, col)
+	{
 		var tile = tiles[row][col];
 
 		// Tile may only be flagged if it is fresh
-		if (!gameOver && !tile.triggered && !tile.marked) {
+		if (!gameOver && !tile.triggered && !tile.marked)
+		{
 			tiles[row][col].flagged = true;
 		}
 
@@ -890,15 +987,18 @@
 
 	/**
 	 * Marks a tile ("?")
-	 * @param int row Row to set
-	 * @param int col Column to set
-	 * @return undefined
+	 *
+	 * @param {int} row Row to set
+	 * @param {int} col Column to set
+	 * @return {undefined}
 	 */
-	function mark(row, col) {
+	function mark(row, col)
+	{
 		var tile = tiles[row][col];
 
 		// Tile may only be marked if it is untriggered and flagged
-		if (!gameOver && !tile.triggered && tile.flagged) {
+		if (!gameOver && !tile.triggered && tile.flagged)
+		{
 			tile.flagged = false;
 			tile.marked = true;
 		}
@@ -910,11 +1010,13 @@
 
 	/**
 	 * Clears marked and flagged statuses on a tile
-	 * @param int row Row to set
-	 * @param int col Column to set
-	 * @return undefined
+	 *
+	 * @param {int} row Row to set
+	 * @param {int} col Column to set
+	 * @return {undefined}
 	 */
-	function clear(row, col) {
+	function clear(row, col)
+	{
 		var tile = tiles[row][col];
 
 		// Tile may only be cleared if not triggered
@@ -930,12 +1032,132 @@
 	}
 
 	/**
-	 * Triggers a tile
-	 * @param int row Row to trigger
-	 * @param int col Column to trigger
-	 * @return undefined
+	 * Sets a tile as a mine
+	 *
+	 * @param {int} row Row to set
+	 * @param {int} col Column to set
+	 * @return {undefined}
 	 */
-	function trigger(row, col) {
+	function mine(row, col)
+	{
+		tiles[row][col].isMine = true;
+	}
+
+	/**
+	 * Checks whether a tile is triggered
+	 *
+	 * @param {int} row Row to check
+	 * @param {int} col Column to check
+	 * @return {boolean} True if tile is triggered, false otherwise
+	 */
+	function isTriggered(row, col)
+	{
+		return tiles[row][col].triggered;
+	}
+
+	/**
+	 * Checks whether a tile is a number
+	 *
+	 * @param {int} row Row to check
+	 * @param {int} col Column to check
+	 * @return {boolean} True if tile is a number, false otherwise
+	 */
+	function isNumber(row, col)
+	{
+		return tiles[row][col].number != 0;
+	}
+
+	/**
+	 * Checks whether a tile is marked
+	 *
+	 * @param {int} row Row to check
+	 * @param {int} col Column to check
+	 * @return {boolean} True if tile is marked, false otherwise
+	 */
+	function isMarked(row, col)
+	{
+		return tiles[row][col].marked;
+	}
+
+	/**
+	 * Checks whether a tile is flagged
+	 *
+	 * @param {int} row Row to check
+	 * @param {int} col Column to check
+	 * @return {boolean} True if tile is flagged, false otherwise
+	 */
+	function isFlagged(row, col)
+	{
+		return tiles[row][col].flagged;
+	}
+
+	/**
+	 * Checks whether a tile is a mine
+	 *
+	 * @param {int} row Row to check
+	 * @param {int} col Column to check
+	 * @return {boolean} True if tile is a mine, false otherwise
+	 */
+	function isMine(row, col)
+	{
+		return tiles[row][col].isMine;
+	}
+
+	/**
+	 * Returns the number of a tile
+	 *
+	 * @param {int} row Row to check
+	 * @param {int} col Column to check
+	 * @return {int} Number of tile
+	 */
+	function getNumber(row, col)
+	{
+		return tiles[row][col].number;
+	}
+
+	/*****************************************************
+	 * Tile Actions
+	 *****************************************************/
+
+	/**
+	 * Adds a mine to the mine counter
+	 *
+	 * @return {undefined}
+	 */
+	function addMine()
+	{
+		if (minesLeft < maxMines)
+		{
+			minesLeft++;
+			digitRender("mines", minesLeft);
+		}
+	}
+
+	/**
+	 * Removes a mine from the mine counter
+	 *
+	 * @return {undefined}
+	 */
+	function subMine()
+	{
+		if (minesLeft > -99)
+		{
+			minesLeft--;
+
+			// Render the count or -99 if it's too low
+			digitRender("mines", (minesLeft > -100) ? minesLeft : -99);
+		}
+	}
+
+	/**
+	 * Triggers a tile
+	 *
+	 * @param {int} row Row to trigger
+	 * @param {int} col Column to trigger
+	 * @return {undefined}
+	 */
+	function trigger(row, col)
+	{
 		var tile = tiles[row][col];
 
 		// Cannot trigger a tile that has already been triggered or flagged
@@ -966,7 +1188,7 @@
 			setNumbers(row, col, true);
 
 			// Place a new mine with this tile excluded
-			placeMine(row, col)
+			placeMine(row, col);
 		}
 
 		// Rerender the tile
@@ -989,9 +1211,10 @@
 
 	/**
 	 * Cascades trigger until no more clear tiles are found
-	 * @param int row Row subcoord for tile to check
-	 * @param int col Column subcoord for tile to check
-	 * @return undefined
+	 *
+	 * @param {int} row Row subcoord for tile to check
+	 * @param {int} col Column subcoord for tile to check
+	 * @return {undefined}
 	 */
 	function cascadeTrigger(row, col)
 	{
@@ -1002,39 +1225,30 @@
 		var colMaxBound = (col == boardWidth - 1) ? boardWidth - 1 : col + 1;
 
 		// Loop through up to nine tiles
-		for (var i = rowMinBound; i <= rowMaxBound; i++)
+		for (var currentRow = rowMinBound; currentRow <= rowMaxBound; currentRow++)
 		{
-			for (var j = colMinBound; j <= colMaxBound; j++)
+			for (var currentCol = colMinBound; currentCol <= colMaxBound; currentCol++)
 			{
 				// Trigger tile if it is a number or is not a mine or flagged
-				var tile = tiles[i][j];
+				var tile = tiles[currentRow][currentCol];
 				if (tile.number > 0 || (!tile.isMine && !tile.flagged))
 				{
-					trigger(i, j);
+					trigger(currentRow, currentCol);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Sets a tile as a mine
-	 * @param int row Row to set
-	 * @param int col Column to set
-	 * @return undefined
-	 */
-	function mine(i, j) {
-		tiles[i][j].isMine = true;
-	}
-
-	/**
 	 * Detonates a mine (boom)
-	 * @param int row Row to explode
-	 * @param int col Column on which to make blam
-	 * @return undefined
+	 *
+	 * @param {int} row Row to explode
+	 * @param {int} col Column on which to make blam
+	 * @return {undefined}
 	 */
-	function explode(i, j)
+	function explode(row, col)
 	{
-		var tile = tiles[i][j];
+		var tile = tiles[row][col];
 
 		// Sanity check - only mines explode!
 		if (!tile.isMine)
@@ -1044,7 +1258,7 @@
 
 		// Mark tile as exploded
 		tile.exploded = true;
-		tiles[i][j] = tile;
+		tiles[row][col] = tile;
 
 		// Play explosion sound, if enabled
 		if (allowSound)
@@ -1056,11 +1270,11 @@
 		endGame();
 
 		// Reveal mine tiles and incorrect flags, and leave good flags alone
-		for (var i = 0; i < boardHeight; i++)
+		for (var currentRow = 0; currentRow < boardHeight; currentRow++)
 		{
-			for (var j = 0; j < boardWidth; j++)
+			for (var currentCol = 0; currentCol < boardWidth; currentCol++)
 			{
-				var tileToTrigger = tiles[i][j];
+				var tileToTrigger = tiles[currentRow][currentCol];
 				var mustRender = false;
 
 				// If this is an unflagged mine, rerender it
@@ -1079,107 +1293,32 @@
 				if (mustRender)
 				{
 					tileToTrigger.triggered = true;
-					tiles[i][j] = tileToTrigger;
-					rerender(i, j);
+					tiles[currentRow][currentCol] = tileToTrigger;
+					rerender(currentRow, currentCol);
 				}
 			}
 		}
 
 		// Murder the smiley :(
-		$(".smiley-icon").addClass('dead');
+		$(".smiley-icon").addClass("dead");
 	}
 
-	/**
-	 * Checks whether a tile is triggered
-	 * @param int row Row to check
-	 * @param int col Column to check
-	 * @return boolean True if tile is triggered, false otherwise
-	 */
-	function isTriggered(i, j)
-	{
-		return tiles[i][j].triggered;
-	}
-
-	/**
-	 * Checks whether a tile is fresh
-	 * @param int row Row to check
-	 * @param int col Column to check
-	 * @return boolean True if tile is fresh, false otherwise
-	 */
-	function isClear(i, j)
-	{
-		var tile = tiles[i][j];
-
-		// Tile is fresh if not triggered, marked, or flagged
-		return !tile.triggered && !tile.marked && !tile.flagged;
-	}
-
-	/**
-	 * Checks whether a tile is a number
-	 * @param int row Row to check
-	 * @param int col Column to check
-	 * @return boolean True if tile is a number, false otherwise
-	 */
-	function isNumber(i, j)
-	{
-		return tiles[i][j].number != 0;
-	}
-
-	/**
-	 * Checks whether a tile is marked
-	 * @param int row Row to check
-	 * @param int col Column to check
-	 * @return boolean True if tile is marked, false otherwise
-	 */
-	function isMarked(i, j)
-	{
-		return tiles[i][j].marked;
-	}
-
-	/**
-	 * Checks whether a tile is flagged
-	 * @param int row Row to check
-	 * @param int col Column to check
-	 * @return boolean True if tile is flagged, false otherwise
-	 */
-	function isFlagged(i, j)
-	{
-		return tiles[i][j].flagged;
-	}
-
-	/**
-	 * Checks whether a tile is a mine
-	 * @param int row Row to check
-	 * @param int col Column to check
-	 * @return boolean True if tile is a mine, false otherwise
-	 */
-	function isMine(i, j)
-	{
-		return tiles[i][j].isMine;
-	}
-
-	/**
-	 * Returns the number of a tile
-	 * @param int row Row to check
-	 * @param int col Column to check
-	 * @return int Number of tile
-	 */
-	function getNumber(i, j)
-	{
-		return tiles[i][j].number;
-	}
+	/*****************************************************
+	 * UI Rendering
+	 *****************************************************/
 
 	/**
 	 * Renders a tile in its current internal state
-	 * @param int row Row to render
-	 * @param int col Column to render
-	 * @return undefined
+	 *
+	 * @param {int} row Row to render
+	 * @param {int} col Column to render
+	 * @return {undefined}
 	 */
-	function rerender(i, j)
+	function rerender(row, col)
 	{
 		// Locate the target in the DOM and load its metadata
-		var target = $(".ms-panel[data-coord=\"" + i + "," + j +"\"]");
-		var tile = tiles[i][j];
+		var target = $(".ms-panel[data-coord=\"" + row + "," + col + "\"]");
+		var tile = tiles[row][col];
 
 		// Reset the state of the panel
 		target.removeClass("triggered mine exploded m1 m2 m3 m4 m5 m6 m7 m8 flagged marked");
@@ -1210,7 +1349,7 @@
 			// If a triggered tile is flagged and is not a mine, show bogus marker
 			if (!tile.isMine && tile.flagged)
 			{
-				target.addClass("bogus")
+				target.addClass("bogus");
 			}
 		}
 		else
@@ -1229,87 +1368,18 @@
 	}
 
 	/**
-	 * Resets and starts the game time
-	 * @return undefined
-	 */
-	function timeStart()
-	{
-		timeTick();
-		timer = setInterval(function() {timeTick()}, 1000);
-	};
-
-	/**
-	 * Stops the game timer
-	 * @return undefined
-	 */
-	function timeStop()
-	{
-		clearInterval(timer);
-	}
-
-	/**
-	 * Increments the timer on tick
-	 * @return undefined
-	 */
-	function timeTick()
-	{
-		if (timerEnabled)
-		{
-			// Do not exceed 999
-			if (time < 999)
-			{
-				time++;
-				digitRender('time', time);
-
-				// Play tick sound, if enabled
-				if (allowSound)
-				{
-					document.getElementById("snd_tick").play();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Adds a mine to the mine counter
-	 * @return undefined
-	 */
-	function addMine()
-	{
-		if (minesLeft < maxMines)
-		{
-			minesLeft++;
-			digitRender('mines', minesLeft);
-		}
-	}
-
-	/**
-	 * Removes a mine from the mine counter
-	 * @return undefined
-	 */
-	function subMine()
-	{
-		if (minesLeft > -99)
-		{
-			minesLeft--;
-
-			// Render the count or -99 if it's too low
-			digitRender('mines', (minesLeft > -100) ? minesLeft : -99);
-		}
-	}
-
-	/**
 	 * Renders digits on the digital number boxes
-	 * @param string target ID of the element to render (must be num-box class)
-	 * @param int number Number to render on the display
-	 * @return undefined
+	 *
+	 * @param {string} target ID of the element to render (must be num-box class)
+	 * @param {int} number Number to render on the display
+	 * @return {undefined}
 	 */
 	function digitRender(target, number)
 	{
-		target = '.num-box#' + target;
+		target = ".num-box#" + target;
 
 		// Determine each digit of the display
-		num = Math.abs(number);
+		var num = Math.abs(number);
 		var hundreds = Math.floor(num / 100);
 		num -= hundreds * 100;
 		var tens = Math.floor(num / 10);
@@ -1318,23 +1388,28 @@
 		// Make hundreds place a hyphen if negative
 		if (number < 0)
 		{
-			hundreds = 'n';
+			hundreds = "n";
 		}
 
 		// Set the display
-		$(target + ' .digit').removeClass('d0 d1 d2 d3 d4 d5 d6 d7 d8 d9 dn');
-		$(target + ' .digit.iii').addClass('d' + hundreds);
-		$(target + ' .digit.ii').addClass('d' + tens);
-		$(target + ' .digit.i').addClass('d' + num);
+		$(target + " .digit").removeClass("d0 d1 d2 d3 d4 d5 d6 d7 d8 d9 dn");
+		$(target + " .digit.iii").addClass("d" + hundreds);
+		$(target + " .digit.ii").addClass("d" + tens);
+		$(target + " .digit.i").addClass("d" + num);
 	}
+
+	/*****************************************************
+	 * Game Generation
+	 *****************************************************/
 
 	/**
 	 * Initializes the game
-	 * @param int diff Difficulty of the game - see def at top of file for details
-	 * @param int width Optional board width specification (diff = 3)
-	 * @param int height Optional board height specification (diff = 3)
-	 * @param int mines Optional number of mines specification (diff = 3)
-	 * @return undefined
+	 *
+	 * @param {int} diff Difficulty of the game - see def at top of file for details
+	 * @param {int} width Optional board width specification (diff = 3)
+	 * @param {int} height Optional board height specification (diff = 3)
+	 * @param {int} mines Optional number of mines specification (diff = 3)
+	 * @return {undefined}
 	 */
 	function initGame(diff)
 	{
@@ -1354,23 +1429,24 @@
 
 		// Set up defaults based on difficulty level, unless using a custom setting
 		var defaults = {
-			'width': [9,16,30],
-			'height': [9,16,16],
-			'mines': [10,40,99]
+			"width": [9, 16, 30],
+			"height": [9, 16, 16],
+			"mines": [10, 40, 99]
 		};
 
 		// Set defaults if using a non-custom difficulty
+		var width, height, mines;
 		if (diff != 3)
 		{
-			var width = defaults.width[diff];
-			var height = defaults.height[diff];
-			var mines = defaults.mines[diff];
+			width = defaults.width[diff];
+			height = defaults.height[diff];
+			mines = defaults.mines[diff];
 		}
 		else
 		{
-			var width = customWidth;
-			var height = customHeight;
-			var mines = customMines;
+			width = customWidth;
+			height = customHeight;
+			mines = customMines;
 		}
 
 		// Set up initial game data
@@ -1379,7 +1455,6 @@
 		boardWidth = width;
 		boardHeight = height;
 		difficulty = diff;
-		exploded = false;
 		time = 0;
 		tiles = [];
 		tilesLeft = (width * height) - mines;
@@ -1389,7 +1464,7 @@
 		{
 			firstGame = false;
 			// Load the leaderboard from local storage, if available
-			var top = getLocalStorageValue('leaderboard');
+			var top = getLocalStorageValue("leaderboard");
 			var leaders = leaderboard;
 			try
 			{
@@ -1406,35 +1481,36 @@
 			}
 
 			// Initialize the internal leaderboard
-			for (var leaderLvl = 0; leaderLvl < 3; leaderLvl++) {
+			for (var leaderLvl = 0; leaderLvl < 3; leaderLvl++)
+			{
 				updateLeaderboard(leaderLvl, leaders[leaderLvl][0], leaders[leaderLvl][1], true);
 			}
 
 			// Restore sound preference
-			var sndPref = getLocalStorageValue('snd');
+			var sndPref = getLocalStorageValue("snd");
 			sndPref = (sndPref == "true") ? true : false;
 			setSound(sndPref, true);
 
 			// Restore marks preference
-			var mrkPref = getLocalStorageValue('mrk');
+			var mrkPref = getLocalStorageValue("mrk");
 			mrkPref = (mrkPref == "true" || mrkPref == null) ? true : false;
 			setMarks(mrkPref, true);
 
 			// Restore color preference
-			var clrPref = getLocalStorageValue('clr');
+			var clrPref = getLocalStorageValue("clr");
 			clrPref = (clrPref == "true" || clrPref == null) ? true : false;
 			setColor(clrPref, true);
 
 			// Restore level preference
 			// This must be last because it may reinitialize the game board
-			var lvlPref = getLocalStorageValue('lvl');
-			var bwPref = getLocalStorageValue('board_width');
-			var bhPref = getLocalStorageValue('board_height');
-			var bmPref = getLocalStorageValue('board_mines');
-			if (lvlPref !== null)
+			var lvlPref = getLocalStorageValue("lvl");
+			var bwPref = getLocalStorageValue("board_width");
+			var bhPref = getLocalStorageValue("board_height");
+			var bmPref = getLocalStorageValue("board_mines");
+			if (lvlPref != null)
 			{
 				// Don't restore the preference if custom has invalid bounds
-				if (lvlPref != 3 || (bwPref !== null && bhPref != null && bmPref != null))
+				if (lvlPref != 3 || (bwPref != null && bhPref != null && bmPref != null))
 				{
 					if (lvlPref == 3)
 					{
@@ -1453,8 +1529,8 @@
 		generateGrid();
 
 		// Render the numeric displays with initial values
-		digitRender('time', time);
-		digitRender('mines', minesLeft);
+		digitRender("time", time);
+		digitRender("mines", minesLeft);
 
 		// Reset the smiley icon :)
 		$(".smiley-icon").removeClass("active cool dead");
@@ -1468,27 +1544,28 @@
 
 	/**
 	 * Generates game grid in memory and then renders the displayed grid
-	 * @return undefined
+	 *
+	 * @return {undefined}
 	 */
 	function generateGrid()
 	{
 		var grid = "";
 		// Cycle through rows (ms-row)
-		for (var i = 0; i < boardHeight; i++)
+		for (var row = 0; row < boardHeight; row++)
 		{
 			// Create array for each row
 			tiles.push([]);
-			grid += "<div class='ms-row'>"
+			grid += "<div class='ms-row'>";
 
 			// Cycle through each tile in the row
-			for (var j = 0; j < boardWidth; j++)
+			for (var col = 0; col < boardWidth; col++)
 			{
 				// Add the default object to the game array
-				tiles[i].push(new Tile());
-				grid += "<div class='ms-panel' data-coord='" + i + "," + j + "'></div>";
+				tiles[row].push(new Tile());
+				grid += "<div class='ms-panel' data-coord='" + row + "," + col + "'></div>";
 			}
 
-			grid += "</div>"
+			grid += "</div>";
 		}
 
 		// Place the appropriate number of mines
@@ -1499,19 +1576,20 @@
 		}
 
 		// Render the grid
-		$('.ms-grid').html(grid);
+		$(".ms-grid").html(grid);
 	}
 
 	/**
 	 * Places a mine in a random location on the grid
-	 * @param int exclRow Optional row to exclude from mine
-	 * @param int exclCol Optional column to exclude from mine
-	 * @return undefined
+	 *
+	 * @param {int} exclRow Optional row to exclude from mine
+	 * @param {int} exclCol Optional column to exclude from mine
+	 * @return {undefined}
 	 */
 	function placeMine(exclRow, exclCol)
 	{
 		// Disable exclusion check if coordinate not provided
-		var excl = typeof exclRow != 'undefined';
+		var excl = typeof exclRow != "undefined";
 
 		// Default values
 		var row = -1;
@@ -1537,10 +1615,11 @@
 
 	/**
 	 * Increases numbers surrounding a tile
-	 * @param int row Row subcoord for center tile
-	 * @param int col Column subcoord for center tile
-	 * @param boolean reduce Optional - reduces numbers instead
-	 * @return undefined
+	 *
+	 * @param {int} row Row subcoord for center tile
+	 * @param {int} col Column subcoord for center tile
+	 * @param {boolean} recalc Optional - forces the number to be recalculated
+	 * @return {undefined}
 	 */
 	function setNumbers(row, col, recalc)
 	{
@@ -1552,7 +1631,7 @@
 			for (var j = tileRange[1][0]; j <= tileRange[1][1]; j++)
 			{
 				// If mine, add to the count of adjacent mines and then ignore the tile
-				if (isMine(i,j))
+				if (isMine(i, j))
 				{
 					adjMines++;
 					continue;
@@ -1586,9 +1665,10 @@
 
 	/**
 	 * Generates a pseudo-random integer
-	 * @param int min Minimum value (inclusive)
-	 * @param int max Maximum value (inclusive)
-	 * @return int Generated number
+	 *
+	 * @param {int} min Minimum value (inclusive)
+	 * @param {int} max Maximum value (inclusive)
+	 * @return {int} Generated number
 	 */
 	function getRandomNumber(min, max)
 	{
@@ -1597,9 +1677,10 @@
 
 	/**
 	 * Provides range of tiles surrounding a specified tile
-	 * @param int row Row of tile to use
-	 * @param int col Column of file to use
-	 * @return array List of surrounding tiles [[rowMin, rowMax], [colMin, colMax]]
+	 *
+	 * @param {int} row Row of tile to use
+	 * @param {int} col Column of file to use
+	 * @return {array} List of surrounding tiles [[rowMin, rowMax], [colMin, colMax]]
 	 */
 	function getTileRange(row, col)
 	{
@@ -1612,18 +1693,14 @@
 		return [[rowMinBound, rowMaxBound], [colMinBound, colMaxBound]];
 	}
 
-	/**
-	 * Determines whether game is running
-	 * @return boolean True if game is active
-	 */
-	function isGameRunning()
-	{
-		return !gameWaiting && !gameOver;
-	}
+	/*****************************************************
+	 * Game Control
+	 *****************************************************/
 
 	/**
 	 * Starts the game
-	 * @return undefined
+	 *
+	 * @return {undefined}
 	 */
 	function startGame()
 	{
@@ -1637,23 +1714,25 @@
 
 	/**
 	 * Ends the game
-	 * @return undefined
+	 *
+	 * @return {undefined}
 	 */
 	function endGame()
 	{
 		// If the game is active, stop the running timer
-			gameOver = true;
-			timeStop();
+		gameOver = true;
+		timeStop();
 	}
 
 	/**
 	 * Ends the game with the user winning
-	 * @return undefined
+	 *
+	 * @return {undefined}
 	 */
 	function winGame()
 	{
 		// Smiley is very happy B)
-		$(".smiley-icon").addClass('cool');
+		$(".smiley-icon").addClass("cool");
 
 		// Play win sound, if enabled
 		if (allowSound)
@@ -1669,7 +1748,7 @@
 				// Update the text in the window
 				var levelNames = ["beginner", "intermediate", "expert"];
 				var highScoreMsgContainer = $("#ms-high-score #hs-description");
-				var highScoreMsg = highScoreMsgContainer.data('hs-msg').replace("%LEVEL%", levelNames[difficulty]);
+				var highScoreMsg = highScoreMsgContainer.data("hs-msg").replace("%LEVEL%", levelNames[difficulty]);
 				highScoreMsgContainer.html(highScoreMsg);
 
 				// Prepopulate the name field with the last name used for this level
@@ -1688,16 +1767,69 @@
 	}
 
 	/**
-	 * Updates the leaderboard
-
-	 * @param int    difficulty Difficulty to update (0-2 valid)
-	 * @param string name       Name of player
-	 * @param int    time       Time taken by player to complete game
-	 * @param bool   skipSave   Do not save leaderboard information to local storage
-	 * @return void
+	 * Resets and starts the game time
+	 *
+	 * @return {undefined}
 	 */
-	function updateLeaderboard(difficulty, name, time, skipSave) {
-		if (difficulty < 0 || difficulty > 2 || time < 0 || time > 999)
+	function timeStart()
+	{
+		timeTick();
+		timer = setInterval(function ()
+		{
+			timeTick();
+		}, 1000);
+	}
+
+	/**
+	 * Stops the game timer
+	 *
+	 * @return {undefined}
+	 */
+	function timeStop()
+	{
+		clearInterval(timer);
+	}
+
+	/**
+	 * Increments the timer on tick
+	 *
+	 * @return {undefined}
+	 */
+	function timeTick()
+	{
+		if (timerEnabled)
+		{
+			// Do not exceed 999
+			if (time < 999)
+			{
+				time++;
+				digitRender("time", time);
+
+				// Play tick sound, if enabled
+				if (allowSound)
+				{
+					document.getElementById("snd_tick").play();
+				}
+			}
+		}
+	}
+
+	/*****************************************************
+	 * Leaderboard Control
+	 *****************************************************/
+
+	/**
+	 * Updates the leaderboard
+	 *
+	 * @param {int}    level     Difficulty to update (0-2 valid)
+	 * @param {string} name      Name of player
+	 * @param {int}    timeTaken Time taken by player to complete game
+	 * @param {bool}   skipSave  Do not save leaderboard information to local storage
+	 * @return {undefined}
+	 */
+	function updateLeaderboard(level, name, timeTaken, skipSave)
+	{
+		if (level < 0 || level > 2 || timeTaken < 0 || timeTaken > 999)
 		{
 			return;
 		}
@@ -1706,8 +1838,8 @@
 		name = name.substr(0, 32);
 
 		// Update the leaderboard and save it
-		leaderboard[difficulty][0] = name;
-		leaderboard[difficulty][1] = time;
+		leaderboard[level][0] = name;
+		leaderboard[level][1] = timeTaken;
 
 		if (!skipSave)
 		{
@@ -1715,31 +1847,39 @@
 		}
 
 		// Update the leaderboard window
-		var row = $("#ms-leaderboard .leader-container .row[data-leader-row=" + difficulty + "]");
-		var timeText = $("#ms-leaderboard .leader-container").data('time-string').replace('%TIME%', time);
-		row.find('.time').first().html(timeText);
-		row.find('.name').first().html(name);
+		var row = $("#ms-leaderboard .leader-container .row[data-leader-row=" + level + "]");
+		var timeText = $("#ms-leaderboard .leader-container").data("time-string").replace('%TIME%', timeTaken);
+		row.find(".time").first().html(timeText);
+		row.find(".name").first().html(name);
 	}
 
 	/**
 	 * Resets leaderboard scores to default
 	 *
-	 * @return void
+	 * @return {undefined}
 	 */
-	function resetLeaderboard() {
-		for (var lvl = 0; lvl < 2; lvl++) {
+	function resetLeaderboard()
+	{
+		for (var lvl = 0; lvl < 2; lvl++)
+		{
 			updateLeaderboard(lvl, "Anonymous", 999);
 		}
 	}
 
+	/*****************************************************
+	 * Local Storage Wrappers
+	 *****************************************************/
+
 	/**
 	 * Retrieves data from local storage
 	 *
-	 * @param string key local storage key
-	 * @return object|null The contents of local storage at the specified key, or null if there is no value for the key.
+	 * @param {string} key local storage key
+	 * @return {object|null} The contents of local storage at the specified key, or null if there is no value for the key.
 	 */
-	 function getLocalStorageValue(key) {
-		 if (typeof window.localStorage != "undefined") {
+	 function getLocalStorageValue(key)
+	 {
+		 if (typeof window.localStorage != "undefined")
+		 {
 			 return window.localStorage.getItem(key);
 		 }
 
@@ -1749,12 +1889,14 @@
 	/**
 	 * Inputs data into local storage
 	 *
-	 * @param string key local storage key
-	 * @param object value value to set
-	 * @return void
+	 * @param {string} key local storage key
+	 * @param {object} value value to set
+	 * @return {undefined}
 	*/
-	function setLocalStorageValue(key, value) {
-		if (typeof window.localStorage != "undefined") {
+	function setLocalStorageValue(key, value)
+	{
+		if (typeof window.localStorage != "undefined")
+		{
 			window.localStorage.setItem(key, value);
 		}
 	}

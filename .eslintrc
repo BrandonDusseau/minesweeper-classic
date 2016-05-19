@@ -1,0 +1,74 @@
+{
+  "extends": "eslint:recommended",
+  "rules": {
+    "no-console": ["off"],
+    "curly": ["error", "all"],
+    "default-case": ["error"],
+    "no-eval": ["error"],
+    "no-multi-spaces": [
+      "warn",
+      "exceptions": {
+        "Property": true,
+        "VariableDeclarator": true,
+        "ImportDeclaration": true
+      }
+    ],
+    "no-shadow": ["error"],
+    "no-undefined": ["error"],
+
+    "array-bracket-spacing": ["warn", "never"],
+    "block-spacing": ["warn", "always"],
+    "brace-style": ["warn", "allman"],
+    "camelcase": ["warn", {"properties": "always"}],
+    "comma-spacing": [
+      "warn",
+      {
+        "before": false,
+        "after": true
+      }
+    ],
+    "comma-style": ["warn", "last"],
+    "indent": ["warn", "tab", {"SwitchCase": 1}],
+    "new-cap": [
+      "warn",
+      {
+        "newIsCap": true,
+        "capIsNew": true,
+        "properties": false
+      }
+    ],
+    "no-mixed-spaces-and-tabs": ["warn", "smart-tabs"],
+    "no-multiple-empty-lines": ["warn"],
+    "no-nested-ternary": ["warn"],
+    "no-spaced-func": ["warn"],
+    "no-trailing-spaces": ["warn"],
+    "semi": ["warn", "always"],
+    "space-in-parens": ["warn", "never"],
+    "space-infix-ops": ["warn"],
+    "spaced-comment": [
+      "warn",
+      "always",
+      {
+        "block":
+        {
+          "exceptions": ["*"]
+        }
+      }
+    ],
+    "require-jsdoc": [
+      "error",
+      {
+        require: {
+          "FunctionDeclaration": true,
+          "MethodDefinition": true,
+          "ClassDeclaration": false
+        }
+      }
+    ],
+    "valid-jsdoc": ["error"]
+  },
+  "env": {
+    "browser": true,
+    "jquery": true
+  }
+}
