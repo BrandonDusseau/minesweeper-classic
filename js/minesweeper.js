@@ -1140,13 +1140,8 @@
 	 */
 	function subMine()
 	{
-		if (minesLeft > -99)
-		{
-			minesLeft--;
-
-			// Render the count or -99 if it's too low
-			digitRender("mines", (minesLeft > -100) ? minesLeft : -99);
-		}
+		minesLeft--;
+		digitRender("mines", minesLeft);
 	}
 
 	/**
@@ -1376,6 +1371,16 @@
 	 */
 	function digitRender(target, number)
 	{
+		// If the number is out of displayable bounds, display the bound
+		if (number < -99)
+		{
+			number = -99;
+		}
+		else if (number > 999)
+		{
+			number = 999;
+		}
+
 		target = ".num-box#" + target;
 
 		// Determine each digit of the display
