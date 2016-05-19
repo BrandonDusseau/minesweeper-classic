@@ -416,13 +416,13 @@
 				// Apply the down action on element and all surrounding it
 				var tileRange = getTileRange(coords[0], coords[1]);
 
-				for (var i = tileRange[0][0]; i <= tileRange[0][1]; i++)
+				for (var currentRow = tileRange[0][0]; currentRow <= tileRange[0][1]; currentRow++)
 				{
-					for (var j = tileRange[1][0]; j <= tileRange[1][1]; j++)
+					for (var currentCol = tileRange[1][0]; currentCol <= tileRange[1][1]; currentCol++)
 					{
-						if (!isFlagged(i, j))
+						if (!isFlagged(currentRow, currentCol))
 						{
-							$(".ms-panel[data-coord=\"" + i + "," + j + "\"]").addClass("down");
+							$(".ms-panel[data-coord=\"" + currentRow + "," + currentCol + "\"]").addClass("down");
 						}
 					}
 				}
@@ -1626,19 +1626,19 @@
 		// Loop through up to nine tiles
 		var tileRange = getTileRange(row, col);
 		var adjMines = 0;
-		for (var i = tileRange[0][0]; i <= tileRange[0][1]; i++)
+		for (var currentRow = tileRange[0][0]; currentRow <= tileRange[0][1]; currentRow++)
 		{
-			for (var j = tileRange[1][0]; j <= tileRange[1][1]; j++)
+			for (var currentCol = tileRange[1][0]; currentCol <= tileRange[1][1]; currentCol++)
 			{
 				// If mine, add to the count of adjacent mines and then ignore the tile
-				if (isMine(i, j))
+				if (isMine(currentRow, currentCol))
 				{
 					adjMines++;
 					continue;
 				}
 
 				// Ignore the central tile
-				if ((row == i && col == j))
+				if ((row == currentRow && col == currentCol))
 				{
 					continue;
 				}
@@ -1646,11 +1646,11 @@
 				// Increase or decrease the number on the adjacent tile
 				if (!recalc)
 				{
-					tiles[i][j].number++;
+					tiles[currentRow][currentCol].number++;
 				}
 				else
 				{
-					tiles[i][j].number--;
+					tiles[currentRow][currentCol].number--;
 				}
 			}
 		}
