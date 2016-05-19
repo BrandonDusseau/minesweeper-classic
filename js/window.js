@@ -254,10 +254,10 @@
 				var diffY = e.pageY - curOffset.top;
 
 				// Move the window
-				$("body").on("mousemove", function ()
+				$("body").on("mousemove", function (ev)
 				{
-					win.css("top", (e.pageY - diffY) + "px");
-					win.css("left", (e.pageX - diffX) + "px");
+					win.css("top", (ev.pageY - diffY) + "px");
+					win.css("left", (ev.pageX - diffX) + "px");
 				});
 			}
 		});
