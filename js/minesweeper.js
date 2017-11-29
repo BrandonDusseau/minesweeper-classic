@@ -123,16 +123,18 @@
 				if (!cheatActive)
 				{
 					// XYZ
-					if ((e.which == 88 && cheatStep) == 0 ||
-						(e.which == 89 && (cheatStep == 1 || cheatStep == 4) ||
-						(e.which == 90 && (cheatStep == 2 || cheatStep == 3))))
+					if (
+						(e.which == 88 && cheatStep == 0) ||
+						(e.which == 89 && (cheatStep == 1 || cheatStep == 4)) ||
+						(e.which == 90 && (cheatStep == 2 || cheatStep == 3))
+					)
 					{
 						cheatStep++;
 					}
 					// Shift
 					else if (e.which == 16 && cheatStep == 5)
 					{
-						$("#pixel").css("display", "block");
+						$("#cheatpx").css("display", "block");
 						cheatActive = true;
 					}
 					// Any out of sequence key resets the cheat state
@@ -432,11 +434,11 @@
 			{
 				if (isMine(coords[0], coords[1]))
 				{
-					$("#pixel").css("background-color", "#000");
+					$("#cheatpx").css("background-color", "#000");
 				}
 				else
 				{
-					$("#pixel").css("background-color", "#FFF");
+					$("#cheatpx").css("background-color", "#FFF");
 				}
 			}
 		});

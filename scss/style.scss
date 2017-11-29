@@ -54,14 +54,15 @@ body.loading {
 	overflow: hidden;
 }
 
-#pixel {
+#cheatpx {
 	position: absolute;
 	top: 0;
 	left: 0;
 	z-index: 1000;
 	height: 1px;
 	width: 1px;
-	background-color: transparent;
+	display: none;
+	background-color: #fff;
 }
 
 .window *:not(input) {
