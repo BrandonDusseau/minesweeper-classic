@@ -1,3 +1,6 @@
+1.1.2 [28 November 2017]
+ * Fixes an issue with the XYZZY cheat code not working as intended.
+
 1.1.1 [18 May 2016]
  * Code clean-up and reorganization
  * Fixed issue with number of mines displayed becoming out of sync with reality
