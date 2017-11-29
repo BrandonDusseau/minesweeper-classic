@@ -13,4 +13,10 @@ Since I cannot keep copyrighted assets in this repository, there is an [alternat
 sounds.
 You can [download them from my website](http://www.brandonjd.net/minesweeper/minesweeper_assets_ms.zip) as well, if you wish.
 
-This project is licensed under the MIT License.
+## Building the project ##
+
+This project uses [Compass](http://compass-style.org/) and minified JavaScript. To build it, use your favorite minifier on js/*.js and run `compass compile` from the root of the project.
+
+## License ##
+
+This project is licensed under the MIT License. See the LICENSE file for details.
