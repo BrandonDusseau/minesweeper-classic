@@ -3,3 +3,7 @@ Thumbs.db
 .DS_Store
 .sass-cache
 releases
+
+js/*.min.js
+!js/jquery.min.js
+css/*
