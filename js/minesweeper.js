@@ -1,6 +1,6 @@
 /*
  * Minesweeper Classic, a Microsoft Minesweeper clone for the browser
- * Copyright (c) 2015-2016 Brandon Dusseau
+ * Copyright (c) 2015-2024 Brandon Dusseau
  * Licensed with the MIT license; see LICENSE file for details
  *
  * http://www.github.com/BrandonDusseau/minesweeper-classic
@@ -76,7 +76,7 @@
 	 *****************************************************/
 
 	// When the page has loaded, initialize the game
-	$(document).ready(function ()
+	$(function ()
 	{
 		// Handle global mouseup
 		$("body").on("mouseup", function ()
@@ -1477,7 +1477,7 @@
 			{
 				if (top != null)
 				{
-					leaders = $.parseJSON(top);
+					leaders = JSON.parse(top);
 				}
 			}
 			catch (e)

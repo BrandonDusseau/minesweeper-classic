@@ -1,6 +1,6 @@
 /*
  * Utility functions for window emulation
- * Copyright (c) 2015-2016 Brandon Dusseau
+ * Copyright (c) 2015-2024 Brandon Dusseau
  * Licensed with the MIT license; see LICENSE file for details
  *
  * http://www.github.com/BrandonDusseau/minesweeper-classic
@@ -26,7 +26,7 @@
 	 *****************************************************/
 
 	// When document loads, bind events
-	$(document).ready(function ()
+	$(function ()
 	{
 		// Move windows back onto the screen if the window gets smaller
 		$(window).on("resize", function ()
